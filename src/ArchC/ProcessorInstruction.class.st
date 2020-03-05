@@ -79,7 +79,7 @@ ProcessorInstruction >> decode: anInt [
 	NB2: anInt is allowed to be an Integer instead of bit vector."
 	
 	| s model |
-	s := (SimState arch: self isa architectureName) solver.
+	s := self solver.
 	s add: binaryEncoding = anInt.
 	s isSatisfiable ifFalse: [ Unsat signal ].
 	model := s eval: binaryEncoding.
@@ -204,6 +204,11 @@ ProcessorInstruction >> semantics [
 	^semantics copy
 		instruction: self;
 		yourself 
+]
+
+{ #category : #VEX }
+ProcessorInstruction >> solver [
+	^(SimState arch: self isa architectureName) solver
 ]
 
 { #category : #VEX }
