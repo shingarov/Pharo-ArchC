@@ -13,7 +13,7 @@ Class {
 		'endian',
 		'instructionFormats',
 		'instructions',
-		'gdb',
+		'regsInGPacket',
 		'tgtimm',
 		'architectureName',
 		'abi'
@@ -113,9 +113,6 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 	wordsize := (aCollectionOfAssociations detect: [ :ass | ass key = 'ac_wordsize' ]) value.
 	endian := (aCollectionOfAssociations detect: [ :ass | ass key = 'endian' ]) value.
 
-	gdb := (aCollectionOfAssociations detect: [ :ass | ass key = 'ac_gdb' ]) value.
-	endian == #little ifTrue: [ gdb do: [ :eachRegisterTransfer | eachRegisterTransfer isLittleEndian: true ] ].
-	
 	self
 		fillISAFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'ac_isa' ]) value);
 		fillSemanticsFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'SEMANTICS' ]) value);
@@ -227,20 +224,6 @@ AcProcessorDescription >> fillSemanticsFrom: aCollectionOfAssociations [
 
 ]
 
-{ #category : #accessing }
-AcProcessorDescription >> gdb [
-	" NB: This is NOT about an instance of RSP client.
-	  Instead, this is a specification of how register values are transferred;
-	  the returned value is a SequenceableCollection of register transfers.
-	  It ultimately comes from parsing the Processor Feature Definition. "
-	^ gdb
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> gdb: aSequenceableCollectionOfRT [
-	gdb := aSequenceableCollectionOfRT
-]
-
 { #category : #'constant width' }
 AcProcessorDescription >> hasConstantInstructionWidth [
 	^true "BOGUS"
@@ -276,6 +259,16 @@ AcProcessorDescription >> parsedElementsNamed: key from: aCollectionOfAssociatio
 { #category : #printing }
 AcProcessorDescription >> printOn: aStream [ 
 	aStream nextPutAll: 'AC_ARCH(', self architectureName, ')'
+]
+
+{ #category : #accessing }
+AcProcessorDescription >> regsInGPacket [
+	^ regsInGPacket
+]
+
+{ #category : #accessing }
+AcProcessorDescription >> regsInGPacket: aSequenceableCollectionOfRT [
+	regsInGPacket := aSequenceableCollectionOfRT
 ]
 
 { #category : #accessing }

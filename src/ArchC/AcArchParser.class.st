@@ -20,7 +20,6 @@ Class {
 		'isa',
 		'doubleQuoted',
 		'ctorComponent',
-		'gdb',
 		'definesGdb'
 	],
 	#category : #'ArchC-Parsing'
@@ -31,6 +30,13 @@ AcArchParser class >> parseGdbFeatures: fileName in: directory [
 	| featuresParserClass |
 	featuresParserClass := Smalltalk at: #GdbXmlParser ifAbsent: [ ^nil ].
 	^featuresParserClass parseFile: fileName in: directory
+]
+
+{ #category : #private }
+AcArchParser class >> parseGdbFeatures: fileName in: directory assumeEndian: aSymbol [
+	| featuresParserClass |
+	featuresParserClass := Smalltalk at: #GdbXmlParser ifAbsent: [ ^nil ].
+	^featuresParserClass parseFile: fileName in: directory assumeEndian: aSymbol
 ]
 
 { #category : #API }
@@ -71,7 +77,6 @@ AcArchParser >> ctor [
 AcArchParser >> ctorComponent [
 	^endian trim /
 	isa trim /
-	gdb trim /
 	definesGdb trim
 ]
 
@@ -94,14 +99,6 @@ AcArchParser >> endian [
 	^('set_endian("little");' asParser ==> [ :x | 'endian' -> #little ]) /
 	('set_endian("big");' asParser ==> [ :x | 'endian' -> #big ])
 
-]
-
-{ #category : #grammar }
-AcArchParser >> gdb [
-	^'ac_gdb("' asParser,
-	$" asParser negate star flatten,
-	'");' asParser
-	==> [ :x | 'ac_gdb' ->  (AcArchParser parseGdbFeatures: x second in: directory) ]
 ]
 
 { #category : #grammar }
@@ -164,17 +161,22 @@ AcArchParser >> regbank [
 AcArchParser >> start [
 	^processorDescription end
 	==> [ :x |
-		| components |
+		| components pdlObject |
 		components := x value asOrderedCollection.
 		components := components 
 			inject: (OrderedCollection
 				with: 'SEMANTICS' -> (AcCompilerInfoParser parseFile: 'compiler_info.ac' in: directory)
 				with: 'LWISEM' -> (LWISEMParser parseFile: 'lwisem' in: directory))
 			into: [ :soFar :elem | soFar addAll: elem; yourself ].
-		AcInstructionSelector new
+		pdlObject := AcInstructionSelector new
 			architectureName: (x key);
 			fillFrom: components;
-			yourself ]
+			yourself.
+		pdlObject regsInGPacket: (self class
+			parseGdbFeatures: pdlObject architectureName, '.xml'
+			in: directory
+			assumeEndian: pdlObject endian).
+		pdlObject  ]
 ]
 
 { #category : #grammar }
