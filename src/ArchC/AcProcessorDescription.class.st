@@ -191,10 +191,15 @@ AcProcessorDescription >> fillMapsFrom: aCollectionOfAssociations [
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
+	"The argument represents all statements -- such as ac_format, ac_instr etc --
+	collected during parsing <isaname>_isa.ac.
+	Filter the set_asm statements, parse them, and attach them to their instructions."
 	| mnemonicAssociations |
 	mnemonicAssociations := aCollectionOfAssociations select: [ :ass |
 		ass key = 'set_asm'].
 	mnemonicAssociations := mnemonicAssociations collect: [ :ass | ass value ].
+	"At this point we are looking at an array of associations from the instruction name
+	to the verbatim textual definition of the instruction mnemonic (which can be more than one per instruction)"
 	mnemonicAssociations do: [ :ass |
 		| instructionName instruction |
 		instructionName := ass key.
