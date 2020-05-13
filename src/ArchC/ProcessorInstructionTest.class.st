@@ -1,6 +1,6 @@
 Class {
 	#name : #ProcessorInstructionTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#instVars : [
 		'powerpc'
 	],
@@ -61,7 +61,7 @@ ProcessorInstructionTest >> testDecodeInt [
 	| ori concrete |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
 	concrete := ori decode: 16r60830001. "ori 3,20,0x1"
-	self deny: concrete binaryEncoding isSymbolic.
+	self assert: concrete binaryEncoding isInteger.
 	self assert: ori binaryEncoding isSymbolic. "check that #decode: did not destroy the original"
 	self assert: concrete name equals: 'ori'.
 	self assert: concrete binaryEncoding value equals: 16r60830001
@@ -71,7 +71,7 @@ ProcessorInstructionTest >> testDecodeInt [
 ProcessorInstructionTest >> testDecodePartial [
 	| ori  partialBinary concrete |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
-	partialBinary := (16r6083 asBitVector: 16), (IntSymbol sym: 'UnsignedImmediate' length: 16). "ori 3,4,UnsignedImmediate"
+	partialBinary := (16r6083 asBitVector: 16), ('UnsignedImmediate' asBitVector: 16). "ori 3,4,UnsignedImmediate"
 	concrete := ori decode: partialBinary.
 	self assert: (concrete fieldValue: 'opcd') equals: 24.
 	self assert: (concrete field: 'ra') length equals: 5.
@@ -84,9 +84,8 @@ ProcessorInstructionTest >> testDecodePartial [
 ProcessorInstructionTest >> testDecodeUnsat [
 	| ori |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
-	[ ori decode: 0 ] "inconsistent with ori"
-		on: Unsat do: [ ^self ].
-	self assert: false.
+	self assert: (ori decode: 0) isNil "inconsistent with ori"
+
 ]
 
 { #category : #'tests - mips' }
@@ -207,7 +206,7 @@ ProcessorInstructionTest >> testSllEncoding [
 ProcessorInstructionTest >> testSymbolicEncoding [
 	"Compare X-form (PPCArch, p.99):
 	 cmp 1,r27,r0 "
-	| pdl cmp env binary rangeBF rangeRA |
+	| pdl cmp env binary rangeBF bfBits rangeRA raBits |
 	pdl := AcProcessorDescriptions powerpc.
 	cmp := pdl instructionAt: #cmp.
 	env := Dictionary new
@@ -221,14 +220,16 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 	rangeBF := cmp rangeOf: 'bf'.
 	self assert: rangeBF first equals: 25.
 	self assert: rangeBF last  equals: 23.
-	self assert: (binary subrange: rangeBF) isLeaf.
-	self assert: (binary subrange: rangeBF) isSymbolic.
+	bfBits := binary subrange: rangeBF.
+	self assert: bfBits term isLeaf.
+	self assert: bfBits isSymbolic.
 	
 	rangeRA := cmp rangeOf: 'ra'.
 	self assert: rangeRA first equals: 20.
 	self assert: rangeRA last  equals: 16.
-	self assert: (binary subrange: rangeRA) isLeaf.
-	self deny: (binary subrange: rangeRA) isSymbolic.
-	self assert: (binary subrange: rangeRA) equals: 27
+	raBits := binary subrange: rangeRA.
+	self assert: raBits term isLeaf.
+	self deny: raBits isSymbolic.
+	self assert: raBits equals: 27
 
 ]
