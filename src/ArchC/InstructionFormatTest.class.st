@@ -1,6 +1,6 @@
 Class {
 	#name : #InstructionFormatTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Tests'
 }
 
@@ -37,7 +37,7 @@ InstructionFormatTest >> testFormatEmission [
 	self assert: binary length equals: 32.
 	
 	"the most-significant 6 bits are the opcd"
-	self assert: (binary copyFrom: 31 to: 26) equals: (IntSymbol sym: 'opcd' length: 6).
+	self assert: (binary copyFrom: 31 to: 26) equals: ('opcd' asBitVector: 6).
 	
 	"the LSB is always 0"
 	self assert: (binary copyFrom: 0 to: 0) equals: 0

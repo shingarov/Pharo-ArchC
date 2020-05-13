@@ -1,6 +1,6 @@
 Class {
 	#name : #AcMnemonicFormatTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Tests-Parsing'
 }
 
@@ -20,7 +20,7 @@ AcMnemonicFormatTest >> testBasic [
 	fmt := 'Simple string'.
 	parseResult := self forPowerPC parse: fmt.
 	env := OrderedCollection new.
-	self assert: (parseResult value: env) = fmt
+	self assert: (parseResult value: env) equals: fmt
 ]
 
 { #category : #sparc }

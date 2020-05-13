@@ -37,13 +37,14 @@ AcMnemonicSpec >> disassembleEnv: aDictionary [
 	 whose key is the string of disassembly and the
 	 value is an integer indicating the number of 
 	 bound operands.  The latter is used to select
-	 the most sepecific mnemonic form."
+	 the most sepecific mnemonic form.
+	OPERAND VALUES IN aDictionary MUST BE CONCRETE."
 	
 	| s operandValues |
-	"First, see if we satisfy the constraints."
+	"First, see if we satisfy the constraints..."
 	constraints do: [ :constraint |
 		(constraint satisfy: aDictionary) ifFalse: [ ^nil ] ].
-	
+	"...if we got here, we do."
 	operandValues := operands collect: [ :op | op value: aDictionary ].
 	s := format value: operandValues asOrderedCollection.
 	^ s -> constraints size

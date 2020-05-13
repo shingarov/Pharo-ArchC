@@ -1,6 +1,6 @@
 Class {
 	#name : #AcDisassemblyTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Tests'
 }
 
@@ -12,7 +12,6 @@ AcDisassemblyTest >> testPowerAdd [
 	self assert: (instr fieldValue: 'rs') equals: 20.
 	self assert: (instr fieldValue: 'ra') equals: 3.
 	self assert: (instr fieldValue: 'ui') equals: 1.
-	
 ]
 
 { #category : #powerpc }
@@ -59,11 +58,11 @@ AcDisassemblyTest >> testPowerOri [
 { #category : #'riscv-r32i' }
 AcDisassemblyTest >> testR32iRadd [
 	| instr |
-	instr := AcProcessorDescriptions riscv disassemble: 16rA2002001. "%l1 := 1"
-	self assert: instr name equals: 'add_imm'.
-	self assert: (instr externalBindings at: 'rs1') equals: 0.
-	self assert: (instr externalBindings at: 'rd')  equals: 17.
-	self assert: (instr externalBindings at: 'simm13') equals: 1.
+	instr := AcProcessorDescriptions riscv disassemble: 16r00000893. "addi r17 <- 0"
+	self assert: instr name equals: 'ADDI'.
+	self assert: (instr fieldValue: 'rs1') equals: 0.
+	self assert: (instr fieldValue: 'rd')  equals: 17.
+	self assert: (instr fieldValue: 'op') equals: 19.
 ]
 
 { #category : #powerpc }

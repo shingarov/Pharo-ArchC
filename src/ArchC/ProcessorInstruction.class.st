@@ -18,6 +18,26 @@ ProcessorInstruction >> = another [
 ]
 
 { #category : #access }
+ProcessorInstruction >> allBindingValues [
+	| allBindings |
+	allBindings := format bitFieldNames collect: [ :fieldName |
+		fieldName -> (self fieldValue: fieldName) ].
+	^Dictionary newFromAssociations: allBindings 
+
+
+]
+
+{ #category : #access }
+ProcessorInstruction >> allBindings [
+	| allBindings |
+	allBindings := format bitFieldNames collect: [ :fieldName |
+		fieldName -> (self field: fieldName) simplify].
+	^Dictionary newFromAssociations: allBindings 
+
+
+]
+
+{ #category : #access }
 ProcessorInstruction >> binaryEncoding [
 	^ binaryEncoding
 ]
@@ -58,9 +78,9 @@ ProcessorInstruction >> copyWithBinary: aBinaryEncoding [
 
 { #category : #disassembly }
 ProcessorInstruction >> decode: anInt [
-	"Return a copy of the receiver concretized down to be
+	"Answer a copy of the receiver concretized down to be
 	consistent with the binary encoding given by anInt.
-	Signal UNSAT if this is impossible, -- e.g., if the opcode
+	Answer nil if this is impossible, -- e.g., if the opcode
 	contained in anInt is different from the receiver's opcode.
 	
 	The most straightforward scenario is when the receiver
@@ -78,24 +98,20 @@ ProcessorInstruction >> decode: anInt [
 	
 	NB2: anInt is allowed to be an Integer instead of bit vector."
 	
-	| s model |
-	s := self solver.
-	s add: binaryEncoding = anInt.
-	s isSatisfiable ifFalse: [ Unsat signal ].
-	model := s eval: binaryEncoding.
-	"if anInt is an Integer, the solver can be overly zealous
-	in normalization and return an Integer; well we want an Int"
-	model isNumber ifTrue: [
-		model := IntValue value: model length: binaryEncoding length
-	].
-	^self copyWithBinary: model
+	| s sat |
+	s := Solver new.
+	s assert: (binaryEncoding eq: anInt).
+	sat := s check.
+	s del.
+	sat ifFalse: [ ^nil ].
+	^self copyWithBinary: anInt
 ]
 
 { #category : #disassembly }
 ProcessorInstruction >> disassemble [
 	| variants |
 	variants := mnemonics collect: [ :mnem |
-		mnem disassembleEnv: 1 ].
+		mnem disassembleEnv: self allBindingValues ].
 	variants := variants reject: [ :v | v isNil ].
 	variants := variants sorted: [ :a :b | a value > b value ].
 	^variants first key
@@ -133,7 +149,7 @@ ProcessorInstruction >> fieldValue: fieldName [
 	"Answer the value of the requested field, as an Integer
 	(observing two's complement if required)."
 	| bitVector |
-	bitVector := self field: fieldName.
+	bitVector := (self field: fieldName) simplify.
 	^(format isSigned: fieldName)
 		ifTrue: [ bitVector signedValue ]
 		ifFalse: [ bitVector value ]
@@ -199,16 +215,11 @@ ProcessorInstruction >> semantics [
 	semantics isNil ifTrue: [
 		"This is needed even though the instance is created
 		eagerly during DSL parsing.  This is a dirty hack."
-		semantics := LwInstructionSemantics instruction: self.
+		semantics := #LwInstructionSemantics instruction: self.
 		^semantics  ].
 	^semantics copy
 		instruction: self;
 		yourself 
-]
-
-{ #category : #VEX }
-ProcessorInstruction >> solver [
-	^(SimState arch: self isa architectureName) solver
 ]
 
 { #category : #VEX }

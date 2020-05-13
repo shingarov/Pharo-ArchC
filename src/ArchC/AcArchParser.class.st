@@ -20,7 +20,8 @@ Class {
 		'isa',
 		'doubleQuoted',
 		'ctorComponent',
-		'definesGdb'
+		'definesGdb',
+		'gdb'
 	],
 	#category : #'ArchC-Parsing'
 }
@@ -77,6 +78,7 @@ AcArchParser >> ctor [
 AcArchParser >> ctorComponent [
 	^endian trim /
 	isa trim /
+	gdb trim /
 	definesGdb trim
 ]
 
@@ -99,6 +101,14 @@ AcArchParser >> endian [
 	^('set_endian("little");' asParser ==> [ :x | 'endian' -> #little ]) /
 	('set_endian("big");' asParser ==> [ :x | 'endian' -> #big ])
 
+]
+
+{ #category : #grammar }
+AcArchParser >> gdb [
+	^'ac_gdb("' asParser,
+	$" asParser negate star flatten,
+	'");' asParser
+	==> [ :x | 'ac_gdb' -> nil "(GdbXmlParser parseFile: x second in: directory)" ]
 ]
 
 { #category : #grammar }

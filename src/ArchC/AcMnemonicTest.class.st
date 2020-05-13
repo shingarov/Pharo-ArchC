@@ -1,17 +1,17 @@
 Class {
 	#name : #AcMnemonicTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Tests'
 }
 
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> add1 [
-	^self arm instructionAt: #add1
+	^AcProcessorDescriptions armv5 instructionAt: #add1
 ]
 
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> add3 [
-	^self arm instructionAt: #add3
+	^AcProcessorDescriptions armv5 instructionAt: #add3
 ]
 
 { #category : #'tests - instructions - PowerPC' }
@@ -21,7 +21,7 @@ AcMnemonicTest >> addi [
 
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> and1 [
-	^self arm instructionAt: #and1
+	^AcProcessorDescriptions armv5 instructionAt: #and1
 ]
 
 { #category : #'tests - instructions - PowerPC' }
@@ -56,7 +56,7 @@ AcMnemonicTest >> testArgTrim [
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> testArmAND1 [
 	| groundedInstr s |
-	groundedInstr := self and1 bind: (Dictionary new
+	groundedInstr := self and1 inEnvironment: (Dictionary new
 		at: 'cond' put: 12;
 		at: 's' put: 1;
 		at: 'rd' put: 0;
@@ -72,7 +72,7 @@ AcMnemonicTest >> testArmAND1 [
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> testArmAdd3 [
 	| groundedInstr s |
-	groundedInstr := self add3 bind: (Dictionary new
+	groundedInstr := self add3 inEnvironment: (Dictionary new
 		at: 'cond' put: 12;
 		at: 's' put: 1;
 		at: 'rd' put: 2;
@@ -87,7 +87,7 @@ AcMnemonicTest >> testArmAdd3 [
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> testArmAddPC [
 	| groundedInstr s |
-	groundedInstr := self add1 bind: (Dictionary new
+	groundedInstr := self add1 inEnvironment: (Dictionary new
 		at: 'cond' put: 12;
 		at: 's' put: 1;
 		at: 'rd' put: 0;
@@ -151,41 +151,41 @@ AcMnemonicTest >> testOneReg [
 
 { #category : #'tests - instructions - PowerPC' }
 AcMnemonicTest >> testPowerPcADDI [
-	| groundedInstr  |
-	groundedInstr := self bcctr bind: (Dictionary new
-		at: 'bo' put: 16r14;
-		at: 'bi' put: 0;
-		at: 'bh' put: 0;
+	| groundedInstr |
+	groundedInstr := self addi inEnvironment: (Dictionary new
+		at: 'rt' put: 3;
+		at: 'ra' put: 0; "the idea is that when ra==0, addi mnemonic specializes to li"
+		at: 'd' put: 16r1234;
 		yourself).
-	self assert: groundedInstr disassemble = 'bctr'
+	self assert: (groundedInstr disassemble beginsWith: 'li ')
 ]
 
 { #category : #'tests - instructions - PowerPC' }
 AcMnemonicTest >> testPowerPcBCTR [
 	| groundedInstr  |
-	groundedInstr := self bcctr bind: (Dictionary new
+	groundedInstr := self bcctr inEnvironment: (Dictionary new
 		at: 'bo' put: 16r14;
 		at: 'bi' put: 0;
 		at: 'bh' put: 0;
 		yourself).
-	self assert: groundedInstr disassemble = 'bctr'
+	self assert: groundedInstr disassemble equals: 'bctr'
 ]
 
 { #category : #'tests - instructions - PowerPC' }
 AcMnemonicTest >> testPowerPcGeneralBCCTR [
 	| groundedInstr  |
-	groundedInstr := self bcctr bind: (Dictionary new
+	groundedInstr := self bcctr inEnvironment: (Dictionary new
 		at: 'bo' put: 1;
 		at: 'bi' put: 2;
 		at: 'bh' put: 3;
 		yourself).
-	self assert: groundedInstr disassemble = 'bcctr 1, 2, 3'
+	self assert: groundedInstr disassemble equals: 'bcctr 1, 2, 3'
 ]
 
 { #category : #'tests - instructions - PowerPC' }
 AcMnemonicTest >> testPowerPcGeneralMFSPR [
 	| groundedInstr s |
-	groundedInstr := self mfspr bind: (Dictionary new
+	groundedInstr := self mfspr inEnvironment: (Dictionary new
 		at: 'rt' put: 3;
 		at: 'sprf' put: 16r23;
 		yourself).

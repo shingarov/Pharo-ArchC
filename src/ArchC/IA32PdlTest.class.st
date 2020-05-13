@@ -1,6 +1,6 @@
 Class {
 	#name : #IA32PdlTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Tests'
 }
 
@@ -25,6 +25,6 @@ IA32PdlTest >> testLoadPDL [
 IA32PdlTest >> testNOP [
 	| nop binary |
 	nop := AcProcessorDescriptions x86 instructionAt: #nop.
-	binary := nop emit. "0x90"
-	self assert: binary equals: '10010000'
+	binary := nop binaryEncoding. "0x90"
+	self assert: binary equals: (2r10010000 asBitVector: 8)
 ]
