@@ -115,8 +115,8 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 
 	self
 		fillISAFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'ac_isa' ]) value);
-		fillSemanticsFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'SEMANTICS' ]) value);
-		fillLWISEMFrom:    ((aCollectionOfAssociations detect: [ :ass | ass key = 'LWISEM' ]) value).
+		fillSemanticsFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'SEMANTICS' ]) value).
+"		fillLWISEMFrom:    ((aCollectionOfAssociations detect: [ :ass | ass key = 'LWISEM' ]) value)."
 		
 	^self
 ]

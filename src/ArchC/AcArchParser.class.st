@@ -166,9 +166,9 @@ AcArchParser >> start [
 		components := components 
 			inject: (OrderedCollection
 				with: 'SEMANTICS' -> (AcCompilerInfoParser parseFile: 'compiler_info.ac' in: directory)
-				with: 'LWISEM' -> (LWISEMParser parseFile: 'lwisem' in: directory))
+				"with: 'LWISEM' -> (LWISEMParser parseFile: 'lwisem' in: directory)")
 			into: [ :soFar :elem | soFar addAll: elem; yourself ].
-		pdlObject := AcInstructionSelector new
+		pdlObject := AcProcessorDescription new
 			architectureName: (x key);
 			fillFrom: components;
 			yourself.
