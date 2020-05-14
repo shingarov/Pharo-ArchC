@@ -44,10 +44,7 @@ ProcessorInstructionDeclaration >> internalBindings [
 
 { #category : #'parser access for construction' }
 ProcessorInstructionDeclaration >> internalBindings: aDict [
-	internalBindings := aDict.
-	"at this point in the creation sequence,
-	we know enough to instantiate a binary encoding"
-	self initializeBinaryEncoding 
+	internalBindings := aDict
 ]
 
 { #category : #accessing }

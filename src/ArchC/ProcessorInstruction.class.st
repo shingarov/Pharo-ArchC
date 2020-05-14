@@ -14,7 +14,7 @@ Class {
 
 { #category : #comparing }
 ProcessorInstruction >> = another [
-	^self == another or: [ binaryEncoding = another binaryEncoding ]
+	^self == another or: [ self binaryEncoding = another binaryEncoding ]
 ]
 
 { #category : #access }
@@ -39,7 +39,8 @@ ProcessorInstruction >> allBindings [
 
 { #category : #access }
 ProcessorInstruction >> binaryEncoding [
-	^ binaryEncoding
+	binaryEncoding isNil ifTrue: [ self initializeBinaryEncoding ].
+	^binaryEncoding
 ]
 
 { #category : #private }
@@ -100,7 +101,7 @@ ProcessorInstruction >> decode: anInt [
 	
 	| s sat |
 	s := Solver new.
-	s assert: (binaryEncoding eq: anInt).
+	s assert: (self binaryEncoding eq: anInt).
 	sat := s check.
 	s del.
 	sat ifFalse: [ ^nil ].
@@ -122,7 +123,7 @@ ProcessorInstruction >> emit32 [
 	"Just making mischief.
 	Some not-so-nice ISAs do not allow this (not that I care)."
 	format binaryEncoding length = 32 ifFalse: [ self error: 'Instruction size not 32' ].
-	^binaryEncoding value
+	^self binaryEncoding value
 ]
 
 { #category : #disassembly }
@@ -141,7 +142,7 @@ ProcessorInstruction >> externalBindingBits [
 { #category : #access }
 ProcessorInstruction >> field: fieldName [
 	"Answer the value of the requested field, as a bit vector."
-	^binaryEncoding subrange: (self rangeOf: fieldName)
+	^self binaryEncoding subrange: (self rangeOf: fieldName)
 ]
 
 { #category : #access }
@@ -169,7 +170,7 @@ ProcessorInstruction >> inEnvironment: env [
 	It is not necessary to define values for ALL operands; if some operands are
 	left unspecified, those bits in the emitted binary will be symbolic.
 	NB: unlike #decode: which returns a model, this method's answer is the most general."
-	^self copyWithBinary: (binaryEncoding inEnvironment: env)
+	^self copyWithBinary: (self binaryEncoding inEnvironment: env)
 ]
 
 { #category : #private }
