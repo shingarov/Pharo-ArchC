@@ -1,7 +1,7 @@
 Class {
 	#name : #MatchedParenTest,
 	#superclass : #TestCase,
-	#category : #'ArchC-Tests-Parsing'
+	#category : #'ArchC-Tests'
 }
 
 { #category : #tests }

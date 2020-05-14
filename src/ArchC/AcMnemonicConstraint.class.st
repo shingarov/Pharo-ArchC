@@ -9,6 +9,7 @@ Class {
 
 { #category : #accessing }
 AcMnemonicConstraint >> op [
+self halt.
 	^ op
 ]
 

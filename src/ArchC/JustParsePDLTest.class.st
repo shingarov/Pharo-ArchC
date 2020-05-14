@@ -1,7 +1,7 @@
 Class {
 	#name : #JustParsePDLTest,
 	#superclass : #TestCaseWithZ3Context,
-	#category : #'ArchC-Tests-Parsing'
+	#category : #'ArchC-Tests'
 }
 
 { #category : #tests }

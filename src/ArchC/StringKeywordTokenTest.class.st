@@ -1,7 +1,7 @@
 Class {
 	#name : #StringKeywordTokenTest,
 	#superclass : #TestCase,
-	#category : #'ArchC-Tests-Parsing'
+	#category : #'ArchC-Tests'
 }
 
 { #category : #'tests-substitution' }

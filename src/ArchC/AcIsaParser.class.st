@@ -94,28 +94,27 @@ AcIsaParser >> asmMap [
 	asmMapBody trim plus,
 	$} asParser
 	==> [ :x |
-		| mapId mapbodylist constructedMapbodylist |
+		| mapId mapbodylist map |
 		mapId := x second.
 		mapbodylist := x fifth.
-		constructedMapbodylist := AcIsaParser constructAsmMap: mapbodylist.
-		Array with: 'ac_map' -> (mapId -> constructedMapbodylist) ]
+		map := AcAsmMap from: mapbodylist.
+		Array with: 'ac_map' -> (map name: mapId) ]
 	
 ]
 
 { #category : #grammar }
 AcIsaParser >> asmMapBody [
 	"There are 4 forms of asmMapBody:
-	(1)  STR symbolList = i; // AcAsmMapBodyIds
-	(2)  STR[i..i] = [i..i]; // AcAsmMapBodyIdRange
-	(3)  [i..i]STR = [i..i]; // AcAsmMapBodyRangeId
-	(4)  STR[i..i]STR = [i..i];  (I haven't seen any model use this last one).
-	"
+	(1)  STR symbolList = i;
+	(2)  STR[i..i] = [i..i];
+	(3)  [i..i]STR = [i..i]; (Not used in any model)
+	(4)  STR[i..i]STR = [i..i];  (Not used in any model) "
 	^asmMapBody1 / asmMapBody2
 ]
 
 { #category : #grammar }
 AcIsaParser >> asmMapBody1 [
-	"Map body, Form 1: STR symbolList = int;	"
+	"Map body, Form 1: symbolList = int;	"
 	^strList,
 	$= asParser trim,
 	number,
@@ -124,7 +123,7 @@ AcIsaParser >> asmMapBody1 [
 		| names i |
 		names := x first.
 		i := x third.
-		names collect: [ :aName | 1 -> (i -> aName) ]
+		names collect: [ :aName | AcAsmMapEntry i: i sym: aName cardinality: 1 ]
 		]
 ]
 
@@ -146,7 +145,7 @@ AcIsaParser >> asmMapBody2 [
 		r doWithIndex: [ :rightSubscript :i |
 			answer
 				at: i
-				put: l size -> (rightSubscript -> (name, (l at: i) printString )) ].
+				put: ( AcAsmMapEntry i: rightSubscript sym: name, (l at: i) printString cardinality: l size ) ].
 		answer
 		]
 ]
@@ -379,7 +378,11 @@ AcIsaParser >> setAsm [
 	'.set_asm' asParser trim,
 	matchedParen,
 	';' asParser
-	==> [ :x | 'set_asm' -> (x first -> x third) ]
+	==> [ :x |
+		"At this stage we don't process the set_asm directive,
+		we just store the whole line -- i.e. everything between the (),
+		including the format and arguments, taking note which instruction it is"
+		'set_asm' -> (x first -> x third) ]
 ]
 
 { #category : #grammar }

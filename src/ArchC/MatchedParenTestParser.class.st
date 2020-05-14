@@ -1,7 +1,7 @@
 Class {
 	#name : #MatchedParenTestParser,
 	#superclass : #AcCommonParser,
-	#category : #'ArchC-Tests-Parsing'
+	#category : #'ArchC-Tests'
 }
 
 { #category : #'as yet unclassified' }

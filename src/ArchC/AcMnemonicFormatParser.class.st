@@ -3,7 +3,8 @@ Class {
 	#superclass : #PPCompositeParser,
 	#instVars : [
 		'percentId',
-		'imm'
+		'normal',
+		'escape'
 	],
 	#classInstVars : [
 		'maps'
@@ -28,21 +29,36 @@ AcMnemonicFormatParser class >> maps: m [
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> imm [
-	^ '%imm' asParser / '%exp' asParser / '%addr' asParser ==> [ :immToken |
-		[ :operands :stream |
-			stream nextPutAll: '0x'.
-			operands removeFirst printOn: stream base: 16 showRadix: false]]
+AcMnemonicFormatParser >> allOperandTypes [
+	^self builtinOperandTypes, self userOperandTypes 
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> builtinOperandType: percentIdString [
+	^percentIdString asParser ==> [ :immToken |
+		BuiltinOperandChunk new ]
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> builtinOperandTypes [
+	^#('%imm' '%exp' '%addr') collect: [ :s | self builtinOperandType: s ]
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> escape [
+	^'\%' asParser ==> [ :x | LiteralTextChunk char: $% ]
+
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> normal [
+	^(PPPredicateObjectParser anyExceptAnyOf: '%\"') ==> [ :char |
+		LiteralTextChunk char: char ]
 ]
 
 { #category : #grammar }
 AcMnemonicFormatParser >> percentId [
-	| p |
-	p := imm.
-	self class maps keysAndValuesDo: [ :mapName :map |
-		p := p / (('%', mapName) asParser / ('%[', mapName, ']') asParser ==>
-		[ :r | [ :operands :stream | stream nextPutAll: (map at: (operands removeFirst)) ]])].
-	^ p
+	^PPChoiceParser withAll: self allOperandTypes 
 ]
 
 { #category : #grammar }
@@ -50,17 +66,17 @@ AcMnemonicFormatParser >> start [
 	"The result of parsing a format string is a 1-argument block which,
 	 given an ordered collection of operand values,
 	 answers a string of disassembly."
-	| normal escape |
-	normal := (PPPredicateObjectParser anyExceptAnyOf: '%\"') ==> [ :char |
-		[ :env :stream | stream nextPut: char ] ].
-	escape := '\%' asParser ==> [ :x | [ :y :stream | stream nextPut: $% ]].
-	^ (normal / escape / percentId) star end ==> [ :blocks |
-		"An array of 2-argument blocks, each block takes (1) an ordered collection
-		 of operand values and (2) a stream onto which to print the piece of
-		 disassembly corresponding to this element of the array."
-		[  :env |
-		| stream |
-		stream := WriteStream on: String new.
-		blocks do: [ :block | block value: env value: stream ].
-		stream contents ]]
+	^ (normal / escape / percentId) star end
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> userOperandTypeName: mapName mapping: aDictionary [
+	^('%', mapName) asParser / ('%[', mapName, ']') asParser ==> [ :token |
+		(PercentAcMnemonicChunk map: aDictionary named: mapName source: token) ]
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> userOperandTypes [
+	^self class maps associations collect: [ :a |
+		self userOperandTypeName: a key mapping: a value ]
 ]

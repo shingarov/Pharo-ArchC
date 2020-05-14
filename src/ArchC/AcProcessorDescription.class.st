@@ -16,7 +16,8 @@ Class {
 		'regsInGPacket',
 		'tgtimm',
 		'architectureName',
-		'abi'
+		'abi',
+		'instructionMnemonics'
 	],
 	#category : #'ArchC-Core'
 }
@@ -41,6 +42,12 @@ AcProcessorDescription class >> systemIcon [
 
 ]
 
+{ #category : #'collaboration with parser' }
+AcProcessorDescription >> addMnemonic: aParser [
+	instructionMnemonics add: aParser 
+
+]
+
 { #category : #accessing }
 AcProcessorDescription >> architectureName [
 	^ architectureName 
@@ -49,6 +56,11 @@ AcProcessorDescription >> architectureName [
 { #category : #accessing }
 AcProcessorDescription >> architectureName: aString [
 	architectureName := aString
+]
+
+{ #category : #'as yet unclassified' }
+AcProcessorDescription >> assembler [
+	^instructionMnemonics 
 ]
 
 { #category : #'constant width' }
@@ -181,11 +193,11 @@ AcProcessorDescription >> fillLWISEMFrom: aDictionary [
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillMapsFrom: aCollectionOfAssociations [
-	| mapAssociations |
+	| mapAssociations m |
 	mapAssociations := aCollectionOfAssociations select: [ :ass |
 		ass key = 'ac_map'].
-	mapAssociations := mapAssociations collect: [ :ass | ass value ].
-	maps := Dictionary newFromAssociations: mapAssociations
+	m := mapAssociations collect: [ :ass | ass value name2self ].
+	maps := Dictionary newFromAssociations: m
 ]
 
 { #category : #'collaboration with parser' }
@@ -193,20 +205,17 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	"The argument represents all statements -- such as ac_format, ac_instr etc --
 	collected during parsing <isaname>_isa.ac.
 	Filter the set_asm statements, parse them, and attach them to their instructions."
-	| mnemonicAssociations |
-	mnemonicAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'set_asm'].
-	mnemonicAssociations := mnemonicAssociations collect: [ :ass | ass value ].
+	| associations |
+	instructionMnemonics := OrderedCollection new.
+	
+	associations := aCollectionOfAssociations select: [ :ass | ass key = 'set_asm']
+		thenCollect: [ :ass | ass value ].
+	
 	"At this point we are looking at an array of associations from the instruction name
-	to the verbatim textual definition of the instruction mnemonic (which can be more than one per instruction)"
-	mnemonicAssociations do: [ :ass |
-		| instructionName instruction |
-		instructionName := ass key.
-		instruction := instructions at: instructionName.
-		instruction addMnemonic:  ((AcMnemonicParser maps: self maps) parse: ass value).
-	]
-
-
+	to the verbatim textual definition of the instruction mnemonic
+	(which can be more than one per instruction)"
+	AcSetAsmParser processAssociations: associations in: self.
+	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics 
 ]
 
 { #category : #'collaboration with parser' }
