@@ -19,11 +19,6 @@ BuiltinOperandChunk >> disassembleTo: aWriteStream inEnvironment: anOrderedColle
 ]
 
 { #category : #'API - disassembly' }
-BuiltinOperandChunk >> immExpression [
-	^${ asParser, ($} asParser not, #any asParser) star flatten, $} asParser ==> [ :expr | expr second "the string inside {...} will become the variable name" ]
-]
-
-{ #category : #'API - disassembly' }
 BuiltinOperandChunk >> immLiteral [
 	^#digit asParser plus flatten ==> [ :numeralString | numeralString asInteger ]
 ]

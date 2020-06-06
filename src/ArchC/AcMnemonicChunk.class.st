@@ -22,3 +22,8 @@ AcMnemonicChunk >> assembler [
 AcMnemonicChunk >> disassembleTo: aWriteStream inEnvironment: e [
 	self subclassResponsibility 
 ]
+
+{ #category : #'API - disassembly' }
+AcMnemonicChunk >> immExpression [
+	^${ asParser, ($} asParser not, #any asParser) star flatten, $} asParser ==> [ :expr | expr second "the string inside {...} will become the variable name" ]
+]
