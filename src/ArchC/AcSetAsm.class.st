@@ -24,6 +24,8 @@ AcSetAsm class >> format: aMnemonicFormat operandsAndConstraints: anArray [
 
 { #category : #'API - assembly' }
 AcSetAsm >> assembler [
+	"Construct a parser which will parse the actual
+	assembly statements."
 	| chunkParsers |
 	chunkParsers := self format collect: #assembler.
 	^(PPSequenceParser withAll: chunkParsers) ==> [ :actualOperandsFromChunks |

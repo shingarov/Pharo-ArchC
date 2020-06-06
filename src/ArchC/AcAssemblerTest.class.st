@@ -44,6 +44,20 @@ AcAssemblerTest >> testB [
 ]
 
 { #category : #powerpc }
+AcAssemblerTest >> testExpressionImm [
+	| pdl instr binary concretePart offset |
+	pdl := AcProcessorDescriptions powerpc.
+	instr := pdl assembler parse: 'lbzu 1, {x+y} (2)'.
+	binary := instr binaryEncoding.
+	concretePart := (binary copyFrom: 31 to: 16) simplify.
+	self assert: concretePart equals: 16r8c22.
+	offset := (binary copyFrom: 15 to: 0) simplify.
+	self assert: offset isSymbolic.
+	self assert: offset term isLeaf. "let 'x+y' not fool you: this is the name of the constant"
+	self assert: offset sym equals: 'x+y'.
+]
+
+{ #category : #powerpc }
 AcAssemblerTest >> testLBZU1 [
 	self
 		isa: #powerpc
