@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #common }
-AcAssemblerTest >> isa: aSymbol disassemble: source operandKeys: keys shouldBe: values [
+AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: values [
 	| pdl result expected |
 	pdl := AcProcessorDescriptions perform: aSymbol.
 	result := pdl assembler parse: source.
@@ -17,7 +17,7 @@ AcAssemblerTest >> isa: aSymbol disassemble: source operandKeys: keys shouldBe: 
 AcAssemblerTest >> testADD [
 	self
 		isa: #powerpc
-		disassemble: 'add 1, 2, 3'
+		assemble: 'add 1, 2, 3'
 		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
 		shouldBe:     #(  31    1   2   3   0   266   0   ).
 
@@ -27,7 +27,7 @@ AcAssemblerTest >> testADD [
 AcAssemblerTest >> testADD_ [
 	self
 		isa: #powerpc
-		disassemble: 'add 1, 2, 3'
+		assemble: 'add 1, 2, 3'
 		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
 		shouldBe:     #(  31    1   2   3   0   266   0   ).
 
@@ -37,7 +37,7 @@ AcAssemblerTest >> testADD_ [
 AcAssemblerTest >> testB [
 	self
 		isa: #powerpc
-		disassemble: 'b 1234'
+		assemble: 'b 1234'
 		operandKeys:  #(opcd  rt  ra  rb  oe  xos   rc)
 		shouldBe:     #(31    1   2   3   0   266   1).
 
@@ -47,7 +47,7 @@ AcAssemblerTest >> testB [
 AcAssemblerTest >> testLBZU1 [
 	self
 		isa: #powerpc
-		disassemble: 'lbzu 1, 1234 (2)'
+		assemble: 'lbzu 1, 1234 (2)'
 		operandKeys:  #(  opcd  rt  ra  d     )
 		shouldBe:     #(  35    1   2   1234  ).
 
@@ -57,7 +57,7 @@ AcAssemblerTest >> testLBZU1 [
 AcAssemblerTest >> testLBZU2 [
 	self
 		isa: #powerpc
-		disassemble: 'lbzu 1, 1234@l(2)'
+		assemble: 'lbzu 1, 1234@l(2)'
 		operandKeys:  #(  opcd  rt  ra  d     )
 		shouldBe:     #(  35    1   2   1234  ).
 
@@ -67,7 +67,7 @@ AcAssemblerTest >> testLBZU2 [
 AcAssemblerTest >> testLIS [
 	self
 		isa: #powerpc
-		disassemble: 'lis 1, 1234@ha'
+		assemble: 'lis 1, 1234@ha'
 		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
 		shouldBe:     #(  31    1   2   3   0   266   0   ).
 
