@@ -34,6 +34,11 @@ ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'> 
 ]
 
+{ #category : #powerpc }
+ArchCOpalTest >> lugLBZU: x [
+	<powerpc: 'lbzu 1, {(x asBitVector: 16)+y} (2)'>   
+]
+
 { #category : #x86 }
 ArchCOpalTest >> nop [
 	<x86: 'NOP'> 
@@ -72,6 +77,15 @@ ArchCOpalTest >> testLoadImm32 [
 	x := self loadImm32: 16r12345678.
 	self assert: (x value bitAnd: 16rFFFF) equals: 16r5678 
 	
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testLugLBZU [
+	| instr y |
+	instr := self lugLBZU: 8.
+	y := 1.
+	instr := instr inThisEnvironment.
+	self assert: (instr value bitAnd: 16rFFFF) equals: 8+1 
 ]
 
 { #category : #tests }
