@@ -47,6 +47,7 @@ ArchCOpalTest >> nop [
 { #category : #'z3 context' }
 ArchCOpalTest >> setUp [
 	Z3Context createGlobalContext.
+	AcProcessorDescriptions reset.
 	self class recompile
 ]
 
