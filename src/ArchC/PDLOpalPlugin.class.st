@@ -12,6 +12,15 @@ PDLOpalPlugin class >> priority [
 	^100
 ]
 
+{ #category : #'as yet unclassified' }
+PDLOpalPlugin >> processOperandNames [
+	| opNames |
+	opNames := ast pragmas select: [ :p | p selector = #operands: ].
+	opNames isEmpty ifTrue: [ ^nil ].
+	opNames := opNames first arguments first value collect: #asString.
+	ast methodPropertyAt: #operand_names put: opNames 
+]
+
 { #category : #api }
 PDLOpalPlugin >> transform [
 	| selAndPDL |
@@ -19,6 +28,7 @@ PDLOpalPlugin >> transform [
 	selAndPDL isNil ifTrue: [ ^ast ].
 	ast := ast copy.
 	pdl := selAndPDL value.
+	self processOperandNames.
 	self transformPragmas: (ast pragmas select: [ :p | p selector = selAndPDL key]).
 	ast methodPropertyAt: #isASMMethod put: true.
 	ast methodPropertyAt: #ISA put: pdl architectureName.
@@ -45,8 +55,24 @@ PDLOpalPlugin >> transformBinaryEncoding: bv [
 			withTree: ret.
 		rule executeTree: ast.
 		 ].
+	
+	self transformOperandAccess.
 	ast  doSemanticAnalysis .
 
+]
+
+{ #category : #api }
+PDLOpalPlugin >> transformOperandAccess [
+	| operandNames |
+	operandNames := ast methodPropertyAt: #operand_names ifAbsent: [ ^nil ].
+	operandNames doWithIndex: [ :operandName :operandIndex |
+		| rrrrr |
+		rrrrr := RBParseTreeRewriter 	new
+			replaceTree: (RBVariableNode named: operandName)
+			withTree: (RBMessageNode receiver: (RBSelfNode new)
+				selector: #getOperand:
+				arguments: (OrderedCollection with: 	(RBLiteralNode value: operandIndex))).
+		rrrrr executeTree: ast ]
 ]
 
 { #category : #api }

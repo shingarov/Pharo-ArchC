@@ -23,7 +23,7 @@ ClyASMMethodQuery >> description [
 ClyASMMethodQuery >> isCorrectISA: aMethod [
 	| thisISA |
 	thisISA := aMethod propertyAt: #ISA ifAbsent: [ ^false ].
-	^thisISA = self isa asString
+	^thisISA = self isa asString 
 ]
 
 { #category : #accessing }
