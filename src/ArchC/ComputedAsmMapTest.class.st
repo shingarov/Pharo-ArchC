@@ -17,6 +17,7 @@ ComputedAsmMapTest >> and1: x [
 { #category : #running }
 ComputedAsmMapTest >> setUp [
 	Z3Context createGlobalContext.
+	AcProcessorDescriptions reset.
 	self class recompile
 ]
 

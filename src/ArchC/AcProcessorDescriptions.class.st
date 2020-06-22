@@ -33,7 +33,7 @@ AcProcessorDescriptions class >> cachedProcessors [
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> knownISAs [
-	^#(armv5 mips powerpc r3000 riscv sparcv8 x86)
+	^#(arm mips powerpc r3000 riscv sparc IA32)
 ]
 
 { #category : #'known processors' }

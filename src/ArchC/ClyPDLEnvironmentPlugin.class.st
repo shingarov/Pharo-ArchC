@@ -20,7 +20,7 @@ ClyPDLEnvironmentPlugin class >> toActivateMe [
 
 { #category : #'groups collecting' }
 ClyPDLEnvironmentPlugin >> collectMethodGroupProviders [ 
-	^AcProcessorDescriptions knownISAs collect: [ :aSymbol |
+	^self knownISAs collect: [ :aSymbol |
 		ClyASMMethodGroupProvider isa: aSymbol ]
 	
 ]
@@ -29,4 +29,10 @@ ClyPDLEnvironmentPlugin >> collectMethodGroupProviders [
 ClyPDLEnvironmentPlugin >> decorateBrowserItem: anItem ofMethod: aMethod [
 	aMethod isASMMethod ifTrue: [ 
 		anItem markWith: ClyASMMethodTag]
+]
+
+{ #category : #'groups collecting' }
+ClyPDLEnvironmentPlugin >> knownISAs [
+	^#() "AcProcessorDescriptions knownISAs"
+	"disabling for now, instability too annoying"
 ]
