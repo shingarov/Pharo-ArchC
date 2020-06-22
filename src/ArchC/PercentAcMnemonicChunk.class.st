@@ -11,7 +11,7 @@ Class {
 
 { #category : #'instance creation' }
 PercentAcMnemonicChunk class >> map: aDictionary named: nameString source: sourceString [
-	^self new
+	^super new
 		map: aDictionary;
 		name: nameString;
 		source: sourceString;
@@ -38,10 +38,12 @@ PercentAcMnemonicChunk >> assembler [
 ]
 
 { #category : #'API - disassembly' }
-PercentAcMnemonicChunk >> disassembleTo: aWriteStream inEnvironment: anOrderedCollection [
-	| v |
-	v := self map backLookup: anOrderedCollection removeFirst.
-	aWriteStream nextPutAll: v
+PercentAcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: aDictionary [
+	| op v symbolic |
+	op := ops removeFirst operand.
+	v := aDictionary at: op.
+	symbolic := self map backLookup: v.
+	aWriteStream nextPutAll: symbolic
 ]
 
 { #category : #accessing }

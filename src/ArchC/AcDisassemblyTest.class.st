@@ -1,6 +1,6 @@
 Class {
 	#name : #AcDisassemblyTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 

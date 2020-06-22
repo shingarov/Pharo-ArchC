@@ -10,6 +10,9 @@ of the target-agnostic pipeline, i.e. the actual assembly/disassembly.
 Class {
 	#name : #AcMnemonicChunk,
 	#superclass : #Object,
+	#instVars : [
+		'instruction'
+	],
 	#category : #'ArchC-Core'
 }
 
@@ -19,11 +22,21 @@ AcMnemonicChunk >> assembler [
 ]
 
 { #category : #'API - disassembly' }
-AcMnemonicChunk >> disassembleTo: aWriteStream inEnvironment: e [
+AcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	self subclassResponsibility 
 ]
 
 { #category : #'API - disassembly' }
 AcMnemonicChunk >> immExpression [
 	^${ asParser, ($} asParser not, #any asParser) star flatten, $} asParser ==> [ :expr | expr second "the string inside {...} will become the variable name" ]
+]
+
+{ #category : #accessing }
+AcMnemonicChunk >> instruction [
+	^ instruction
+]
+
+{ #category : #accessing }
+AcMnemonicChunk >> instruction: anObject [
+	instruction := anObject
 ]

@@ -1,6 +1,11 @@
 Extension { #name : #String }
 
 { #category : #'*ArchC' }
+String >> asOperandInstantiation [
+	^AsmOperandInstantiation singleOperand: self
+]
+
+{ #category : #'*ArchC' }
 String >> replaceKeywords: aBlockOrDictionary [
 	^self replaceKeywords: aBlockOrDictionary leftDelimiter: $< rightDelimiter: $>
 ]

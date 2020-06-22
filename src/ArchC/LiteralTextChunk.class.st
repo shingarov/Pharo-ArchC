@@ -9,7 +9,7 @@ Class {
 
 { #category : #'factory-chars' }
 LiteralTextChunk class >> char: c [
-	^self new
+	^super new
 		char: c;
 		yourself 
 ]
@@ -30,6 +30,12 @@ LiteralTextChunk >> char: anObject [
 ]
 
 { #category : #'API - disassembly' }
-LiteralTextChunk >> disassembleTo: aWriteStream inEnvironment: e [
+LiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	aWriteStream nextPut: char
+]
+
+{ #category : #printing }
+LiteralTextChunk >> printOn: aStream [
+	self char printOn: aStream.
+	aStream nextPutAll: ' literal chunk'
 ]

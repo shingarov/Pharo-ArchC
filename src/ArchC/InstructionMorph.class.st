@@ -226,9 +226,9 @@ InstructionMorph >> drawSemanticTree: anInstructionSemanticTree on: aCanvas y: y
 
 { #category : #drawing }
 InstructionMorph >> drawSemanticsOn: aCanvas [
-	| semantics y |
+	"| semantics y |
 	semantics := instruction semantics.
-	"y := self bitBox bottom + 18.
+	y := self bitBox bottom + 18.
 	semantics do: [ :anInstructionSemantic |
 		y := y + (self drawSemanticForest: anInstructionSemantic on: aCanvas y: y) ]" "draw lwisem here"
 ]

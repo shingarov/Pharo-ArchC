@@ -18,28 +18,28 @@ ArchCOpalTest class >> initZ3Context [
 	self recompile 
 ]
 
-{ #category : #arm }
+{ #category : #assembler }
 ArchCOpalTest >> and1 [
-	<armv5: 'andgts a1, a1, sp'>
+	<armv5: 'andgts a1, a1, sp'> 
 ]
 
-{ #category : #powerpc }
+{ #category : #assembler }
 ArchCOpalTest >> lbzu: x [
 	<powerpc: 'lbzu 1, {x} (2)'> 
 ]
 
-{ #category : #powerpc }
+{ #category : #assembler }
 ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'lis 3, {x>>16}'>
 	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'> 
 ]
 
-{ #category : #powerpc }
+{ #category : #assembler }
 ArchCOpalTest >> lugLBZU: x [
 	"<powerpc: 'lbzu 1, {(x asBitVector: 16)+y} (2)'>" 
 ]
 
-{ #category : #x86 }
+{ #category : #assembler }
 ArchCOpalTest >> nop [
 	<x86: 'NOP'> 
 ]

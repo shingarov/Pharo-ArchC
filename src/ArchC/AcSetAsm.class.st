@@ -17,8 +17,8 @@ AcSetAsm class >> format: aMnemonicFormat operandsAndConstraints: anArray [
 		format: aMnemonicFormat ;
 		"Generally speaking, anArray will contain a mixture of operand names (Strings)
 		and constraints which are operands pre-bound to values and therefore Associations."
-		operands: (anArray select: [ :op | op isString ]);
-		constraints: (Dictionary newFromAssociations: (anArray reject: [ :op | op isString ]));
+		operands: (anArray select: [ :op | op isKindOf: AsmOperandInstantiation ]);
+		constraints: (Dictionary newFromAssociations: (anArray reject: [ :op | op isKindOf: AsmOperandInstantiation ]));
 		yourself
 ]
 
@@ -29,11 +29,14 @@ AcSetAsm >> assembler [
 	| chunkParsers |
 	chunkParsers := self format collect: #assembler.
 	^(PPSequenceParser withAll: chunkParsers) ==> [ :actualOperandsFromChunks |
-		| actualOperands allOperands |
+		| actualOperands allOperands fieldValues |
 		actualOperands := actualOperandsFromChunks reject: #isNil.
 		actualOperands := Dictionary newFromKeys: self operands andValues: actualOperands.
 		allOperands := actualOperands copy addAll: constraints; yourself.
-		self instruction inEnvironment: allOperands ]
+		fieldValues := Dictionary new.
+		allOperands keysAndValuesDo: [ :opDef :v |
+				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v accoringTo: instruction format) ].
+		self instruction inEnvironment: fieldValues ]
 ]
 
 { #category : #accessing }
@@ -71,11 +74,11 @@ AcSetAsm >> disassembleEnv: aDictionary [
 	 the most sepecific mnemonic form.
 	OPERAND VALUES IN aDictionary MUST BE CONCRETE."
 	
-	| stream operandValues |
+	| stream theseOperands |
 	(self constraintsSatisfiedBy: aDictionary) ifFalse: [ ^nil ].
-	operandValues := (operands collect: [ :op | aDictionary at: op ]) asOrderedCollection.
+	theseOperands := operands asOrderedCollection copy.
 	stream := WriteStream on: String new.
-	self format do: [ :chunk | chunk  disassembleTo: stream inEnvironment: operandValues ].
+	self format do: [ :chunk | chunk disassembleTo: stream operands: theseOperands inEnvironment: aDictionary ].
 	^stream contents -> constraints size
 ]
 
@@ -95,8 +98,9 @@ AcSetAsm >> instruction [
 ]
 
 { #category : #accessing }
-AcSetAsm >> instruction: anObject [
-	instruction := anObject
+AcSetAsm >> instruction: i [
+	instruction := i.
+	formatChunks do: [ :chunk | chunk instruction: i ]
 ]
 
 { #category : #accessing }
@@ -112,7 +116,7 @@ AcSetAsm >> operands: anArray [
 
 { #category : #printing }
 AcSetAsm >> printOn: aStream [
-	aStream nextPutAll: self source
+	aStream nextPutAll: (self source ifNil: [ 'AcSetAsm (no source)' ])
 ]
 
 { #category : #accessing }

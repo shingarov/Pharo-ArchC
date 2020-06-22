@@ -63,8 +63,9 @@ AcAsmOperandsParser >> constraintConstant [
 
 { #category : #grammar }
 AcAsmOperandsParser >> constraintMap [
-	^id, $= asParser, id, '.map_to("' asParser, id, '")' asParser 
-	==> [  :x | 
+	^id, $= asParser, id, '.map_to("' asParser,
+		(PPPredicateObjectParser anyExceptAnyOf: '"' ) star flatten,
+		'")' asParser 	==> [  :x | 
 		| map targetOperand arg |
 		targetOperand := x first.
 		map := self class pdl maps at: x third.
@@ -103,15 +104,7 @@ AcAsmOperandsParser >> number [
 { #category : #grammar }
 AcAsmOperandsParser >> operand [
 	^id, ($+ asParser, operand) optional
-	==> [ :x |
-		| op |
-		op := x first.
-		x last isNil
-			ifTrue: [ op ]
-			"This is for when the operand spans several fields.
-			For example, on RISC-V:
-			JAL rd, imm4+imm3+imm2+imm1"
-			ifFalse: [ #See__AcAsmOperandsParser_operand ]]
+	==> [ :x | AsmOperandInstantiation operands: x ]
 ]
 
 { #category : #grammar }

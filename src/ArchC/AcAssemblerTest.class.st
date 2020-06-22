@@ -1,6 +1,6 @@
 Class {
 	#name : #AcAssemblerTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 
@@ -11,6 +11,12 @@ AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: val
 	result := pdl assembler parse: source.
 	expected := Dictionary newFromKeys: keys andValues: values.
 	self assert: result allBindingValues equals: expected 
+]
+
+{ #category : #running }
+AcAssemblerTest >> resetZ3Context [
+	Z3Context createGlobalContext.
+	AcProcessorDescriptions reset.
 ]
 
 { #category : #powerpc }
@@ -77,6 +83,17 @@ AcAssemblerTest >> testLBZU2 [
 
 ]
 
+{ #category : #sparc }
+AcAssemblerTest >> testLDSB2 [
+	self flag: #BOGUS_PDL.
+	"self
+		isa: #sparcv8
+		assemble: 'ldsb [%fp], %sp'
+		operandKeys:  #(     )
+		shouldBe:     #(     ).
+"
+]
+
 { #category : #powerpc }
 AcAssemblerTest >> testLIS [
 	self
@@ -102,6 +119,18 @@ AcAssemblerTest >> testNOP [
 	| result |
 	result := AcProcessorDescriptions x86 assembler parse: 'NOP'.
 	self assert: result binaryEncoding equals: 16r90
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvJAL [
+	self
+		isa: #riscv
+		assemble: 'JAL $sp, 74565'
+		operandKeys:  #(  op    rd   imm1  imm2  imm3  imm4  )
+		shouldBe:     #(  111   14   837   0     36    0     ).
+	
+"16r12345  =   74565"
+	self flag: #BOGUS "see TextDisassemblyTest>>testRiscvJAL"
 ]
 
 { #category : #powerpc }

@@ -32,6 +32,11 @@ AcProcessorDescriptions class >> cachedProcessors [
 ]
 
 { #category : #'known processors' }
+AcProcessorDescriptions class >> knownISAs [
+	^#(armv5 mips powerpc r3000 riscv sparcv8 x86)
+]
+
+{ #category : #'known processors' }
 AcProcessorDescriptions class >> mips [
 	^self processor: 'mips' in: 'mips'
 ]

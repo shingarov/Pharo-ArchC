@@ -1,8 +1,13 @@
 Class {
 	#name : #AcMnemonicFormatTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
+
+{ #category : #mips }
+AcMnemonicFormatTest >> forMIPS [
+	^AcSetAsmParser pdl: AcProcessorDescriptions mips 
+]
 
 { #category : #powerpc }
 AcMnemonicFormatTest >> forPowerPC [
@@ -14,10 +19,13 @@ AcMnemonicFormatTest >> forSPARC [
 	^AcSetAsmParser pdl: AcProcessorDescriptions sparcv8
 ]
 
-{ #category : #powerpc }
-AcMnemonicFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues: v expect: e [
+{ #category : #generic }
+AcMnemonicFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues: v format: f expect: e [
 	| env parseResult s |
-	parseResult := parser parse: aSetAsmString.
+	parseResult := parser parse: aSetAsmString. "a SetAsm"
+	f isNil ifFalse: [
+		parseResult instruction: (MockFormatPoznavach format: f pdl: parser pdl)
+	].
 	env := Dictionary newFromKeys: k andValues: v.
 	s := parseResult disassembleEnv: env.
 	self assert: s key equals: e
@@ -28,54 +36,63 @@ AcMnemonicFormatTest >> testADD3 [
 	| parseResult fmt |
 	fmt := 'adr%[cond]%sf %reg, %exp(pcrelrot)'.
 	parseResult := (AcMnemonicFormatParser maps: AcProcessorDescriptions armv5 maps) parse: fmt.
+	"parseResult is a sequence of chunks"
 	self deny: parseResult isPetitFailure 
 ]
 
 { #category : #powerpc }
 AcMnemonicFormatTest >> testBasic [
-	| env parseResult |
+	| parseResult ass |
 	parseResult := self forPowerPC parse: '"Simple"'.
-	env := Dictionary new.
-	self assert: (parseResult disassembleEnv: env) key equals: 'Simple'
+	"parserResult is an AcSetAsm"
+	
+	ass := parseResult disassembleEnv: Dictionary new.
+	"disassembly->weight"
+	self assert: ass key equals: 'Simple'.
+	self assert: ass value equals: 0
 ]
 
-{ #category : #powerpc }
+{ #category : #generic }
 AcMnemonicFormatTest >> testBasicFormat [
 	| formatParser parseResult firstChunk stream |
 	formatParser := 	AcMnemonicFormatParser maps: AcProcessorDescriptions powerpc maps.
 	parseResult := formatParser parse: 'Simple string'.
 	firstChunk := parseResult first.
 	stream := WriteStream on: String new.
-	firstChunk disassembleTo: stream  inEnvironment: OrderedCollection new.
+	firstChunk disassembleTo: stream operands: #() inEnvironment: OrderedCollection new.
 	self assert: stream contents equals: 'S'
 ]
 
 { #category : #powerpc }
 AcMnemonicFormatTest >> testEscapePercent [
-	| env parseResult fmt |
+	| env parseResult fmt x |
 	fmt := '"a\%b"'.
 	parseResult := self forPowerPC parse: fmt.
 	env := Dictionary new.
-	self assert: (parseResult disassembleEnv: env) key equals: 'a%b'
+	x := parseResult disassembleEnv: env.
+	self assert: x key equals: 'a%b'.
+	self assert: x value equals: 0
 ]
 
 { #category : #sparc }
-AcMnemonicFormatTest >> testManySPARC [
+AcMnemonicFormatTest >> testOneCondSPARC [
 	self
 		proc: self forSPARC 
-		spec: '"Register %reg, %reg, %cond", r, s, c'
-		operandKeys: #('r' 's' 'c')
-		operandValues: #(27 9 5)
-		expect: 'Register %i3, %o1, ne'
+		spec: '"Condition %cond", cond'
+		operandKeys: #('cond')
+		operandValues: #(14)
+		format: 'Type_F2B'
+		expect: 'Condition pos'
 ]
 
-{ #category : #powerpc }
+{ #category : #mips }
 AcMnemonicFormatTest >> testOneImm [
 	self
-		proc: self forPowerPC 
-		spec: '"One #%imm imm", x'
-		operandKeys: #('x')
+		proc: self forMIPS
+		spec: '"One #%imm imm", addr'
+		operandKeys: #('addr')
 		operandValues: #(5)
+		format: 'Type_J'
 		expect: 'One #0x5 imm'.
 	
 ]
@@ -87,25 +104,17 @@ AcMnemonicFormatTest >> testOneRegPPC [
 		spec: '"Register %reg", RRR'
 		operandKeys: #('RRR')
 		operandValues: #(2)
+		format: nil
 		expect: 'Register 2'.
-]
-
-{ #category : #sparc }
-AcMnemonicFormatTest >> testOneRegSPARC [
-	self
-		proc: self forSPARC 
-		spec: '"Register %reg", r'
-		operandKeys: #('r')
-		operandValues: #(27)
-		expect: 'Register %i3'
 ]
 
 { #category : #powerpc }
 AcMnemonicFormatTest >> testWeirdCharsPPC [
 	self
 		proc: self forPowerPC 
-		spec: '"la %reg, %exp@l(%imm)", x, y, z'
-		operandKeys: #('x' 'y' 'z')
+		spec: '"la %reg, %exp@l(%imm)", rt, d, ra'
+		operandKeys: #('rt' 'ra' 'd')
 		operandValues: #(2 0 16r555)
-		expect: 'la 2, 0x0@l(0x555)'.
+		format: 'D1'
+		expect: 'la 2, 0x555@l(0x0)' "Fun: ra here is %imm, not %reg"
 ]

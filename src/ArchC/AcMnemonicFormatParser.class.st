@@ -1,10 +1,27 @@
+"
+I parse the ""printf-like format"" part of the ""instruction syntax variant"".
+For example,
+
+""lis %reg, %exp(carry)@ha"", rt, ra=0, d
+
+is one assembly syntax variant for the addis instruction on PowerPC;
+the format part in this example is
+
+lis %reg, %exp(carry)@ha
+
+As I am a Parser, my API is #parse:.
+I answer a sequence of AcMnemonicChunks as the result.
+
+
+"
 Class {
 	#name : #AcMnemonicFormatParser,
 	#superclass : #PPCompositeParser,
 	#instVars : [
 		'percentId',
 		'normal',
-		'escape'
+		'escape',
+		'modifier'
 	],
 	#classInstVars : [
 		'maps'
@@ -35,8 +52,11 @@ AcMnemonicFormatParser >> allOperandTypes [
 
 { #category : #grammar }
 AcMnemonicFormatParser >> builtinOperandType: percentIdString [
-	^percentIdString asParser ==> [ :immToken |
-		BuiltinOperandChunk new ]
+	^percentIdString asParser, modifier optional  ==> [ :immTokens |
+		| imm modifierClass |
+		imm := immTokens first.
+		modifierClass := immTokens second ifNil: [ NoOperandModifier ].
+		BuiltinOperandChunk type: imm modifier: modifierClass ]
 ]
 
 { #category : #grammar }
@@ -48,6 +68,14 @@ AcMnemonicFormatParser >> builtinOperandTypes [
 AcMnemonicFormatParser >> escape [
 	^'\%' asParser ==> [ :x | LiteralTextChunk char: $% ]
 
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> modifier [
+	^$( asParser, #letter asParser star flatten, $) asParser ==> [ :x |
+		| modifierName |
+		modifierName := x second.
+		modifierName asUppercase asClassIfAbsent: [ self error: 'Unknown operand modifier ', modifierName ] ]
 ]
 
 { #category : #grammar }
