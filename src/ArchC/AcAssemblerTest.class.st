@@ -38,8 +38,8 @@ AcAssemblerTest >> testB [
 	self
 		isa: #powerpc
 		assemble: 'b 1234'
-		operandKeys:  #(opcd  rt  ra  rb  oe  xos   rc)
-		shouldBe:     #(31    1   2   3   0   266   1).
+		operandKeys:  #(opcd  aa  lk  li     )
+		shouldBe:     #(18    0   0   1234   ).
 
 ]
 
@@ -82,8 +82,18 @@ AcAssemblerTest >> testLIS [
 	self
 		isa: #powerpc
 		assemble: 'lis 1, 1234@ha'
-		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
-		shouldBe:     #(  31    1   2   3   0   266   0   ).
+		operandKeys:  #(  opcd  rt  ra   d      )
+		shouldBe:     #(  15    1   0    1234   ).
+
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testLISwithCarry [
+	self
+		isa: #powerpc
+		assemble: 'lis 1, 1234'
+		operandKeys:  #(  opcd  rt  ra   d      )
+		shouldBe:     #(  15    1   0    1234   ).
 
 ]
 
