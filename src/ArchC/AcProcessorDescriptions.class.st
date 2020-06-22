@@ -4,15 +4,16 @@ I know where to find some example PDL descriptions.
 Class {
 	#name : #AcProcessorDescriptions,
 	#superclass : #Object,
+	#classInstVars : [
+		'cache'
+	],
 	#category : #'ArchC-Tests'
 }
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> armv5 [
 	"  AcProcessorDescriptions armv5  "
-	^AcArchParser
-		processor: 'arm'
-		in: self baseDirectory, 'arm'
+	^self processor: 'arm' in: 'arm'
 ]
 
 { #category : #'working directory' }
@@ -24,61 +25,56 @@ AcProcessorDescriptions class >> baseDirectory [
 	self error: 'Where am I???'
 ]
 
-{ #category : #'known processors' }
-AcProcessorDescriptions class >> knownProcessors [
-	^OrderedCollection 
-		with: self powerpc 
-		with: self armv5 
-		with: self mips
-		with: self sparcv8
-		with: self r3000
-		with: self riscv
+{ #category : #cache }
+AcProcessorDescriptions class >> cachedProcessors [
+	cache isNil ifTrue: [ cache := Dictionary new ].
+	^cache
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> mips [
-	^AcArchParser
-		processor: 'mips'
-		in: self baseDirectory, 'mips'
-
+	^self processor: 'mips' in: 'mips'
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> powerpc [
 	"  AcProcessorDescriptions powerpc  "
-	^AcArchParser
-		processor: 'powerpc'
-		in: self baseDirectory, 'powerpc'
+	^self processor: 'powerpc' in: 'powerpc'
+]
+
+{ #category : #cache }
+AcProcessorDescriptions class >> processor: isaName in: dir [
+	^self cachedProcessors at: isaName ifAbsentPut: [
+		AcArchParser
+			processor: isaName
+			in: self baseDirectory, dir ]
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> r3000 [
-	^AcArchParser
-		processor: 'r3000'
-		in: self baseDirectory, 'r3000'
+	"  AcProcessorDescriptions r3000  "
+	^self processor: 'r3000' in: 'r3000'
+]
 
+{ #category : #cache }
+AcProcessorDescriptions class >> reset [ 
+	cache := nil
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> riscv [
 	"  AcProcessorDescriptions riscv  "
-	^AcArchParser
-		processor: 'riscv'
-		in: self baseDirectory, 'riscv'
+	^self processor: 'riscv' in: 'riscv'
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> sparcv8 [
 	"  AcProcessorDescriptions sparcv8  "
-	^AcArchParser
-		processor: 'sparc'
-		in: self baseDirectory, 'sparc'
+	^self processor: 'sparc' in: 'sparc'
 ]
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> x86 [
 	"  AcProcessorDescriptions x86  "
-	^AcArchParser
-		processor: 'IA32'
-		in: self baseDirectory, 'x86'
+	^self processor: 'IA32' in: 'x86'
 ]
