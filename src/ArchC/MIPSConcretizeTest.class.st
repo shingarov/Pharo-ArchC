@@ -15,7 +15,7 @@ MIPSConcretizeTest class >> compiler [
 { #category : #assembly }
 MIPSConcretizeTest >> MoveM16rR [
 	<operands: #(destReg offset srcReg)>
-	<mips: 'lhu {destReg}, {offset} ({srcReg})'>
+	<mips: 'lhu {destReg}, {offset} ({srcReg})'> 
 ]
 
 { #category : #tests }

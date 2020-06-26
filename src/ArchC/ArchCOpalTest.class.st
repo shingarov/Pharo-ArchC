@@ -23,6 +23,14 @@ ArchCOpalTest >> and1 [
 	<armv5: 'andgts a1, a1, sp'> 
 ]
 
+{ #category : #tests }
+ArchCOpalTest >> bytesFrom: collectionOfBVs [
+	| byteStream |
+	byteStream := WriteStream on: (ByteArray new: 32).
+	self spitBytesOf: collectionOfBVs on: byteStream.
+	^byteStream contents
+]
+
 { #category : #assembler }
 ArchCOpalTest >> lbzu: x [
 	<powerpc: 'lbzu 1, {x} (2)'> 
@@ -31,7 +39,7 @@ ArchCOpalTest >> lbzu: x [
 { #category : #assembler }
 ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'lis 3, {x>>16}'>
-	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'> 
+	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'>
 ]
 
 { #category : #assembler }
@@ -46,9 +54,21 @@ ArchCOpalTest >> nop [
 
 { #category : #'z3 context' }
 ArchCOpalTest >> setUp [
-	Z3Context createGlobalContext.
+"	Z3Context createGlobalContext.
 	AcProcessorDescriptions reset.
 	self class recompile
+	"
+]
+
+{ #category : #tests }
+ArchCOpalTest >> spit: bvs [
+self shouldBeImplemented 
+]
+
+{ #category : #tests }
+ArchCOpalTest >> spitBytesOf: collectionOfBVs on: aByteStream [
+	collectionOfBVs do: [ :bv |
+		aByteStream nextPutAll: bv asBEByteArray ]
 ]
 
 { #category : #'z3 context' }
@@ -74,9 +94,12 @@ ArchCOpalTest >> testLBZU [
 
 { #category : #tests }
 ArchCOpalTest >> testLoadImm32 [
-	| x |
+	| x first second |
 	x := self loadImm32: 16r12345678.
-	self assert: (x value bitAnd: 16rFFFF) equals: 16r5678 
+	first := x first.
+	second := x second.
+	self assert: (first  value bitAnd: 16rFFFF) equals: 16r1234.
+	self assert: (second value bitAnd: 16rFFFF) equals: 16r5678.
 	
 ]
 

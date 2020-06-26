@@ -12,7 +12,7 @@ PDLOpalPlugin class >> priority [
 	^100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #private }
 PDLOpalPlugin >> processOperandNames [
 	| opNames |
 	opNames := ast pragmas select: [ :p | p selector = #operands: ].
@@ -30,20 +30,18 @@ PDLOpalPlugin >> transform [
 	pdl := selAndPDL value.
 	self processOperandNames.
 	self transformPragmas: (ast pragmas select: [ :p | p selector = selAndPDL key]).
-	ast methodPropertyAt: #isASMMethod put: true.
 	ast methodPropertyAt: #ISA put: pdl architectureName.
 	^ast
 ]
 
-{ #category : #api }
-PDLOpalPlugin >> transformBinaryEncoding: bv [
+{ #category : #private }
+PDLOpalPlugin >> transformBinaryEncoding: bvs [
 	| exprImms |
-	ast body replaceWith: (ArchCOpalTest >> #template) ast copy body.
-	
-	(RBParseTreeRewriter replaceLiteral: #theInstruction with: bv) executeTree: ast.
+	ast body replaceWith: (ast methodClass template) ast copy body.
+	(RBParseTreeRewriter replaceLiteral: #theInstruction with: bvs) executeTree: ast.
 	
 	"any Smalltalk expressions passed as immediate operands"
-	exprImms := bv variableNames asOrderedCollection.
+	exprImms := self variablesOccurringIn: bvs.
 	exprImms doWithIndex: [ :expr :i | 
 		| s ret rule |
 		s := ast source asString lines first,
@@ -61,7 +59,7 @@ PDLOpalPlugin >> transformBinaryEncoding: bv [
 
 ]
 
-{ #category : #api }
+{ #category : #private }
 PDLOpalPlugin >> transformOperandAccess [
 	| operandNames |
 	operandNames := ast methodPropertyAt: #operand_names ifAbsent: [ ^nil ].
@@ -75,11 +73,17 @@ PDLOpalPlugin >> transformOperandAccess [
 		rrrrr executeTree: ast ]
 ]
 
-{ #category : #api }
+{ #category : #private }
 PDLOpalPlugin >> transformPragmas: anArray [
 	| asmStatements instructions |
 	asmStatements := anArray collect: #firstLiteralArgument.
-	instructions := asmStatements collect: [  :s | (pdl assembler parse: s) binaryEncoding ].
-	instructions := BitVector concatAll: instructions.
-	self transformBinaryEncoding: instructions simplify
+	instructions := asmStatements collect: [  :s | (pdl assembler parse: s) binaryEncoding simplify ].
+	self transformBinaryEncoding: instructions
+]
+
+{ #category : #private }
+PDLOpalPlugin >> variablesOccurringIn: aCollectionOfASTs [
+	^aCollectionOfASTs
+		inject: Set new
+		into: [ :soFar :thisAST | soFar addAll: thisAST variableNames. soFar ]
 ]

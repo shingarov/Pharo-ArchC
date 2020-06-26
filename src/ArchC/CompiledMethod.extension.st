@@ -3,5 +3,5 @@ Extension { #name : #CompiledMethod }
 { #category : #'*ArchC' }
 CompiledMethod >> isASMMethod [
 	
-	^ self hasProperty: #isASMMethod
+	^ self hasProperty: #ISA
 ]
