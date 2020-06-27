@@ -39,6 +39,16 @@ AcAssemblerTest >> testADD_ [
 
 ]
 
+{ #category : #arm }
+AcAssemblerTest >> testAdd3nonrotated [
+	self
+		isa: #armv5
+		assemble: 'addeq sp, sp, #1'
+		operandKeys:  #(  op  func1  cond   s   rotate  rd   rn  imm8  )
+		shouldBe:     #(  1   4      0      0   0       13   13  1     ).
+
+]
+
 { #category : #powerpc }
 AcAssemblerTest >> testB [
 	self

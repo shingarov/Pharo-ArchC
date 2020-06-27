@@ -18,6 +18,11 @@ ArchCOpalTest class >> initZ3Context [
 	self recompile 
 ]
 
+{ #category : #compiler }
+ArchCOpalTest class >> template [ 
+	^ArchCOpalTest >> #templateMethod 
+]
+
 { #category : #assembler }
 ArchCOpalTest >> and1 [
 	<armv5: 'andgts a1, a1, sp'> 
@@ -45,6 +50,16 @@ ArchCOpalTest >> loadImm32: x [
 { #category : #assembler }
 ArchCOpalTest >> lugLBZU: x [
 	"<powerpc: 'lbzu 1, {(x asBitVector: 16)+y} (2)'>" 
+]
+
+{ #category : #assembler }
+ArchCOpalTest >> mov3synth [
+	<armv5: 'mov r3, #4080'>
+]
+
+{ #category : #assembler }
+ArchCOpalTest >> mov3synth: x [
+	<armv5: 'mov r3, #{x}'>
 ]
 
 { #category : #assembler }
@@ -77,7 +92,7 @@ ArchCOpalTest >> tearDown [
 ]
 
 { #category : #tests }
-ArchCOpalTest >> template [
+ArchCOpalTest >> templateMethod [
 	| instr theEnvironment |
 	theEnvironment := Dictionary new .
 	1. 2. 3. 4. 5. 6. 7. 8.
@@ -110,6 +125,24 @@ ArchCOpalTest >> testLugLBZU [
 	y := 1.
 	instr := instr inThisEnvironment.
 	self assert: (instr value bitAnd: 16rFFFF) equals: 8+1"
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testMov3synth [
+	| x |
+	x := self mov3synth.
+	self assert: x first value equals: 16rE3A03EFF
+	
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testMov3synth_ [
+	| x first second |
+	x := self mov3synth: 16rFF0.
+	
+	self assert: (first  value bitAnd: 16rFFFF) equals: 16r1234.
+	self assert: (second value bitAnd: 16rFFFF) equals: 16r5678.
+	
 ]
 
 { #category : #tests }

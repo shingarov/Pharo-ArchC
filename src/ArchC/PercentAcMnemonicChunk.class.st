@@ -34,7 +34,7 @@ PercentAcMnemonicChunk >> assembler [
 	alternativeParsers := PPChoiceParser withAll: alternativeParsers.
 	defaultInt isNil ifFalse: [ alternativeParsers :=
 		alternativeParsers optional ==> [ :x | x ifNil: [defaultInt] ] ].
-	^alternativeParsers / self immExpression 
+	^alternativeParsers / self immExpression  ==> [ :x | NoOperandModifier new x: x; yourself ]
 ]
 
 { #category : #'API - disassembly' }

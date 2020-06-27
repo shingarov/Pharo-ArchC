@@ -4,6 +4,16 @@ Class {
 	#category : #'ArchC-Tests'
 }
 
+{ #category : #arm }
+AcDisassemblyTest >> testArmMov [
+	| instr |
+	instr := AcProcessorDescriptions armv5 disassemble: 16re3a03eff.   "mov r3, 0xff0"
+	self assert: instr name equals: 'mov3'.
+	self assert: (instr fieldValue: 'rotate') equals: 14.
+	self assert: (instr fieldValue: 'imm8') equals: 255.
+
+]
+
 { #category : #powerpc }
 AcDisassemblyTest >> testPowerAdd [
 	| instr |

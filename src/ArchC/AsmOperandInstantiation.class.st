@@ -37,28 +37,7 @@ AsmOperandInstantiation >> asOperandInstantiation [
 	^self
 ]
 
-{ #category : #private }
-AsmOperandInstantiation >> encodeBitVector: v inFields: fields accordingTo: format [ 
-	| thisField thisWidth thisBV restFields rest restBV |
-	"Fields go in order starting with MSB, ending with LSB."
-	fields size = 1 ifTrue: [ 
-		"induction base"
-		^Dictionary new
-			at: fields first 
-			put: v;
-			yourself
-	].
-	thisField := fields last.
-	thisWidth := format widthOf: thisField.
-	thisBV := v copyFrom: thisWidth - 1 to: 0.
-	restBV := v copyFrom: v length - 1 to: thisWidth.
-	restFields := fields allButLast.
-	rest := self encodeBitVector: restBV simplify inFields: restFields accordingTo: format.
-	rest at: thisField put: thisBV.
-	^rest
-]
-
-{ #category : #private }
+{ #category : #'as yet unclassified' }
 AsmOperandInstantiation >> encodeSimpleValue: v [
 	^Dictionary new
 		at: self operand put: v;
@@ -67,13 +46,8 @@ AsmOperandInstantiation >> encodeSimpleValue: v [
 
 { #category : #private }
 AsmOperandInstantiation >> encodeValue: value accoringTo: format [
-	| width bv |
-	self isMultiField ifFalse: [ ^self encodeSimpleValue: value ].
-	width := self widthAccordingTo: format.
-	bv := value asBitVector: width.
-	^self encodeBitVector: bv
-		inFields: self operands 
-		accordingTo: format 
+	(value isKindOf: AsmOperandModifier) ifTrue: [ ^value encodeInFields: self accordingTo: format ].
+	^self encodeSimpleValue: value
 ]
 
 { #category : #rewriting }

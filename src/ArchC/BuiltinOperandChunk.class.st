@@ -22,7 +22,7 @@ BuiltinOperandChunk class >> type: aNameSuchAsImm modifier: aClass [
 
 { #category : #'API - assembly' }
 BuiltinOperandChunk >> assembler [
-	^self immLiteral / self immExpression 
+	^self immLiteral / self immExpression ==> [ :x | modifier new x: x; yourself ]
 ]
 
 { #category : #'API - disassembly' }

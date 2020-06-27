@@ -57,8 +57,9 @@ SpitAtThinshellTest >> spitAll: bvs [
 
 { #category : #'as yet unclassified' }
 SpitAtThinshellTest >> spitOne: bv [
-	memory longAtAddr: dot put: bv value bigEndian: true.
-	dot := dot + 4
+self shouldBeImplemented .
+	#memory longAtAddr: dot put: bv value bigEndian: true.
+	#dot + 4
 ]
 
 { #category : #tests }
