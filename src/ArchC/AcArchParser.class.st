@@ -171,22 +171,17 @@ AcArchParser >> regbank [
 AcArchParser >> start [
 	^processorDescription end
 	==> [ :x |
-		| components pdlObject |
+		| components |
 		components := x value asOrderedCollection.
 		components := components 
 			inject: (OrderedCollection
 				with: 'SEMANTICS' -> (AcCompilerInfoParser parseFile: 'compiler_info.ac' in: directory)
 				"with: 'LWISEM' -> (LWISEMParser parseFile: 'lwisem' in: directory)")
 			into: [ :soFar :elem | soFar addAll: elem; yourself ].
-		pdlObject := AcProcessorDescription new
+		AcProcessorDescription new
 			architectureName: (x key);
 			fillFrom: components;
-			yourself.
-		pdlObject regsInGPacket: (self class
-			parseGdbFeatures: pdlObject architectureName, '.xml'
-			in: directory
-			assumeEndian: pdlObject endian).
-		pdlObject  ]
+			yourself ]
 ]
 
 { #category : #grammar }

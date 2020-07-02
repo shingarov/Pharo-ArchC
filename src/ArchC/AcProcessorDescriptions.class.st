@@ -11,6 +11,12 @@ Class {
 }
 
 { #category : #'known processors' }
+AcProcessorDescriptions class >> amd64 [
+	"BOGUS -- ArchC doesn't have a PDL for AMD64."
+	^self processor: 'AMD64' in: 'amd64'
+]
+
+{ #category : #'known processors' }
 AcProcessorDescriptions class >> armv5 [
 	"  AcProcessorDescriptions armv5  "
 	^self processor: 'arm' in: 'arm'
@@ -29,6 +35,24 @@ AcProcessorDescriptions class >> baseDirectory [
 AcProcessorDescriptions class >> cachedProcessors [
 	cache isNil ifTrue: [ cache := Dictionary new ].
 	^cache
+]
+
+{ #category : #GDB }
+AcProcessorDescriptions class >> gdbArchName: aString [
+	^self perform: (self knownGdbArchNames at: aString)
+]
+
+{ #category : #GDB }
+AcProcessorDescriptions class >> knownGdbArchNames [
+	^Dictionary new
+		at: 'powerpc:e500' put: #powerpc;
+		
+		at: 'arm' put: #armv5;
+		at: 'aarch64' put: #aarch64;
+		
+		at: 'i386:x86-64' put: #amd64;
+		
+	yourself
 ]
 
 { #category : #'known processors' }
