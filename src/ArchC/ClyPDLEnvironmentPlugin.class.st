@@ -27,8 +27,8 @@ ClyPDLEnvironmentPlugin >> collectMethodGroupProviders [
 
 { #category : #'item decoration' }
 ClyPDLEnvironmentPlugin >> decorateBrowserItem: anItem ofMethod: aMethod [
-	aMethod isASMMethod ifTrue: [ 
-		anItem markWith: ClyASMMethodTag]
+	aMethod isASMMethod ifTrue: [ anItem markWith: ClyASMMethodTag].
+	(aMethod hasProperty: #ASM_FAILURE) ifTrue: [ anItem markWith: ClyFiascoTag].
 ]
 
 { #category : #'groups collecting' }

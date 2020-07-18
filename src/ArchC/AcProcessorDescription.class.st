@@ -59,6 +59,14 @@ AcProcessorDescription >> architectureName: aString [
 ]
 
 { #category : #'as yet unclassified' }
+AcProcessorDescription >> assemble: aLineOfAssembly [
+	| instr |
+	instr := self assembler parse: aLineOfAssembly.
+	instr isPetitFailure ifTrue: [ AssemblerParseError signal ].
+	^instr
+]
+
+{ #category : #'as yet unclassified' }
 AcProcessorDescription >> assembler [
 	^instructionMnemonics 
 ]

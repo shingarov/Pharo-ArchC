@@ -28,8 +28,10 @@ PDLOpalPlugin >> transform [
 	selAndPDL isNil ifTrue: [ ^ast ].
 	ast := ast copy.
 	pdl := selAndPDL value.
+	[
 	self processOperandNames.
-	self transformPragmas: (ast pragmas select: [ :p | p selector = selAndPDL key]).
+	self transformPragmas: (ast pragmas select: [ :p | p selector = selAndPDL key])
+	] on: Error do: [ ast methodPropertyAt: #ASM_FAILURE put: true. ^ast ].
 	ast methodPropertyAt: #ISA put: pdl architectureName.
 	^ast
 ]
