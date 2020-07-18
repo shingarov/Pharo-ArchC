@@ -45,10 +45,13 @@ AcProcessorDescriptions class >> gdbArchName: aString [
 { #category : #GDB }
 AcProcessorDescriptions class >> knownGdbArchNames [
 	^Dictionary new
+		at: 'powerpc' put: #powerpc;
 		at: 'powerpc:e500' put: #powerpc;
 		
 		at: 'arm' put: #armv5;
 		at: 'aarch64' put: #aarch64;
+
+		at: 'mips' put: #mips;
 		
 		at: 'i386:x86-64' put: #amd64;
 		
