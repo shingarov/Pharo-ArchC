@@ -86,6 +86,16 @@ ArchCOpalTest >> spitBytesOf: collectionOfBVs on: aByteStream [
 		aByteStream nextPutAll: bv asBEByteArray ]
 ]
 
+{ #category : #assembler }
+ArchCOpalTest >> str1 [
+	<armv5: 'str sl, [sp, #-4]!'>
+]
+
+{ #category : #assembler }
+ArchCOpalTest >> str1: srcR [
+	<armv5: 'str {srcR}, [sp, #-0x4]!'> 
+]
+
 { #category : #'z3 context' }
 ArchCOpalTest >> tearDown [
 	Z3Context current del

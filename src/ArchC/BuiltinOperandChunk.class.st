@@ -25,6 +25,11 @@ BuiltinOperandChunk >> assembler [
 	^self immLiteral / self immExpression ==> [ :x | modifier new x: x; yourself ]
 ]
 
+{ #category : #'parsing - private' }
+BuiltinOperandChunk >> decImmLiteral [
+	^#digit asParser plus flatten ==> [ :numeralString | numeralString asInteger ]
+]
+
 { #category : #'API - disassembly' }
 BuiltinOperandChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	| op |
@@ -33,8 +38,13 @@ BuiltinOperandChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: 
 ]
 
 { #category : #'parsing - private' }
+BuiltinOperandChunk >> hexImmLiteral [
+	^'0x' asParser, #digit asParser plus flatten ==> [ :prefAndnumeral | Integer readFrom: prefAndnumeral second  base: 16 ]
+]
+
+{ #category : #'parsing - private' }
 BuiltinOperandChunk >> immLiteral [
-	^#digit asParser plus flatten ==> [ :numeralString | numeralString asInteger ]
+	^self hexImmLiteral / self decImmLiteral 
 ]
 
 { #category : #accessing }

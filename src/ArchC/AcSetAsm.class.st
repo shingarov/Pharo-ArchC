@@ -28,7 +28,7 @@ AcSetAsm >> assembler [
 	assembly statements."
 	| chunkParsers |
 	chunkParsers := self format collect: #assembler.
-	^(PPSequenceParser withAll: chunkParsers) ==> [ :actualOperandsFromChunks |
+	^(PPSequenceParser withAll: chunkParsers) end ==> [ :actualOperandsFromChunks |
 		| actualOperands allOperands fieldValues |
 		actualOperands := actualOperandsFromChunks reject: #isNil.
 		actualOperands := Dictionary newFromKeys: self operands andValues: actualOperands.
