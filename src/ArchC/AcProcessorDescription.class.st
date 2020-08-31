@@ -99,7 +99,7 @@ AcProcessorDescription >> disassembleInt: anInteger [
 
 { #category : #'constant width' }
 AcProcessorDescription >> disassembleableFormFor: code [
-	(code isInteger and: [ self hasConstantInstructionWidth ]) ifTrue: [ ^code asBitVector: self constantInstructionWidth ].
+	(code isInteger and: [ self hasConstantInstructionWidth ]) ifTrue: [ ^code toBitVector: self constantInstructionWidth ].
 	((code isKindOf: ByteArray)  and: [ self hasConstantInstructionWidth ])
 		ifTrue: [ ^self endian = #little
 			ifTrue: [code asBitVectorLE]

@@ -24,8 +24,8 @@ AcInstructionFormat >> binaryEncoding [
 	Most bits in this vector will be variable, so the answer is an
 	algebraic expression over field values."
 	^self bitFields
-		inject: (0 asBitVector: 0)
-		into: [ :soFar :f | soFar, (f key asBitVector: f value abs) ]
+		inject: (BitVector empty)
+		into: [ :soFar :f | soFar, (f key toBitVector: f value abs) ]
 ]
 
 { #category : #accessing }
