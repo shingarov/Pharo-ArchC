@@ -34,9 +34,9 @@ AIMM class >> encodeImm: a32bitInteger asRotation: shamt [
 	"ARM: If a32bitInteger can be encoded as an imm8
 	rotated right by shamt, answer imm8; if not, answer nil."
 	| bv mask |
-	mask := (16rFF asBitVector: 32) rotateRight: shamt.
+	mask := (16rFF toBitVector: 32) rotateRight: shamt.
 	mask := mask simplify bitInvert simplify.
-	bv := a32bitInteger asBitVector: 32.
+	bv := a32bitInteger toBitVector: 32.
 	(bv & mask) value = 0 ifFalse: [ ^nil ].
 	^(bv rotateLeft: shamt) value
 ]
