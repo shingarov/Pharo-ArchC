@@ -58,7 +58,7 @@ AcProcessorDescription >> architectureName: aString [
 	architectureName := aString
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #assembly }
 AcProcessorDescription >> assemble: aLineOfAssembly [
 	| instr |
 	instr := self assembler parse: aLineOfAssembly.
@@ -66,7 +66,7 @@ AcProcessorDescription >> assemble: aLineOfAssembly [
 	^instr
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #assembly }
 AcProcessorDescription >> assembler [
 	^instructionMnemonics 
 ]
@@ -79,14 +79,14 @@ AcProcessorDescription >> constantInstructionWidth [
 ]
 
 { #category : #disassembly }
-AcProcessorDescription >> disassemble: code [
+AcProcessorDescription >> decode: code [
 	"Answer the most-descriptive ProcessorInstruction object encoded by @code.
 	Most-descriptive means the most-concretized form of writing."
-	^(self disassembleableFormFor: code) disassembleFor: self
+	^(self decodeableFormFor: code) decodeFor: self
 ]
 
 { #category : #disassembly }
-AcProcessorDescription >> disassembleInt: anInteger [
+AcProcessorDescription >> decodeInt: anInteger [
 	"Answer the most-descriptive ProcessorInstruction object encoded by anInteger.
 	Most-descriptive means the most-concretized form of writing."
 	| candidates |
@@ -98,13 +98,18 @@ AcProcessorDescription >> disassembleInt: anInteger [
 ]
 
 { #category : #'constant width' }
-AcProcessorDescription >> disassembleableFormFor: code [
+AcProcessorDescription >> decodeableFormFor: code [
 	(code isInteger and: [ self hasConstantInstructionWidth ]) ifTrue: [ ^code toBitVector: self constantInstructionWidth ].
 	((code isKindOf: ByteArray)  and: [ self hasConstantInstructionWidth ])
 		ifTrue: [ ^self endian = #little
 			ifTrue: [code asBitVectorLE]
 			ifFalse: [code asBitVectorBE]].
 	^code
+]
+
+{ #category : #disassembly }
+AcProcessorDescription >> disassemble: binaryEncoding [ 
+	^(self decode: binaryEncoding) disassemble
 ]
 
 { #category : #accessing }

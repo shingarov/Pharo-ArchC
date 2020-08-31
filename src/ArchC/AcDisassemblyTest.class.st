@@ -7,7 +7,7 @@ Class {
 { #category : #arm }
 AcDisassemblyTest >> testArmMov [
 	| instr |
-	instr := AcProcessorDescriptions armv5 disassemble: 16re3a03eff.   "mov r3, 0xff0"
+	instr := AcProcessorDescriptions armv5 decode: 16re3a03eff.   "mov r3, 0xff0"
 	self assert: instr name equals: 'mov3'.
 	self assert: (instr fieldValue: 'rotate') equals: 14.
 	self assert: (instr fieldValue: 'imm8') equals: 255.
@@ -17,7 +17,7 @@ AcDisassemblyTest >> testArmMov [
 { #category : #powerpc }
 AcDisassemblyTest >> testPowerAdd [
 	| instr |
-	instr := AcProcessorDescriptions powerpc disassemble: 16r62830001 .   "ori 3, 20, 0x1"
+	instr := AcProcessorDescriptions powerpc decode: 16r62830001 .   "ori 3, 20, 0x1"
 	self assert: instr name equals: 'ori'.
 	self assert: (instr fieldValue: 'rs') equals: 20.
 	self assert: (instr fieldValue: 'ra') equals: 3.
@@ -27,7 +27,7 @@ AcDisassemblyTest >> testPowerAdd [
 { #category : #powerpc }
 AcDisassemblyTest >> testPowerAddi [
 	| instr |
-	instr := AcProcessorDescriptions powerpc disassemble: 16r38000000.   "addi r0, r0, 0, aka li r0, 0"
+	instr := AcProcessorDescriptions powerpc decode: 16r38000000.   "addi r0, r0, 0, aka li r0, 0"
 	self assert: instr name equals: 'addi'.
 	self assert: (instr fieldValue: 'rt') equals: 0.
 	self assert: (instr fieldValue: 'ra') equals: 0.
@@ -52,7 +52,7 @@ AcDisassemblyTest >> testPowerLbz [
 	grounded := lbz inEnvironment: env.
 	binary := grounded emit32.
 	binary := binary asBitVector: 32.
-	self assert: grounded equals: (pdl disassemble: binary)
+	self assert: grounded equals: (pdl decode: binary)
 ]
 
 { #category : #powerpc }
@@ -60,7 +60,7 @@ AcDisassemblyTest >> testPowerOri [
 
 	| pdl disassembledOri |
 	pdl := AcProcessorDescriptions powerpc.
-	disassembledOri := pdl disassemble: 16r60631234.
+	disassembledOri := pdl decode: 16r60631234.
 	self assert: disassembledOri format name equals: 'D4'.
 	self assert: disassembledOri name equals: 'ori'.
 ]
@@ -68,7 +68,7 @@ AcDisassemblyTest >> testPowerOri [
 { #category : #'riscv-r32i' }
 AcDisassemblyTest >> testR32iRadd [
 	| instr |
-	instr := AcProcessorDescriptions riscv disassemble: 16r00000893. "addi r17 <- 0"
+	instr := AcProcessorDescriptions riscv decode: 16r00000893. "addi r17 <- 0"
 	self assert: instr name equals: 'ADDI'.
 	self assert: (instr fieldValue: 'rs1') equals: 0.
 	self assert: (instr fieldValue: 'rd')  equals: 17.
@@ -79,7 +79,7 @@ AcDisassemblyTest >> testR32iRadd [
 AcDisassemblyTest >> testSequence [ 
 	| words instrs |
 	words := #( 16r3c60ABCD 16r60631234 ).  "lis 3, ABCD; ori 3,3, 0x1234"
-	instrs := AcProcessorDescriptions powerpc disassemble: words.
+	instrs := AcProcessorDescriptions powerpc decode: words.
 	self assert: instrs first name equals: 'addis'.
 	self assert: instrs last  name equals: 'ori'.
 
@@ -88,7 +88,7 @@ AcDisassemblyTest >> testSequence [
 { #category : #sparc }
 AcDisassemblyTest >> testSparcAdd [
 	| instr |
-	instr := AcProcessorDescriptions sparcv8 disassemble: 16rA2002001. "%l1 := 1"
+	instr := AcProcessorDescriptions sparcv8 decode: 16rA2002001. "%l1 := 1"
 	self assert: instr name equals: 'add_imm'.
 	self assert: (instr fieldValue: 'rs1') equals: 0.
 	self assert: (instr fieldValue: 'rd')  equals: 17.
@@ -98,6 +98,6 @@ AcDisassemblyTest >> testSparcAdd [
 { #category : #sparc }
 AcDisassemblyTest >> testSparcNop [
 	| instr |
-	instr := AcProcessorDescriptions sparcv8 disassemble: 16r01000000.
+	instr := AcProcessorDescriptions sparcv8 decode: 16r01000000.
 	self assert: instr name equals: 'nop'.
 ]

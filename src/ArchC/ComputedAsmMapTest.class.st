@@ -25,5 +25,5 @@ ComputedAsmMapTest >> setUp [
 ComputedAsmMapTest >> test1 [ 
 	| encoding |
 	encoding := self and1: 15. "r15 is pc"
-	self assert: (AcProcessorDescriptions armv5 disassemble: encoding) disassemble equals: 'andgts a1, a1, pc'
+	self assert: (AcProcessorDescriptions armv5 decode: encoding) disassemble equals: 'andgts a1, a1, pc'
 ]

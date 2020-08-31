@@ -7,7 +7,7 @@ Class {
 { #category : #tests }
 TextDisassemblyTest >> testPowerAdd [
 	| instr text |
-	instr := AcProcessorDescriptions powerpc disassemble: 16r62830001 .
+	instr := AcProcessorDescriptions powerpc decode: 16r62830001 .
 	text := instr disassemble.
 	self assert: text equals: 'ori 3, 20, 0x1'.
 
@@ -16,7 +16,7 @@ TextDisassemblyTest >> testPowerAdd [
 { #category : #tests }
 TextDisassemblyTest >> testRiscvJAL [
 	| instr text |
-	instr := AcProcessorDescriptions riscv disassemble: 16r68a2476f .   "JAL x14, 2*0x12345"
+	instr := AcProcessorDescriptions riscv decode: 16r68a2476f .   "JAL x14, 2*0x12345"
 	text := instr disassemble.
 	self assert: text equals: 'JAL $sp, 0x12345'.
 	
