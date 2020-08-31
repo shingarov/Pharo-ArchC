@@ -56,7 +56,7 @@ AsmOperandInstantiation >> inEnvironment: aDictionary format: f [
 		| width v |
 		width := f widthOf: subfield.
 		v := aDictionary at: subfield.
-		v asBitVector: width ]
+		v toBitVector: width ]
 ]
 
 { #category : #testing }
