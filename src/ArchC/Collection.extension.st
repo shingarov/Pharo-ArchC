@@ -1,6 +1,6 @@
 Extension { #name : #Collection }
 
 { #category : #'*ArchC' }
-Collection >> disassembleFor: anISA [ 
+Collection >> decodeFor: anISA [ 
 	^self collect: [ :x | x decodeFor: anISA ]
 ]

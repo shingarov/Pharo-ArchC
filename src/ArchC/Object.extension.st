@@ -1,6 +1,6 @@
 Extension { #name : #Object }
 
 { #category : #'*ArchC' }
-Object >> disassembleFor: anISA [
+Object >> decodeFor: anISA [
 	^(anISA decodeableFormFor: self) decodeFor: anISA
 ]

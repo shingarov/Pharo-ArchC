@@ -39,7 +39,7 @@ NoOperandModifier >> encodeInFields: fs accordingTo: format [
 	| width bv |
 	fs isMultiField ifFalse: [ ^fs encodeSimpleValue: self x ].
 	width := fs widthAccordingTo: format.
-	bv := self x asBitVector: width.
+	bv := self x toBitVector: width.
 	^self encodeBitVector: bv
 		inFields: fs operands 
 		accordingTo: format
