@@ -221,3 +221,22 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 	self assert: raBits equals: 27
 
 ]
+
+{ #category : #'tests - powerpc' }
+ProcessorInstructionTest >> testTrapiSubstitution [
+	| instr groundedInstr term constituents |
+	instr := AcProcessorDescriptions powerpc instructionAt: 'twi'.
+	groundedInstr := instr inEnvironment: (Dictionary new
+		at: 'ra' put: 12;
+		at: 'si' put: 12345;
+		yourself).
+	term := groundedInstr binaryEncoding term.
+	self assert: term functorName  equals: 'concat'.
+	constituents := term args.
+	self assert: constituents size equals: 3.
+	self assert: constituents first length equals: 6.
+	self assert: constituents first value equals: 3.
+	self assert: constituents second sym equals: 'to'.
+	self assert: constituents third value == 16rC3039.
+	
+]
