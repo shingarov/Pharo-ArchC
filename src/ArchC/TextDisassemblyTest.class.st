@@ -4,7 +4,19 @@ Class {
 	#category : #'ArchC-Tests'
 }
 
-{ #category : #tests }
+{ #category : #'tests - arm' }
+TextDisassemblyTest >> testArmLdrPCREL [
+	| instr |
+	instr := AcProcessorDescriptions armv5  decodeInt: (16rE59FC034 toBitVector: 32).
+	self assert: (instr fieldValue: 'u') equals: 1.
+	self assert: (
+	#(   'ldr ip, [pc, #+0x34]'
+	     'ldr ip, [pc, #0x34]'
+	     'ldr ip, 52'   )
+		includes:  instr disassemble)
+]
+
+{ #category : #'tests - powerpc' }
 TextDisassemblyTest >> testPowerAdd [
 	| instr text |
 	instr := AcProcessorDescriptions powerpc decode: 16r62830001 .

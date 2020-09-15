@@ -8,7 +8,7 @@ Class {
 AIMM class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
 	| rotAndImm rot imm |
 	anOperandInstantiation operands = #('rotate' 'imm8') asOrderedCollection
-		ifFalse: [self error: 'Right now, aimm modifier can only be used with rotate+imm8'].
+		ifFalse: [self error: 'Modifier "imm(aimm)" can only be used with rotate+imm8'].
 	rotAndImm := anOperandInstantiation inEnvironment: e format: f.
 	rot := rotAndImm first value.
 	imm := 24 zeros, (rotAndImm second toBitVector: 8).
