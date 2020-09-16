@@ -29,3 +29,10 @@ MockFormatPoznavach >> format [
 MockFormatPoznavach >> format: anObject [
 	format := anObject
 ]
+
+{ #category : #'as yet unclassified' }
+MockFormatPoznavach >> inEnvironment: fieldValues [ 
+	"Quick hack to assist the forward-assemble side of AcSimpleMnemonicTest.
+	Just return the operands."
+	^fieldValues 
+]

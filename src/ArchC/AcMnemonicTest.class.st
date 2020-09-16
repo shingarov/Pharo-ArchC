@@ -93,15 +93,6 @@ AcMnemonicTest >> testArmAddPC [
 ]
 
 { #category : #'tests - simple' }
-AcMnemonicTest >> testBasic [
-	| mnem spec result |
-	mnem := '"Literal string"'.
-	spec := self forPowerPC parse: mnem.
-	result := spec disassembleEnv: Dictionary new.
-	self assert: result = ('Literal string' -> 0)
-]
-
-{ #category : #'tests - simple' }
 AcMnemonicTest >> testOneBinding [
 	| mnem spec env s numBoundOperands |
 	mnem := '"mov %reg, %reg", rt, rd, c=3'.
