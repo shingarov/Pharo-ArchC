@@ -16,12 +16,27 @@ PCRELLDR class >> disassemble: anOperandInstantiation to: aWriteStream inEnviron
 	imm12 printOn: aWriteStream  base: 10
 ]
 
+{ #category : #encoding }
+PCRELLDR class >> imm12Of: x [
+	"ARM u+imm12 encoding"
+	^x abs
+]
+
+{ #category : #encoding }
+PCRELLDR class >> uOf: x [
+	"ARM u+imm12 encoding"
+	^x negative ifTrue: [0] ifFalse: [1]
+]
+
 { #category : #API }
 PCRELLDR >> encodeInFields: fs "OperandInstantiation" accordingTo: format [
 	x isString
-		ifTrue: [ 	self shouldBeImplemented "symbolic value, see similar implementation in AIMM" ]
+		ifTrue: [ 	^Dictionary new
+			at: 'u' put: 'PCRELLDR uOf: (', x, ')';
+			at: 'imm12' put: 'PCRELLDR imm12Of: (', x, ')';
+			yourself ]
 		ifFalse: [ ^Dictionary new
-			at: 'imm12' put: (x abs);
-			at: 'u' put: (x negative ifTrue: [0] ifFalse: [1]);
+			at: 'imm12' put: (PCRELLDR imm12Of: x);
+			at: 'u' put: (PCRELLDR uOf: x);
 			yourself ]
 ]

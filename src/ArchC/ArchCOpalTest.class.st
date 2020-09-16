@@ -42,6 +42,11 @@ ArchCOpalTest >> lbzu: x [
 ]
 
 { #category : #assembler }
+ArchCOpalTest >> ldr1: offset [
+	<armv5: 'ldr ip, {offset}'>
+]
+
+{ #category : #assembler }
 ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'lis 3, {x>>16}'>
 	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'>
@@ -98,7 +103,7 @@ ArchCOpalTest >> str1: srcR [
 
 { #category : #'z3 context' }
 ArchCOpalTest >> tearDown [
-	Z3Context current del
+	"Z3Context current del"
 ]
 
 { #category : #tests }

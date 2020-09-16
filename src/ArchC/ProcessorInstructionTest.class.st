@@ -1,9 +1,6 @@
 Class {
 	#name : #ProcessorInstructionTest,
-	#superclass : #TestCaseWithZ3Context,
-	#instVars : [
-		'powerpc'
-	],
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 
