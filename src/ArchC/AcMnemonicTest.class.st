@@ -1,6 +1,6 @@
 Class {
 	#name : #AcMnemonicTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 
@@ -42,15 +42,6 @@ AcMnemonicTest >> forSPARC [
 { #category : #'tests - instructions - PowerPC' }
 AcMnemonicTest >> mfspr [
 	^AcProcessorDescriptions powerpc instructionAt: #mfspr
-]
-
-{ #category : #'tests - simple' }
-AcMnemonicTest >> testArgTrim [
-	| mnem spec result |
-	mnem := '"Damn(%imm)", rt '.
-	spec := self forPowerPC parse: mnem.
-	result := spec disassembleEnv: (Dictionary newFromPairs:  #('rt' 5)).
-	self assert: result equals: 'Damn(0x5)'->0
 ]
 
 { #category : #'tests - instructions - ARM' }
