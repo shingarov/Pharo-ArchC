@@ -28,7 +28,8 @@ AcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 
 { #category : #'API - disassembly' }
 AcMnemonicChunk >> immExpression [
-	^${ asParser, ($} asParser not, #any asParser) star flatten, $} asParser ==> [ :expr | expr second "the string inside {...} will become the variable name" ]
+	^${ asParser, (PPPredicateObjectParser anyExceptAnyOf: #($})) star flatten, $} asParser
+	==> [ :expr | expr second "the string inside {...} will become the variable name" ]
 ]
 
 { #category : #accessing }
