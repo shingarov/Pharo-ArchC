@@ -124,6 +124,26 @@ AcAssemblerTest >> testLISwithCarry [
 
 ]
 
+{ #category : #arm }
+AcAssemblerTest >> testLdrPCRELNegative [
+	self
+		isa: #armv5
+		assemble: 'ldr ip, -52'
+		operandKeys:  #(  op  b  l   p  cond   u   w   rd   rn  imm12  )
+		shouldBe:     #(  2   0  1   1  14     0   0   12   15  52     ).
+
+]
+
+{ #category : #arm }
+AcAssemblerTest >> testLdrPCRELPositive [
+	self
+		isa: #armv5
+		assemble: 'ldr ip, 52'
+		operandKeys:  #(  op  b  l   p  cond   u   w   rd   rn  imm12  )
+		shouldBe:     #(  2   0  1   1  14     1   0   12   15  52     ).
+
+]
+
 { #category : #ia32 }
 AcAssemblerTest >> testNOP [
 	| result |

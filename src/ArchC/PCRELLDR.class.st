@@ -4,7 +4,7 @@ Class {
 	#category : #'ArchC-Parsing'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #disassembly }
 PCRELLDR class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
 	| uAndImm u imm12 |
 	anOperandInstantiation operands = #('u' 'imm12') asOrderedCollection
@@ -14,4 +14,14 @@ PCRELLDR class >> disassemble: anOperandInstantiation to: aWriteStream inEnviron
 	imm12 := uAndImm second value.
 	u = 0 ifTrue: [ aWriteStream nextPut: $- ]. "0 -> PC-imm12, 1 -> PC+imm12"
 	imm12 printOn: aWriteStream  base: 10
+]
+
+{ #category : #API }
+PCRELLDR >> encodeInFields: fs "OperandInstantiation" accordingTo: format [
+	x isString
+		ifTrue: [ 	self shouldBeImplemented "symbolic value, see similar implementation in AIMM" ]
+		ifFalse: [ ^Dictionary new
+			at: 'imm12' put: (x abs);
+			at: 'u' put: (x negative ifTrue: [0] ifFalse: [1]);
+			yourself ]
 ]
