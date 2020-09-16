@@ -18,3 +18,10 @@ CARRY class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironmen
 	aWriteStream nextPutAll: '0x'.
 	immValue printOn: aWriteStream base: 16 showRadix: false
 ]
+
+{ #category : #API }
+CARRY >> encodeInFields: fs accordingTo: format [
+	fs isMultiField
+		ifTrue: [ self error ]
+		ifFalse: [ ^fs encodeSimpleValue: self x ]
+]
