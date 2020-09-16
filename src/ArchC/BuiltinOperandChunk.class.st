@@ -44,7 +44,19 @@ BuiltinOperandChunk >> hexImmLiteral [
 
 { #category : #'parsing - private' }
 BuiltinOperandChunk >> immLiteral [
-	^self hexImmLiteral / self decImmLiteral 
+	| il |
+	il := self hexImmLiteral / self decImmLiteral.
+	self type = '%exp' ifTrue: [ 
+		"There is a subtle difference between %imm and %exp:
+		in a numeral like -123, the minus is part of %exp but
+		is treated as external to %imm"
+		il := $- asParser optional, il ==> 	[ :x |
+			| abs |
+			abs := x second.
+			x first isNil
+				ifTrue: [ abs ]
+				ifFalse: [ abs negated ]]].
+	^il
 ]
 
 { #category : #accessing }
