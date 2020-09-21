@@ -199,7 +199,9 @@ ProcessorInstruction >> printLogicOn: aStream [
 
 { #category : #printing }
 ProcessorInstruction >> printOn: aStream [ 
-	aStream nextPutAll: self name
+	aStream nextPutAll: (self name); nextPutAll: ': '.
+	aStream nextPutAll: self disassemble.
+
 ]
 
 { #category : #access }
