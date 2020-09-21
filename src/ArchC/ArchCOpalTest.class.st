@@ -47,6 +47,12 @@ ArchCOpalTest >> ldr1: offset [
 ]
 
 { #category : #assembler }
+ArchCOpalTest >> ldrIpPCREL: offset [
+	<armv5: 'ldr ip, {offset}'>
+
+]
+
+{ #category : #assembler }
 ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'lis 3, {x>>16}'>
 	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'>
@@ -120,6 +126,22 @@ ArchCOpalTest >> testLBZU [
 	| x |
 	x := self lbzu: 8.
 	self assert: (x value bitAnd: 16rFFFF) equals: 8 
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testLdrPCRELNegative [
+	| x instr |
+	x := self ldrIpPCREL: -12.
+	instr := AcProcessorDescriptions armv5 decode: x first.
+	self assert: (instr fieldValue: 'u') equals: 0
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testLdrPCRELPositive [
+	| x instr |
+	x := self ldrIpPCREL: 12.
+	instr := AcProcessorDescriptions armv5 decode: x first.
+	self assert: (instr fieldValue: 'u') equals: 1
 ]
 
 { #category : #tests }
