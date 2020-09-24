@@ -13,7 +13,9 @@ ClyPDLEnvironmentPlugin class >> isAutoActivated [
 { #category : #testing }
 ClyPDLEnvironmentPlugin class >> toActivateMe [
 	"
-	ClyNavigationEnvironment reset
+	ClyPDLEnvironmentPlugin initialize.
+	ClyNavigationEnvironment reset.
+	
 	"
 
 ]
