@@ -18,6 +18,12 @@ Class {
 	#category : #'ArchC-Core'
 }
 
+{ #category : #'as yet unclassified' }
+AcInstructionFormat class >> opcodePositionIn: aPDL [
+	aPDL instructionFormats values anyOne.
+	self shouldBeImplemented.
+]
+
 { #category : #'instruction encoding' }
 AcInstructionFormat >> binaryEncoding [
 	"Answer the bit vector representing this format's binary encoding.
@@ -65,6 +71,22 @@ AcInstructionFormat >> name: aString [
 	name := aString
 ]
 
+{ #category : #'as yet unclassified' }
+AcInstructionFormat >> opcdFieldInterval [
+	| opcdFields opcdField |
+	opcdFields :=  bitFields
+		select: [ :f | f key = 'op' or: f key = 'opcd' ].
+	opcdFields size = 1 ifFalse: [self error].
+	opcdField := opcdFields first key.
+	^self rangeOfField: opcdField 
+]
+
+{ #category : #'as yet unclassified' }
+AcInstructionFormat >> parseBinary: aBV [
+	^Dictionary newFromAssociations: (bitFields collect: [ :field |
+			field key -> (aBV subrange: (	self rangeOfField: field key)) ])
+]
+
 { #category : #accessing }
 AcInstructionFormat >> positionOf: fieldName [
 	" Answer the bit-number (where the LSB is 0) the MSB of the field.
@@ -85,6 +107,13 @@ AcInstructionFormat >> printOn: aStream [
 		nextPutAll: name;
 		nextPutAll: ' '.
 	bitFields printElementsOn: aStream
+]
+
+{ #category : #'as yet unclassified' }
+AcInstructionFormat >> rangeOfField: fieldName [
+	| start |
+	start := self positionOf: fieldName.
+	^start to: start-(self widthOf: fieldName)+1 by: -1
 ]
 
 { #category : #accessing }

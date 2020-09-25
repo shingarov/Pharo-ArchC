@@ -78,34 +78,23 @@ ProcessorInstruction >> copyWithBinary: aBinaryEncoding [
 ]
 
 { #category : #disassembly }
-ProcessorInstruction >> decode: anInt [
+ProcessorInstruction >> decode: aBV [
 	"Answer a copy of the receiver concretized down to be
-	consistent with the binary encoding given by anInt.
+	consistent with the binary encoding given by aBV.
 	Answer nil if this is impossible, -- e.g., if the opcode
-	contained in anInt is different from the receiver's opcode.
+	contained in aBV is different from the receiver's opcode.
 	
 	The most straightforward scenario is when the receiver
 	is an instruction declaration (i.e. none of the operands
 	are known) and the argument is concrete (non-symbolic),
 	resulting in a fully-grounded instruction; but this does
 	not *necessarily* have to be the only possible scenario:
-	some operands could be known already, and anInt could
-	contain some unknown bits.
+	some operands could be known already, and aBV could
+	contain some unknown bits."
 	
-	NB: The solver returns a MODEL, not the Most General
-	UNIFICATION, so if anInt is symbolic, this method may
-	return a result more specific than what necessarily
-	follows from what's known.
-	
-	NB2: anInt is allowed to be an Integer instead of bit vector."
-	
-	| s sat |
-	s := Solver new.
-	s assert: (self binaryEncoding eq: anInt).
-	sat := s check.
-	s del.
-	sat ifFalse: [ ^nil ].
-	^self copyWithBinary: anInt
+	| operandFields |
+	(self fitsBinary: aBV) ifFalse: [ ^nil ].
+	^self copyWithBinary: aBV
 ]
 
 { #category : #disassembly }
@@ -137,6 +126,13 @@ ProcessorInstruction >> externalBindingBits [
 	format bitFields do: [ :ass |
 		(ass key isString and: (internalBindings includesKey: ass key) not) ifTrue: [ sum := sum + ass value abs ]].
 	^sum
+]
+
+{ #category : #disassembly }
+ProcessorInstruction >> externalBindings [
+	"Answer ..."
+	^format bitFields select: [ :ass |
+		(ass key isString and: (internalBindings includesKey: ass key) not)]
 ]
 
 { #category : #access }

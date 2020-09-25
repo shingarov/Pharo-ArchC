@@ -21,6 +21,15 @@ ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
 	self mnemonics add: aMnemonicSpec
 ]
 
+{ #category : #'as yet unclassified' }
+ProcessorInstructionDeclaration >> fitsBinary: aBV [
+	| dict |
+	dict := format parseBinary: aBV.
+	internalBindings keysAndValuesDo: [ :k :v |
+		(dict at: k) = v ifFalse: [ ^false ]].
+	^true
+]
+
 { #category : #accessing }
 ProcessorInstructionDeclaration >> format [
 	^ format

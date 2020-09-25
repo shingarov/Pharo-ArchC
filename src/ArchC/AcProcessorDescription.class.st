@@ -17,7 +17,8 @@ Class {
 		'tgtimm',
 		'architectureName',
 		'abi',
-		'instructionMnemonics'
+		'instructionMnemonics',
+		'opcodeDecoder'
 	],
 	#category : #'ArchC-Core'
 }
@@ -90,10 +91,10 @@ AcProcessorDescription >> decodeInt: anInteger [
 	"Answer the most-descriptive ProcessorInstruction object encoded by anInteger.
 	Most-descriptive means the most-concretized form of writing."
 	| candidates |
-	candidates := instructions collect: [ :instr | instr decode: anInteger].
+	candidates := opcodeDecoder instructionsWithOpcodeFitting: anInteger.
+	candidates := candidates collect: [ :instr | instr decode: anInteger].
 	candidates := candidates reject: [ :instr | instr isNil ].
 	candidates isEmpty ifTrue: [self error: 'Invalid instruction encoding'].
-	candidates := candidates values.
 	^(candidates asSortedCollection:  [ :a :b | a externalBindingBits < b externalBindingBits ]) first
 ]
 
@@ -156,7 +157,8 @@ AcProcessorDescription >> fillISAFrom: aCollectionOfAssociations [
 		fillMapsFrom: aCollectionOfAssociations; "important that this is done before fillMnemonics"
 		fillInstructionsFrom: aCollectionOfAssociations;
 		fillDecodersFrom: aCollectionOfAssociations;
-		fillMnemonicsFrom: aCollectionOfAssociations 
+		fillMnemonicsFrom: aCollectionOfAssociations.
+	opcodeDecoder := OpcodeDecoder for: self
 
 
 ]
