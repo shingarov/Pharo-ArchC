@@ -36,6 +36,18 @@ AcInstrDecodeTest >> testPowerAddi [
 ]
 
 { #category : #powerpc }
+AcInstrDecodeTest >> testPowerAddiSymbolic [
+	| binary instr |
+	binary := (16r3800 toBitVector: 16), ('x' toBitVector: 16).   "addi r0, r0, 0, aka li r0, 0"
+	instr := AcProcessorDescriptions powerpc decode: binary.
+	self assert: instr name equals: 'addi'.
+	self assert: (instr fieldValue: 'rt') equals: 0.
+	self assert: (instr fieldValue: 'ra') equals: 0.
+	self assert: (instr fieldValue: 'd') equals: 'x'.
+	
+]
+
+{ #category : #powerpc }
 AcInstrDecodeTest >> testPowerLbz [
 	"LBZ D-form (PPCArch, p.50):
 	 lbz r2, 0x0001(r7).
