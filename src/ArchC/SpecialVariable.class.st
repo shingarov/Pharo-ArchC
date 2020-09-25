@@ -25,7 +25,7 @@ SpecialVariable class >> new [
 
 { #category : #coercing }
 SpecialVariable >> asBitVector: anInteger [ 
-	^self name asString asBitVector: anInteger 
+	^self name asString toBitVector: anInteger 
 ]
 
 { #category : #accessing }

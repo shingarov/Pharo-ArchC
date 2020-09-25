@@ -26,5 +26,5 @@ IA32PdlTest >> testNOP [
 	| nop binary |
 	nop := AcProcessorDescriptions x86 instructionAt: #nop.
 	binary := nop binaryEncoding. "0x90"
-	self assert: binary equals: (2r10010000 asBitVector: 8)
+	self assert: binary equals: (2r10010000 toBitVector: 8)
 ]
