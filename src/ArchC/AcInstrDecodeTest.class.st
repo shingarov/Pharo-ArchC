@@ -56,11 +56,10 @@ AcInstrDecodeTest >> testPowerLbz [
 	| pdl lbz env grounded binary |
 	pdl := AcProcessorDescriptions powerpc.
 	lbz := pdl instructionAt: #lbz.
-	env := Dictionary new
-		at: #rt put: 2;
-		at: #ra put: 7;
-		at: #d put: 1;
-		yourself.
+	env := Dictionary
+		with: 'rt'-> 2
+		with: 'ra'-> 7
+		with: 'd' -> 1.
 	grounded := lbz inEnvironment: env.
 	binary := grounded emit32.
 	binary := binary toBitVector: 32.
