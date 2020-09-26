@@ -25,6 +25,16 @@ TextDisassemblyTest >> testPowerAdd [
 
 ]
 
+{ #category : #'tests - powerpc' }
+TextDisassemblyTest >> testPowerOriSymbolic [
+	| instr text binary |
+	binary := (16r6283 toBitVector: 16), ('x' toBitVector: 16).
+	instr := AcProcessorDescriptions powerpc decode: binary.
+	text := instr disassemble.
+	self assert: text equals: 'ori 3, 20, {x}'.
+
+]
+
 { #category : #tests }
 TextDisassemblyTest >> testRiscvJAL [
 	| instr text |

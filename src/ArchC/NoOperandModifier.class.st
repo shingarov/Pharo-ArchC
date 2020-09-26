@@ -9,6 +9,10 @@ NoOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStream 
 	| subfieldValues fullBitVector |
 	subfieldValues := anOperandInstantiation inEnvironment: e format: f.
 	fullBitVector := (BitVector concatAll: subfieldValues) simplify.
+	fullBitVector isSymbolic ifTrue: [
+			aWriteStream nextPut: ${.
+			fullBitVector printOn: aWriteStream.
+			^aWriteStream nextPut: $} ].
 	aWriteStream nextPutAll: '0x'.
 	fullBitVector value printOn: aWriteStream base: 16 showRadix: false
 ]
