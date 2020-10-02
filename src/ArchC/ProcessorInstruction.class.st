@@ -20,8 +20,9 @@ ProcessorInstruction >> = another [
 { #category : #access }
 ProcessorInstruction >> allBindingValues [
 	| allBindings |
-	allBindings := format bitFieldNames collect: [ :fieldName |
-		fieldName -> (self fieldValue: fieldName) ].
+	allBindings := format bitFieldNames
+		reject: [ :fieldName | fieldName isInteger ]
+		thenCollect: [ :fieldName | fieldName -> (self fieldValue: fieldName) ].
 	^Dictionary newFromAssociations: allBindings 
 
 
