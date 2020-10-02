@@ -35,6 +35,15 @@ TextDisassemblyTest >> testPowerOriSymbolic [
 
 ]
 
+{ #category : #'tests - powerpc' }
+TextDisassemblyTest >> testPowerSc [
+	| instr text |
+	instr := AcProcessorDescriptions powerpc decode: 16r44000002 .
+	text := instr disassemble.
+	self assert: text equals: 'sc'.
+
+]
+
 { #category : #tests }
 TextDisassemblyTest >> testRiscvJAL [
 	| instr text |

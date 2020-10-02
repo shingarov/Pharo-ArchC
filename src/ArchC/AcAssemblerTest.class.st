@@ -164,6 +164,26 @@ AcAssemblerTest >> testRiscvJAL [
 ]
 
 { #category : #powerpc }
+AcAssemblerTest >> testSC [
+	self
+		isa: #powerpc
+		assemble: 'sc'
+		operandKeys:  #(opcd  lev   )
+		shouldBe:     #(17    0     ).
+
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testSC1 [
+	self
+		isa: #powerpc
+		assemble: 'sc 1'
+		operandKeys:  #(opcd  lev   )
+		shouldBe:     #(17    1     ).
+
+]
+
+{ #category : #powerpc }
 AcAssemblerTest >> testTRAP [
 	| result |
 	result := AcProcessorDescriptions powerpc assembler parse: 'trap'. "XO1 type"

@@ -76,6 +76,14 @@ AcInstrDecodeTest >> testPowerOri [
 	self assert: disassembledOri name equals: 'ori'.
 ]
 
+{ #category : #powerpc }
+AcInstrDecodeTest >> testPowerSc [
+	| instr |
+	instr := AcProcessorDescriptions powerpc decode: 16r44000002.   "sc"
+	self assert: instr name equals: 'sc'.
+	self assert: (instr fieldValue: 'lev') equals: 0.
+]
+
 { #category : #'riscv-r32i' }
 AcInstrDecodeTest >> testR32iRadd [
 	| instr |
