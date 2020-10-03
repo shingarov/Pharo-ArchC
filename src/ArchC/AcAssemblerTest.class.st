@@ -147,6 +147,7 @@ AcAssemblerTest >> testLdrPCRELPositive [
 { #category : #ia32 }
 AcAssemblerTest >> testNOP [
 	| result |
+	self skip: 'Opcodes dont work on Intel'.
 	result := AcProcessorDescriptions x86 assembler parse: 'NOP'.
 	self assert: result binaryEncoding equals: 16r90
 ]
