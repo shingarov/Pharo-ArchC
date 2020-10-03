@@ -192,7 +192,7 @@ AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
 	instructionAssociations do: [ :ass |
 		| instruction |
 		(instructions includesKey: ass key asSymbol) ifTrue: [ self error: 'Duplicate instruction' ].
-		instruction := ProcessorInstruction new.
+		instruction := ProcessorInstructionDeclaration new.
 		instruction
 			isa: self;
 			name: (ass key);
@@ -280,6 +280,16 @@ AcProcessorDescription >> instructions [
 AcProcessorDescription >> maps [
 	^ maps
 	"Do not lazy-initialize here; the Dictionary instance is created in #fillMapsFrom:"
+]
+
+{ #category : #'opcd field' }
+AcProcessorDescription >> opcdFieldInterval [
+	^instructionFormats values anyOne opcdFieldInterval 
+]
+
+{ #category : #'opcd field' }
+AcProcessorDescription >> opcdFieldName [
+	^instructionFormats values anyOne opcdFieldName 
 ]
 
 { #category : #private }

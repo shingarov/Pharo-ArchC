@@ -71,17 +71,21 @@ AcInstructionFormat >> name: aString [
 	name := aString
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'opcd field' }
 AcInstructionFormat >> opcdFieldInterval [
-	| opcdFields opcdField |
+	^self rangeOfField: self opcdFieldName
+]
+
+{ #category : #'opcd field' }
+AcInstructionFormat >> opcdFieldName [
+	| opcdFields |
 	opcdFields :=  bitFields
 		select: [ :f | f key = 'op' or: f key = 'opcd' ].
 	opcdFields size = 1 ifFalse: [self error].
-	opcdField := opcdFields first key.
-	^self rangeOfField: opcdField 
+	^opcdFields first key
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instruction encoding' }
 AcInstructionFormat >> parseBinary: aBV [
 	^Dictionary newFromAssociations: (bitFields collect: [ :field |
 			field key -> (aBV subrange: (	self rangeOfField: field key)) ])
@@ -109,7 +113,7 @@ AcInstructionFormat >> printOn: aStream [
 	bitFields printElementsOn: aStream
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instruction encoding' }
 AcInstructionFormat >> rangeOfField: fieldName [
 	| start |
 	start := self positionOf: fieldName.

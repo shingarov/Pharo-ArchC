@@ -10,13 +10,9 @@ Class {
 
 { #category : #'instance creation' }
 OpcodeDecoder class >> for: aPDL [
-	| instance allInstructions opcodeRange knownOpcodes bunches |
+	| instance allInstructions knownOpcodes bunches |
 	instance := self basicNew.
-	opcodeRange := self opcodePositionIn: aPDL.
-	allInstructions := aPDL instructions values collect: [ :inst |
-		| opcd |
-		opcd := inst binaryEncoding subrange: opcodeRange.
-		opcd value -> inst ].
+	allInstructions := aPDL instructions values collect: [ :inst | inst opcode -> inst ].
 	"now bunch them by opcode"
 	knownOpcodes := (allInstructions collect: #key) asSet.
 	bunches := Dictionary new.
@@ -25,15 +21,14 @@ OpcodeDecoder class >> for: aPDL [
 		(bunches at: one key) add: one value ].
 	^instance
 		instrGroups: bunches;
-		opcodeRange: opcodeRange;
+		opcodeRange: (self opcodePositionIn: aPDL);
 		yourself
 ]
 
 { #category : #'as yet unclassified' }
 OpcodeDecoder class >> opcodePositionIn: aPDL [
-	| anyFmt range |
-	anyFmt := aPDL instructionFormats values anyOne.
-	range := anyFmt opcdFieldInterval.
+	| range |
+	range := aPDL opcdFieldInterval.
 	"double-check that all formats agree where the opcode is"
 	aPDL instructionFormats detect: [ :f | f opcdFieldInterval ~= range ] ifFound: [ self error ].
 	^range

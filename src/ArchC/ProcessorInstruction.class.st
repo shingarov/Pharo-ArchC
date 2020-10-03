@@ -70,34 +70,6 @@ self shouldBeImplemented.
 	^self bind: env
 ]
 
-{ #category : #private }
-ProcessorInstruction >> copyWithBinary: aBinaryEncoding [
-	^self copy
-		binaryEncoding: aBinaryEncoding;
-		yourself 
-	
-]
-
-{ #category : #disassembly }
-ProcessorInstruction >> decode: aBV [
-	"Answer a copy of the receiver concretized down to be
-	consistent with the binary encoding given by aBV.
-	Answer nil if this is impossible, -- e.g., if the opcode
-	contained in aBV is different from the receiver's opcode.
-	
-	The most straightforward scenario is when the receiver
-	is an instruction declaration (i.e. none of the operands
-	are known) and the argument is concrete (non-symbolic),
-	resulting in a fully-grounded instruction; but this does
-	not *necessarily* have to be the only possible scenario:
-	some operands could be known already, and aBV could
-	contain some unknown bits."
-	
-	| operandFields |
-	(self fitsBinary: aBV) ifFalse: [ ^nil ].
-	^self copyWithBinary: aBV
-]
-
 { #category : #disassembly }
 ProcessorInstruction >> disassemble [
 	| variants |
@@ -161,15 +133,6 @@ ProcessorInstruction >> gtInspectorPreviewIn: composite [
 		morph: [ InstructionMorph on: self ]
 ]
 
-{ #category : #emitting }
-ProcessorInstruction >> inEnvironment: env [
-	"Answer a ProcessorInstruction where the operands are bound according to env.
-	It is not necessary to define values for ALL operands; if some operands are
-	left unspecified, those bits in the emitted binary will be symbolic.
-	NB: unlike #decode: which returns a model, this method's answer is the most general."
-	^self copyWithBinary: (self binaryEncoding inEnvironment: env)
-]
-
 { #category : #private }
 ProcessorInstruction >> initializeBinaryEncoding [
 	binaryEncoding := self leastKnownBinary
@@ -181,11 +144,6 @@ ProcessorInstruction >> instantiateLWISEM: aString [
 	^(aString replaceKeywords: [ :key | (self field: key) representSmalltalkInPython ])
 	"Then, substitute field values"
 	replaceValueKeywords: [ :key | (self fieldValue: key) representSmalltalkInPython ]
-]
-
-{ #category : #private }
-ProcessorInstruction >> leastKnownBinary [
-	^self format binaryEncoding inEnvironment: self internalBindings
 ]
 
 { #category : #semantics }
