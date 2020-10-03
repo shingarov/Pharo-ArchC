@@ -5,6 +5,22 @@ Class {
 }
 
 { #category : #arm }
+AcInstrDecodeTest >> testArmB [
+	| b |
+	b := AcProcessorDescriptions armv5 decode: 16r0A03FC60.
+	self assert: b name equals: 'b'
+]
+
+{ #category : #arm }
+AcInstrDecodeTest >> testArmB_fromInstruction [
+	| b decoded |
+	b := AcProcessorDescriptions armv5 instructionAt: 'b'.
+	decoded := b decode: (16r0A03FC60 toBitVector: 32).
+	
+	self assert: decoded name equals: 'b'
+]
+
+{ #category : #arm }
 AcInstrDecodeTest >> testArmMov [
 	| instr |
 	instr := AcProcessorDescriptions armv5 decode: 16re3a03eff.   "mov r3, 0xff0"
