@@ -55,13 +55,13 @@ ProcessorInstructionTest >> testCmpPartial [
 
 { #category : #'tests - decoding' }
 ProcessorInstructionTest >> testDecodeInt [
-	| ori concrete |
+	| ori ground |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
-	concrete := ori decode: 16r60830001. "ori 3,20,0x1"
-	self assert: concrete binaryEncoding isInteger.
+	ground := ori decode: (16r60830001 toBitVector: 32). "ori 3,20,0x1"
+	self deny: ground binaryEncoding isSymbolic.
 	self assert: ori binaryEncoding isSymbolic. "check that #decode: did not destroy the original"
-	self assert: concrete name equals: 'ori'.
-	self assert: concrete binaryEncoding value equals: 16r60830001
+	self assert: ground name equals: 'ori'.
+	self assert: ground binaryEncoding value equals: 16r60830001
 ]
 
 { #category : #'tests - decoding' }
