@@ -28,7 +28,7 @@ ProcessorInstructionDeclaration >> binaryEncoding [
 
 { #category : #private }
 ProcessorInstructionDeclaration >> copyWithBinary: aBinaryEncoding [
-	^(self as: ProcessorInstruction)
+	^(isa grounder ground: self)
 		binaryEncoding: aBinaryEncoding;
 		yourself 
 	

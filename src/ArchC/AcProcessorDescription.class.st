@@ -18,7 +18,8 @@ Class {
 		'architectureName',
 		'abi',
 		'instructionMnemonics',
-		'opcodeDecoder'
+		'opcodeDecoder',
+		'grounder'
 	],
 	#category : #'ArchC-Core'
 }
@@ -254,6 +255,12 @@ AcProcessorDescription >> fillSemanticsFrom: aCollectionOfAssociations [
 		"instruction semantics add: semanticForest." "we are in LWISEM, do that here instead"
 	]
 
+]
+
+{ #category : #accessing }
+AcProcessorDescription >> grounder [
+	grounder isNil ifTrue: [ grounder := InstructionGrounder new ].
+	^ grounder
 ]
 
 { #category : #'constant width' }
