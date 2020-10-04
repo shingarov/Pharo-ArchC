@@ -104,6 +104,12 @@ ProcessorInstruction >> externalBindingBits [
 ]
 
 { #category : #disassembly }
+ProcessorInstruction >> externalBindingValues [
+	^Dictionary newFromAssociations: (self externalBindings collect: [ :ass | ass key -> (self fieldValue: ass key) ])
+
+]
+
+{ #category : #disassembly }
 ProcessorInstruction >> externalBindings [
 	"Answer ..."
 	^format bitFields select: [ :ass |
