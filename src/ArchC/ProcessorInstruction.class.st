@@ -14,7 +14,9 @@ Class {
 
 { #category : #comparing }
 ProcessorInstruction >> = another [
-	^self == another or: [ self binaryEncoding = another binaryEncoding ]
+	self == another ifTrue: [^true].
+	self class = another class ifFalse: [^false].
+	^self binaryEncoding = another binaryEncoding
 ]
 
 { #category : #access }
