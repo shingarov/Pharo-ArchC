@@ -28,6 +28,11 @@ ArchCOpalTest >> and1 [
 	<armv5: 'andgts a1, a1, sp'> 
 ]
 
+{ #category : #assembler }
+ArchCOpalTest >> ba: adr [
+	<powerpc: 'ba {adr}'>
+]
+
 { #category : #tests }
 ArchCOpalTest >> bytesFrom: collectionOfBVs [
 	| byteStream |
@@ -119,6 +124,17 @@ ArchCOpalTest >> templateMethod [
 	1. 2. 3. 4. 5. 6. 7. 8.
 	instr := #theInstruction.
 	^instr inEnvironment: theEnvironment
+]
+
+{ #category : #tests }
+ArchCOpalTest >> testBA [
+	| emitted parsedInstr |
+	emitted := (self ba: 20) first. "jump to absolute 20"
+	parsedInstr := AcProcessorDescriptions powerpc decode: emitted.
+	"BOGUS BEHAVIOR OF THE ARCHC ASSEMBLER.
+	ArchC does not indicate to us that the meaning of the li operand
+	is taken as shifted by two bits."
+	self assert: (parsedInstr fieldValue: 'li') equals: 20
 ]
 
 { #category : #tests }
