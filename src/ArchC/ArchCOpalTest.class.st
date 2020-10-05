@@ -78,11 +78,6 @@ ArchCOpalTest >> mov3synth: x [
 	<armv5: 'mov r3, #{x}'>
 ]
 
-{ #category : #assembler }
-ArchCOpalTest >> nop [
-	<x86: 'NOP'> 
-]
-
 { #category : #'z3 context' }
 ArchCOpalTest >> setUp [
 "	Z3Context createGlobalContext.
@@ -196,13 +191,4 @@ ArchCOpalTest >> testMov3synth_ [
 	self assert: (first  value bitAnd: 16rFFFF) equals: 16r1234.
 	self assert: (second value bitAnd: 16rFFFF) equals: 16r5678.
 	
-]
-
-{ #category : #tests }
-ArchCOpalTest >> testNOP [
-	| x |
-	x := self nop.
-	self assert: x length equals: 8.
-	self assert: x value equals: 16r90. 
-
 ]
