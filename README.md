@@ -19,7 +19,16 @@ To create fresh image for development:
      git clone https://github.com/shingarov/Pharo-ArchC ArchC
      ```
 
-  2. Download Pharo
+  2. Get PDLs:
+
+     ```
+     cd ArchC
+     ./get-pdls.sh
+     ```
+
+     Alternatively, you may symlink `pdl` directory wherever you keep your PDLs
+
+  3. Download Pharo
 
      ```
      mkdir ArchC/pharo
@@ -29,7 +38,7 @@ To create fresh image for development:
      curl https://get.pharo.org/64/80+vm | bash
      ```
 
-  3. Load code into Pharo image:
+  4. Load code into Pharo image:
 
      ```
      ./pharo Pharo.image save archc
