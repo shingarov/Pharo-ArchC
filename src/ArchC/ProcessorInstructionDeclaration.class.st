@@ -80,12 +80,6 @@ ProcessorInstructionDeclaration >> inEnvironment: env [
 	^self copyWithBinary: (self leastKnownBinary inEnvironment: env)
 ]
 
-{ #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> initializeBinaryEncoding [
-	self subclassResponsibility 
-	"binaryEncoding := self leastKnownBinary"
-]
-
 { #category : #accessing }
 ProcessorInstructionDeclaration >> internalBindings [
 	^ internalBindings
