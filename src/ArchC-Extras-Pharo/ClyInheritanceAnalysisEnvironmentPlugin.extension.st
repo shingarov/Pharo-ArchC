@@ -1,6 +1,6 @@
 Extension { #name : #ClyInheritanceAnalysisEnvironmentPlugin }
 
-{ #category : #'*ArchC' }
+{ #category : #'*ArchC-Extras-Pharo' }
 ClyInheritanceAnalysisEnvironmentPlugin class >> isAutoActivated [
 	^false
 ]
