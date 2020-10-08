@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'processorInstructionClass'
 	],
-	#category : #'ArchC-Core'
+	#category : #'ArchC-Core-Core'
 }
 
 { #category : #API }

@@ -5,7 +5,7 @@ Class {
 		'instrGroups',
 		'opcodeRange'
 	],
-	#category : #'ArchC-Core'
+	#category : #'ArchC-Core-Core'
 }
 
 { #category : #'instance creation' }
