@@ -112,14 +112,6 @@ ProcessorInstruction >> fieldValue: fieldName [
 		ifFalse: [ bitVector value ]
 ]
 
-{ #category : #GT }
-ProcessorInstruction >> gtInspectorPreviewIn: composite [
-	<gtInspectorPresentationOrder: 20>
-	composite morph
-		title: 'Bit fields';
-		morph: [ InstructionMorph on: self ]
-]
-
 { #category : #private }
 ProcessorInstruction >> initializeBinaryEncoding [
 	binaryEncoding := self leastKnownBinary
