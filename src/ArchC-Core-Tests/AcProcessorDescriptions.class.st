@@ -24,11 +24,79 @@ AcProcessorDescriptions class >> armv5 [
 
 { #category : #'working directory' }
 AcProcessorDescriptions class >> baseDirectory [
-	(VirtualMachine new buildDate beginsWith: 'Mac')
-		ifTrue: [^'/Users/boris/PDL/'].
-	(VirtualMachine new buildDate beginsWith: 'Unix')
-		ifTrue: [^'/home/boris/PDL/'].
-	self error: 'Where am I???'
+	"Return a directory where PDLs are looked up.
+
+	The directory is determined as follows:
+
+    1. environment variable named ARCHC_PDL_DIR,
+       if not set then
+    1. `pdl` directory in local git working copy
+       (as created by `get-pdls.sh` script)
+	"
+
+	| base slash |
+
+	base := BaseDirectory.
+	base isNil ifTrue:[
+		base := OSEnvironment current at: 'ARCHC_PDL_DIR' ifAbsent:[nil].
+	].
+	base isNil ifTrue:[
+		base := self baseDirectoryGuess.
+		base isNil ifTrue:[
+			self error: 'Failed to guess the base directory for PDLs, please run `get-pdls.sh` or set ''ARCHC_PDL_DIR'' environment.'
+		].
+	].
+
+	"Make sure it has a slash at the end!"
+	slash := DiskStore activeClass delimiter.
+	(base notNil and:[base last ~~ slash]) ifTrue:[
+		self error: 'Base directory must end with ', slash asString
+	].
+	^base
+
+	"
+	AcProcessorDescriptions baseDirectory
+	"
+]
+
+{ #category : #'working directory' }
+AcProcessorDescriptions class >> baseDirectory: aString [
+	"Set directory where to look for PDLs"
+
+	OSEnvironment current at: 'ARCHC_PDL_DIR' put: aString
+
+	"
+	AcProcessorDescriptions baseDirectory: '/home/jv/Projects/Phoenix/ArchC/pdl/'
+	AcProcessorDescriptions baseDirectory
+	AcProcessorDescriptions powerpc
+	"
+]
+
+{ #category : #'working directory' }
+AcProcessorDescriptions class >> baseDirectoryGuess [
+	"Try to guess where the PDLs might be.
+
+   CAVEAT: Following is Pharo specific."
+
+	| slash package repo |
+
+	slash := DiskStore activeClass delimiter.
+
+	package := self package name.
+
+	repo := IceRepository registry
+					detect:[ :each | each loadedPackages contains: [:icep | icep name = package ] ]
+					ifNone:[ ^nil ].
+
+	(repo location / 'pdl' / 'arm') exists ifTrue:[
+		^(repo location / 'pdl') pathString , slash asString
+	].
+
+	^ nil
+
+	"
+	AcProcessorDescriptions baseDirectoryGuess
+	"
 ]
 
 { #category : #cache }
