@@ -10,7 +10,10 @@ get_pdl() {
 	if [ ! -d "$path" ]; then
 		mkdir -p "$path"
 		git clone --branch "$branch" "$repo" "$path"
-	fi	
+	elif [ -d "$path/.git" ]; then
+		echo "$path"
+		git -C "$path" pull
+	fi
 }
 
 get_pdl pdl/arm 	https://github.com/shingarov/arm.git		master
