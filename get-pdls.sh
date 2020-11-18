@@ -16,7 +16,7 @@ get_pdl() {
 	fi
 }
 
-get_pdl pdl/arm 	https://github.com/shingarov/arm.git		master
+get_pdl pdl/arm 	https://github.com/shingarov/arm.git		good
 get_pdl pdl/x86 	https://github.com/shingarov/x86.git		bee
 get_pdl pdl/powerpc	https://github.com/shingarov/powerpc.git	good
 get_pdl pdl/riscv	https://github.com/shingarov/riscv.git 		master
