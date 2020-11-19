@@ -15,7 +15,6 @@ ClyPDLEnvironmentPlugin class >> toActivateMe [
 	"
 	ClyPDLEnvironmentPlugin initialize.
 	ClyNavigationEnvironment reset.
-	
 	"
 
 ]

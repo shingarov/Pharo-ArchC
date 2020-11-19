@@ -10,6 +10,15 @@ ArchCOpalTest class >> compiler [
 ]
 
 { #category : #initialization }
+ArchCOpalTest class >> finishLoading [
+	"
+	ArchCOpalTest finishLoading
+	"
+	self initZ3Context.
+	ClyPDLEnvironmentPlugin toActivateMe.
+]
+
+{ #category : #initialization }
 ArchCOpalTest class >> initZ3Context [
 	"
 	ArchCOpalTest initZ3Context
