@@ -36,10 +36,8 @@ AcProcessorDescriptions class >> baseDirectory [
 
 	| base slash |
 
-	base := BaseDirectory.
-	base isNil ifTrue:[
-		base := OSEnvironment current at: 'ARCHC_PDL_DIR' ifAbsent:[nil].
-	].
+	base := OSEnvironment current at: 'ARCHC_PDL_DIR' ifAbsent:[nil].
+	
 	base isNil ifTrue:[
 		base := self baseDirectoryGuess.
 		base isNil ifTrue:[
