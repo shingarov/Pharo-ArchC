@@ -1,6 +1,6 @@
 Extension { #name : #RBPragmaNode }
 
-{ #category : #'*ArchC-Core' }
+{ #category : #'*ArchC-Extras-Pharo' }
 RBPragmaNode >> assemblyISA [
 	| unarySel |
 	unarySel := self selector allButLast asSymbol.
@@ -8,7 +8,7 @@ RBPragmaNode >> assemblyISA [
 	^self selector -> (AcProcessorDescriptions perform: unarySel)
 ]
 
-{ #category : #'*ArchC-Core' }
+{ #category : #'*ArchC-Extras-Pharo' }
 RBPragmaNode >> firstLiteralArgument [
 	^self arguments first value
 ]
