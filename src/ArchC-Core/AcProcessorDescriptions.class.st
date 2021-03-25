@@ -7,7 +7,7 @@ Class {
 	#classInstVars : [
 		'cache'
 	],
-	#category : #'ArchC-Core-Tests'
+	#category : #'ArchC-Core-Core'
 }
 
 { #category : #'known processors' }
