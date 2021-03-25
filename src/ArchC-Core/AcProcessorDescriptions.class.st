@@ -28,16 +28,20 @@ AcProcessorDescriptions class >> baseDirectory [
 
 	The directory is determined as follows:
 
-    1. environment variable named ARCHC_PDL_DIR,
-       if not set then
-    1. `pdl` directory in local git working copy
-       (as created by `get-pdls.sh` script)
+	1. environment variable named ARCHC_PDL_DIR,
+	   if not set then
+	1. `pdl` directory in local git working copy
+	   (as created by `get-pdls.sh` script)
 	"
 
 	| base slash |
 
-	base := OSEnvironment current at: 'ARCHC_PDL_DIR' ifAbsent:[nil].
-	
+	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [
+		base := #OperatingSystem asClass getEnvironment: 'ARCHC_PDL_DIR'
+	] ifFalse: [
+		base := #OSEnvironment asClass current at: 'ARCHC_PDL_DIR' ifAbsent: [ nil ]
+	].
+
 	base isNil ifTrue:[
 		base := self baseDirectoryGuess.
 		base isNil ifTrue:[
@@ -46,7 +50,11 @@ AcProcessorDescriptions class >> baseDirectory [
 	].
 
 	"Make sure it has a slash at the end!"
-	slash := DiskStore activeClass delimiter.
+	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [ 
+		slash := #Filename asClass separator
+	] ifFalse: [ 
+		slash := #DiskStore asClass activeClass delimiter.
+	].
 	(base notNil and:[base last ~~ slash]) ifTrue:[
 		self error: 'Base directory must end with ', slash asString
 	].
@@ -55,39 +63,57 @@ AcProcessorDescriptions class >> baseDirectory [
 	"
 	AcProcessorDescriptions baseDirectory
 	"
+
 ]
 
 { #category : #'working directory' }
 AcProcessorDescriptions class >> baseDirectory: aString [
 	"Set directory where to look for PDLs"
 
-	OSEnvironment current at: 'ARCHC_PDL_DIR' put: aString
+	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [
+		#OperatingSystem asClass setEnvironment: 'ARCHC_PDL_DIR' to: aString
+	] ifFalse: [
+		#OSEnvironment asClass current at: 'ARCHC_PDL_DIR' put: aString
+	].
 
 	"
 	AcProcessorDescriptions baseDirectory: '/home/jv/Projects/Phoenix/ArchC/pdl/'
 	AcProcessorDescriptions baseDirectory
 	AcProcessorDescriptions powerpc
 	"
+
 ]
 
 { #category : #'working directory' }
 AcProcessorDescriptions class >> baseDirectoryGuess [
-	"Try to guess where the PDLs might be.
+	"Try to guess where the PDLs might be."
 
-   CAVEAT: Following is Pharo specific."
 
-	| slash package repo |
+	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [ 
+		(ConfigurableFeatures includesFeature: #Tonel) ifTrue: [ 
+			| base |
 
-	slash := DiskStore activeClass delimiter.
+			base := #TonelRepository asClass discoverPackage: self package.
+			base notNil ifTrue: [ 
+				"Strip trailing 'src'"
+				base := base directory.
+			].
+			base := base / 'pdl'.
+			(base / 'arm') exists ifTrue: [ 
+				^ base pathName , (#Filename asClass separator)
+			].
+		].
+	] ifFalse: [ 
+		| slash package repo |
 
-	package := self package name.
-
-	repo := IceRepository registry
-					detect:[ :each | each loadedPackages contains: [:icep | icep name = package ] ]
-					ifNone:[ ^nil ].
-
-	(repo location / 'pdl' / 'arm') exists ifTrue:[
-		^(repo location / 'pdl') pathString , slash asString
+		slash := #DiskStore asClass activeClass delimiter.
+		package := self package name.
+		repo := #IceRepository asClass registry
+						detect:[ :each | each loadedPackages contains: [:icep | icep name = package ] ]
+						ifNone:[ ^nil ].
+		(repo location / 'pdl' / 'arm') exists ifTrue:[
+			^(repo location / 'pdl') pathString , slash asString
+		].
 	].
 
 	^ nil
@@ -95,6 +121,7 @@ AcProcessorDescriptions class >> baseDirectoryGuess [
 	"
 	AcProcessorDescriptions baseDirectoryGuess
 	"
+
 ]
 
 { #category : #cache }
