@@ -1,6 +1,8 @@
 "
 I represent an instruction where only ""constant"" fields, such as the opcode, are known.
-NB: This class is purely abstract, existing just for separation of code.  Even when an instruction is initially instantiated as ""fully ungrounded"", it is an instance of ProcessorInstruction.
+NB: This class is an abstract template from which ProcessorInstructions are instantiated.
+It is not, however, ""purely abstract"", because its instances exist -- they are values in the ""instructions"" Dictionary in the PDL.
+However, even when an instruction is instantiated as ""fully ungrounded"", it is an instance of ProcessorInstruction.
 "
 Class {
 	#name : #ProcessorInstructionDeclaration,
@@ -138,4 +140,13 @@ ProcessorInstructionDeclaration >> printOn: aStream [
 	aStream nextPutAll: ' [a '.
 	aStream nextPutAll: isa architectureName.
 	aStream nextPutAll: ' instruction]'.
+]
+
+{ #category : #access }
+ProcessorInstructionDeclaration >> rangeOf: fieldName [
+	"Answer the interval of bit-positions of the requested field."
+	| start stop |
+	start := format positionOf: fieldName.
+	stop := start + 1 - (format widthOf: fieldName).
+	^Interval from: start to: stop by: -1
 ]

@@ -85,6 +85,16 @@ ProcessorInstructionTest >> testDecodeUnsat [
 
 ]
 
+{ #category : #'tests - powerpc' }
+ProcessorInstructionTest >> testFullyUngrounded [
+	| pdl cmp concreteCmp |
+	pdl := AcProcessorDescriptions powerpc.
+	cmp := pdl instructionAt: #cmp.
+	self assert: cmp class equals: ProcessorInstructionDeclaration.
+	concreteCmp := cmp inEnvironment: Dictionary new.
+	self assert: concreteCmp class equals: ProcessorInstruction.
+]
+
 { #category : #'tests - mips' }
 ProcessorInstructionTest >> testJrEncoding [
 	" jr r3

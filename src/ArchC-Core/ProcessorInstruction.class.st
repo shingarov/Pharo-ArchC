@@ -139,15 +139,6 @@ ProcessorInstruction >> printOn: aStream [
 ]
 
 { #category : #access }
-ProcessorInstruction >> rangeOf: fieldName [
-	"Answer the interval of bit-positions of the requested field."
-	| start stop |
-	start := format positionOf: fieldName.
-	stop := start + 1 - (format widthOf: fieldName).
-	^Interval from: start to: stop by: -1
-]
-
-{ #category : #access }
 ProcessorInstruction >> semantics [
 	semantics isNil ifTrue: [
 		"This is needed even though the instance is created
