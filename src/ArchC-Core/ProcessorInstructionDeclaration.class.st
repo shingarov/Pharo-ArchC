@@ -48,6 +48,7 @@ ProcessorInstructionDeclaration >> decode: aBV [
 	not *necessarily* have to be the only possible scenario:
 	some operands could be known already, and aBV could
 	contain some unknown bits."
+	aBV isAST ifFalse: [^self decode: (aBV toBitVector: 32)].
 	(self fitsBinary: aBV) ifFalse: [ ^nil ].
 	^self copyWithBinary: aBV
 ]
