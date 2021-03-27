@@ -139,7 +139,7 @@ AcProcessorDescriptions class >> mips [
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> powerpc [
-	"  AcProcessorDescriptions powerpc  "
+	<gtExample>
 	^self processor: 'powerpc' in: 'powerpc'
 ]
 

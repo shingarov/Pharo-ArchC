@@ -263,6 +263,16 @@ AcProcessorDescription >> grounder [
 	^ grounder
 ]
 
+{ #category : #accessing }
+AcProcessorDescription >> gtViewInstructionsOn: aView [
+	<gtView>
+	^ aView list
+		title: 'Instructions';
+		priority: 8;
+		items: [self instructions values];
+		itemText: [ :insn | insn name asRopedText ]
+]
+
 { #category : #'constant width' }
 AcProcessorDescription >> hasConstantInstructionWidth [
 	^true "BOGUS"
