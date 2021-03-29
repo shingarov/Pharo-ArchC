@@ -23,6 +23,25 @@ ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
 	self mnemonics add: aMnemonicSpec
 ]
 
+{ #category : #converting }
+ProcessorInstructionDeclaration >> as: instructionClass [
+	| insn |
+
+	self assert: (instructionClass inheritsFrom: self class).
+
+	insn := instructionClass new.
+	(1 to: self class instSize) do: [:i | 
+		| v |
+
+		v := self instVarAt: i.
+		(v isCollection and: [ v isString not ]) ifTrue: [ 
+			v := v copy.
+		].
+		insn instVarAt: i put: v.
+	].
+	^ insn
+]
+	
 { #category : #solving }
 ProcessorInstructionDeclaration >> alwaysFitsBinary: aBV [
 	"Answer true if the argument, aBV, can possibly be the binary encoding
