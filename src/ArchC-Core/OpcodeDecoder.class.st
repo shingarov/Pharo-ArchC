@@ -30,8 +30,9 @@ OpcodeDecoder class >> opcodePositionIn: aPDL [
 	| range |
 	range := aPDL opcdFieldInterval.
 	"double-check that all formats agree where the opcode is"
-	aPDL instructionFormats detect: [ :f | f opcdFieldInterval ~= range ] ifFound: [ self error ].
+	self assert: (aPDL instructionFormats allSatisfy: [ :f | f opcdFieldInterval = range ]).
 	^range
+
 ]
 
 { #category : #accessing }
