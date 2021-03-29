@@ -1,6 +1,6 @@
 Extension { #name : #CompiledMethod }
 
-{ #category : #'*ArchC-Core' }
+{ #category : #'*ArchC-Extras-Pharo' }
 CompiledMethod >> isASMMethod [
 	
 	^ self hasProperty: #ISA

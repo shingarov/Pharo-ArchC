@@ -75,7 +75,8 @@ AcMnemonicFormatParser >> modifier [
 	^$( asParser, #letter asParser star flatten, $) asParser ==> [ :x |
 		| modifierName |
 		modifierName := x second.
-		modifierName asUppercase asClassIfAbsent: [ self error: 'Unknown operand modifier ', modifierName ] ]
+		modifierName asUppercase asSymbol asClassIfAbsent: [ self error: 'Unknown operand modifier ', modifierName ] ]
+
 ]
 
 { #category : #grammar }
