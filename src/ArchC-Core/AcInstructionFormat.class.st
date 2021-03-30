@@ -85,12 +85,6 @@ AcInstructionFormat >> opcdFieldName [
 	^opcdFields first key
 ]
 
-{ #category : #'instruction encoding' }
-AcInstructionFormat >> parseBinary: aBV [
-	^Dictionary newFromAssociations: (bitFields collect: [ :field |
-			field key -> (aBV subrange: (	self rangeOfField: field key)) ])
-]
-
 { #category : #accessing }
 AcInstructionFormat >> positionOf: fieldName [
 	" Answer the bit-number (where the LSB is 0) the MSB of the field.
