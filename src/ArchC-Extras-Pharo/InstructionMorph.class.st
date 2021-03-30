@@ -196,7 +196,6 @@ InstructionMorph >> drawOn: aCanvas [
 { #category : #drawing }
 InstructionMorph >> drawSemanticForest: anInstructionSemantic on: aCanvas y: y [
 	"Answer how tall it took."
-	| height |
 	self
 		drawCost: anInstructionSemantic cost
 		on: aCanvas
@@ -209,19 +208,7 @@ InstructionMorph >> drawSemanticForest: anInstructionSemantic on: aCanvas y: y [
 		to: self bitBox right @ y
 		width: 1
 		color: (Color red).
-	height := 0.
-	anInstructionSemantic trees do: [ :semTree |
-		height := height + (self drawSemanticTree: semTree on: aCanvas y: y+height) ].
-	^22 max: height + 3
-
-]
-
-{ #category : #drawing }
-InstructionMorph >> drawSemanticTree: anInstructionSemanticTree on: aCanvas y: y [
-	"Answer how tall it took."
-	^anInstructionSemanticTree
-		drawOn: aCanvas
-		at: self bounds left @ (y+2)
+	^22
 ]
 
 { #category : #drawing }
