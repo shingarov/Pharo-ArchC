@@ -90,8 +90,8 @@ SetAsmAssemblerTest >> testTwlgtPPC [
 	result := thisParser parse: 'twlgt 1, 2'.
 	self mnemonic: trapSetAsm
 		disassemble:  'twlgt 1, 2'
-		operandKeys:  #(opcd  ra  rb  to  xog  0)
-		shouldBe:     #(31    1   2   1   4    0).
+		operandKeys:  #(  opcd  ra  rb  to  xog )
+		shouldBe:     #(  31    1   2   1   4   ).
 
 ]
 
