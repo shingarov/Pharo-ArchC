@@ -23,9 +23,45 @@ ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
 	self mnemonics add: aMnemonicSpec
 ]
 
+{ #category : #solving }
+ProcessorInstructionDeclaration >> alwaysFitsBinary: aBV [
+	"Answer true if the argument, aBV, can possibly be the binary encoding
+	of the receiver.
+	
+	The meaning of this, is straightforward if aBV is concrete.
+	
+	If aBV is symbolic, answer true unless aBV is inconsistent with
+	the receiver's encoding schema.  In other words, answer true if there
+	exists an interpretation of aBV's variables that makes aBV a correct
+	encoding for the receiver.
+	
+	Care must be taken that client code does not try to intern names
+	used by instruction operands."
+	
+	^self inEmptyEnvironment alwaysFitsBinary: aBV
+]
+
 { #category : #'as yet unclassified' }
 ProcessorInstructionDeclaration >> binaryEncoding [
 	^format binaryEncoding 
+]
+
+{ #category : #solving }
+ProcessorInstructionDeclaration >> canFitBinary: aBV [
+	"Answer true if the argument, aBV, can possibly be the binary encoding
+	of the receiver.
+	
+	The meaning of this, is straightforward if aBV is concrete.
+	
+	If aBV is symbolic, answer true unless aBV is inconsistent with
+	the receiver's encoding schema.  In other words, answer true if there
+	exists an interpretation of aBV's variables that makes aBV a correct
+	encoding for the receiver.
+	
+	Care must be taken that client code does not try to intern names
+	used by instruction operands."
+	
+	^self inEmptyEnvironment canFitBinary: aBV
 ]
 
 { #category : #private }
@@ -51,17 +87,8 @@ ProcessorInstructionDeclaration >> decode: aBV [
 	some operands could be known already, and aBV could
 	contain some unknown bits."
 	aBV isAST ifFalse: [^self decode: (aBV toBitVector: 32)].
-	(self fitsBinary: aBV) ifFalse: [ ^nil ].
+	(self alwaysFitsBinary: aBV) ifFalse: [ ^nil ].
 	^self copyWithBinary: aBV
-]
-
-{ #category : #'as yet unclassified' }
-ProcessorInstructionDeclaration >> fitsBinary: aBV [
-	| dict |
-	dict := format parseBinary: aBV.
-	internalBindings keysAndValuesDo: [ :k :v |
-		(dict at: k) = v ifFalse: [ ^false ]].
-	^true
 ]
 
 { #category : #accessing }
@@ -72,6 +99,11 @@ ProcessorInstructionDeclaration >> format [
 { #category : #'parser access for construction' }
 ProcessorInstructionDeclaration >> format: anObject [
 	format := anObject
+]
+
+{ #category : #emitting }
+ProcessorInstructionDeclaration >> inEmptyEnvironment [
+	^self inEnvironment: Dictionary new
 ]
 
 { #category : #emitting }

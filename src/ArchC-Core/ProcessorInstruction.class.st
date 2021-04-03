@@ -40,6 +40,19 @@ ProcessorInstruction >> allBindings [
 
 ]
 
+{ #category : #solving }
+ProcessorInstruction >> alwaysFitsBinary: aBV [
+	| encodingIsCorrect myUnknowns solver answer |
+	encodingIsCorrect := self binaryEncoding eq: aBV.
+	myUnknowns := self binaryEncoding variables asArray.
+	myUnknowns isEmpty ifFalse: [encodingIsCorrect := encodingIsCorrect exists: myUnknowns].
+	solver := Solver new.
+	answer := [solver proveValid: encodingIsCorrect. true]
+		on: NotValid do: [false].
+	solver del.
+	^answer
+]
+
 { #category : #access }
 ProcessorInstruction >> binaryEncoding [
 	binaryEncoding isNil ifTrue: [ self initializeBinaryEncoding ].
@@ -49,6 +62,16 @@ ProcessorInstruction >> binaryEncoding [
 { #category : #private }
 ProcessorInstruction >> binaryEncoding: anInt [
 	binaryEncoding := anInt
+]
+
+{ #category : #solving }
+ProcessorInstruction >> canFitBinary: aBV [
+	| solver answer |
+	solver := Solver new.
+	solver assert: (self binaryEncoding eq: aBV).
+	answer := solver check.
+	solver del.
+	^answer
 ]
 
 { #category : #disassembly }
