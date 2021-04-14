@@ -11,9 +11,9 @@ Metacello new
   load.
 ````
 
-To create fresh image for development: 
+To create fresh image for development:
 
-  1. Clone the repository 
+  1. Clone the repository
 
      ```
      git clone https://github.com/shingarov/Pharo-ArchC ArchC
@@ -45,3 +45,39 @@ To create fresh image for development:
      ./pharo archc.image metacello install tonel://../src BaselineOfArchC
      ./pharo archc.image eval --save "(IceRepositoryCreator new location: '..' asFileReference; createRepository) register"
      ```
+### ...into Smalltalk/X
+
+*NOTE*: Following instruction assume you recent [Smalltalk/X jv-branch](1) , i.e., version newer than 2020-09-15
+(older versions might not have Tonel support built).
+
+ 1. Install [MachineArithmetic](2). Follow instructions in
+    [README.md](https://github.com/shingarov/MachineArithmetic/blob/pure-z3/README.md#into-smalltalkx)
+
+ 2. Clone the repository:
+
+    ````
+    git clone https://github.com/shingarov/Pharo-ArchC.git.git
+    ````
+
+ 3. In Smalltalk/X, execute:
+
+    ```
+    "/ Tell Smalltalk/X where to look for MachineArithmetic packages
+    Smalltalk packagePath add: '/where/you/cloned/it/MachineArithmetic'.
+
+    "/ Tell Smalltalk/X where to look for ArchC packages
+    Smalltalk packagePath add: '/where/you/cloned/it/Pharo-ArchC/src'.
+
+    Smalltalk loadPackage: 'MachineArithmetic-FFI-SmalltalkX'.
+    Smalltalk loadPackage: 'MachineArithmetic'.
+    Smalltalk loadPackage: 'MachineArithmetic-Tests'.
+    Smalltalk loadPackage: 'stx:goodies/petitparser'.
+	Smalltalk loadPackage: 'ArchC-Core'.
+	Smalltalk loadPackage: 'ArchC-Core-Tests'.
+
+    "/ Set `libz3.so` to use
+    (Smalltalk at: #LibZ3) libraryName: '/where/you/cloned/it/z3/build/libz3.so'
+    ```
+
+[1]: https://swing.fit.cvut.cz/projects/stx-jv/wiki/Download
+[2]: https://github.com/shingarov/MachineArithmetic/
