@@ -38,6 +38,11 @@ ArchCOpalTest >> and1 [
 ]
 
 { #category : #assembler }
+ArchCOpalTest >> and1: x [
+	<armv5: 'andgts a1, a1, {x}'>
+]
+
+{ #category : #assembler }
 ArchCOpalTest >> ba: adr [
 	<powerpc: 'ba {adr}'>
 ]
@@ -89,10 +94,9 @@ ArchCOpalTest >> mov3synth: x [
 
 { #category : #'z3 context' }
 ArchCOpalTest >> setUp [
-"	Z3Context createGlobalContext.
+	Z3Context createGlobalContext.
 	AcProcessorDescriptions reset.
 	self class recompile
-	"
 ]
 
 { #category : #tests }
@@ -131,6 +135,15 @@ ArchCOpalTest >> templateMethod [
 ]
 
 { #category : #tests }
+ArchCOpalTest >> testAnd1pc [
+	| encoding |
+	encoding := self and1: 15. "r15 is pc"
+	self assert: encoding size equals: 1.
+	encoding := encoding first.
+	self assert: (AcProcessorDescriptions armv5 decode: encoding) disassemble equals: 'andgts a1, a1, pc'
+]
+
+{ #category : #tests }
 ArchCOpalTest >> testBA [
 	| emitted parsedInstr |
 	emitted := (self ba: 20) first. "jump to absolute 20"
@@ -143,9 +156,11 @@ ArchCOpalTest >> testBA [
 
 { #category : #tests }
 ArchCOpalTest >> testLBZU [
-	| x |
-	x := self lbzu: 8.
-	self assert: (x value bitAnd: 16rFFFF) equals: 8 
+	| emittedEncoding |
+	emittedEncoding := self lbzu: 8.
+	self assert: emittedEncoding size equals: 1.
+	emittedEncoding := emittedEncoding first.
+	self assert: (emittedEncoding value bitAnd: 16rFFFF) equals: 8 
 ]
 
 { #category : #tests }
@@ -194,10 +209,14 @@ ArchCOpalTest >> testMov3synth [
 
 { #category : #tests }
 ArchCOpalTest >> testMov3synth_ [
-	| x first second |
-	x := self mov3synth: 16rFF0.
-	
-	self assert: (first  value bitAnd: 16rFFFF) equals: 16r1234.
-	self assert: (second value bitAnd: 16rFFFF) equals: 16r5678.
-	
+	| emittedEncoding  first second disasm |
+	emittedEncoding := self mov3synth: 16rFF0.
+	self assert: emittedEncoding size equals: 1.
+	emittedEncoding := emittedEncoding first.
+	disasm := (AcProcessorDescriptions armv5 decode: emittedEncoding) disassemble.
+	self assert: (
+		{ 'mov a4, #4080'.
+		  'mov r3, #4080'.
+			'mov 3, #4080'
+		} includes: disasm )
 ]
