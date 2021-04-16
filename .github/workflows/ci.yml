@@ -50,4 +50,4 @@ jobs:
         run: |
           export ARCHC_PDL_DIR=$(pwd)/pdl/
           ./pharo $PROJECT.image eval "AcProcessorDescriptions baseDirectory"
-          ./pharo $PROJECT.image test --fail-on-failure "$PROJECT.*Test.*"
+          ./pharo $PROJECT.image test --fail-on-failure "ArchC-Core-Tests"
