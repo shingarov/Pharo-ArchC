@@ -16,7 +16,7 @@ LiteralTextChunk class >> char: c [
 
 { #category : #'API - assembly' }
 LiteralTextChunk >> assembler [
-	^self char asParser ==> [ :_ | nil ]
+	^self char asParser ==> nil K
 ]
 
 { #category : #accessing }
