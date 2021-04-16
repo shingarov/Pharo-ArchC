@@ -47,4 +47,7 @@ jobs:
           ./pharo $PROJECT.image metacello install tonel://./src BaselineOf$PROJECT
 
       - name: Test
-        run: ./pharo $PROJECT.image test --fail-on-failure "$PROJECT.*Test.*"
+        run: |
+          export ARCHC_PDL_DIR=$(pwd)/pdl/
+          ./pharo $PROJECT.image eval "AcProcessorDescriptions baseDirectory"
+          ./pharo $PROJECT.image test --fail-on-failure "$PROJECT.*Test.*"
