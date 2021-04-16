@@ -28,7 +28,7 @@ PercentAcMnemonicChunk >> assembler [
 		sym := ass key.
 		sym isEmpty
 			ifTrue: [ defaultInt:= i. nil ]
-			ifFalse: [ sym asParser ==> [ :_ | i ] ]].
+			ifFalse: [ sym asParser ==> i K ]].
 	alternativeParsers := alternativeParsers asOrderedCollection.
 	nilForEmptySym := alternativeParsers remove: nil ifAbsent: [ #NoEmpty ].
 	alternativeParsers := PPChoiceParser withAll: alternativeParsers.
