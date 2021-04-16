@@ -32,22 +32,22 @@ ArchCOpalTest class >> template [
 	^ArchCOpalTest >> #templateMethod 
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> and1 [
 	<armv5: 'andgts a1, a1, sp'> 
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> and1: x [
 	<armv5: 'andgts a1, a1, {x}'>
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> ba: adr [
 	<powerpc: 'ba {adr}'>
 ]
 
-{ #category : #tests }
+{ #category : #assembler }
 ArchCOpalTest >> bytesFrom: collectionOfBVs [
 	| byteStream |
 	byteStream := WriteStream on: (ByteArray new: 32).
@@ -55,39 +55,39 @@ ArchCOpalTest >> bytesFrom: collectionOfBVs [
 	^byteStream contents
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> lbzu: x [
 	<powerpc: 'lbzu 1, {x} (2)'> 
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> ldr1: offset [
 	<armv5: 'ldr ip, {offset}'>
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> ldrIpPCREL: offset [
 	<armv5: 'ldr ip, {offset}'>
 
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> loadImm32: x [
 	<powerpc: 'lis 3, {x>>16}'>
 	<powerpc: 'ori 3, 3, {x bitAnd: 16rFFFF}'>
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> lugLBZU: x [
 	"<powerpc: 'lbzu 1, {(x asBitVector: 16)+y} (2)'>" 
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> mov3synth [
 	<armv5: 'mov r3, #4080'>
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> mov3synth: x [
 	<armv5: 'mov r3, #{x}'>
 ]
@@ -99,23 +99,23 @@ ArchCOpalTest >> setUp [
 	self class recompile
 ]
 
-{ #category : #tests }
+{ #category : #assembler }
 ArchCOpalTest >> spit: bvs [
 self shouldBeImplemented 
 ]
 
-{ #category : #tests }
+{ #category : #assembler }
 ArchCOpalTest >> spitBytesOf: collectionOfBVs on: aByteStream [
 	collectionOfBVs do: [ :bv |
 		aByteStream nextPutAll: bv asBEByteArray ]
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> str1 [
 	<armv5: 'str sl, [sp, #-4]!'>
 ]
 
-{ #category : #assembler }
+{ #category : #instructions }
 ArchCOpalTest >> str1: srcR [
 	<armv5: 'str {srcR}, [sp, #-0x4]!'> 
 ]
@@ -125,7 +125,7 @@ ArchCOpalTest >> tearDown [
 	"Z3Context current del"
 ]
 
-{ #category : #tests }
+{ #category : #assembler }
 ArchCOpalTest >> templateMethod [
 	| instr theEnvironment |
 	theEnvironment := Dictionary new .
