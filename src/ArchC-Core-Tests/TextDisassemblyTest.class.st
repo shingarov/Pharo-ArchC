@@ -11,8 +11,8 @@ TextDisassemblyTest >> testArmLdrPCREL [
 	self assert: (instr fieldValue: 'u') equals: 1.
 	self assert: (
 	#(   'ldr ip, [pc, #+0x34]'
-	     'ldr ip, [pc, #0x34]'
-	     'ldr ip, 52'   )
+		 'ldr ip, [pc, #0x34]'
+		 'ldr ip, 52'   )
 		includes:  instr disassemble)
 ]
 

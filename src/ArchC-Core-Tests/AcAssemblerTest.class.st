@@ -69,8 +69,9 @@ AcAssemblerTest >> testExpressionImm [
 	self assert: concretePart equals: 16r8c22.
 	offset := (binary copyFrom: 15 to: 0) simplify.
 	self assert: offset isSymbolic.
-	self assert: offset term isLeaf. "let 'x+y' not fool you: this is the name of the constant"
+	self assert: offset isLeaf. "let 'x+y' not fool you: this is the name of the constant"
 	self assert: offset sym equals: 'x+y'.
+
 ]
 
 { #category : #powerpc }

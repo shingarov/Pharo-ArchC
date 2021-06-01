@@ -216,14 +216,14 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 	self assert: rangeBF first equals: 25.
 	self assert: rangeBF last  equals: 23.
 	bfBits := binary subrange: rangeBF.
-	self assert: bfBits term isLeaf.
+	self assert: bfBits isLeaf.
 	self assert: bfBits isSymbolic.
 	
 	rangeRA := cmp rangeOf: 'ra'.
 	self assert: rangeRA first equals: 20.
 	self assert: rangeRA last  equals: 16.
 	raBits := binary subrange: rangeRA.
-	self assert: raBits term isLeaf.
+	self assert: raBits isLeaf.
 	self deny: raBits isSymbolic.
 	self assert: raBits equals: 27
 
@@ -231,19 +231,19 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 
 { #category : #'tests - powerpc' }
 ProcessorInstructionTest >> testTrapiSubstitution [
-	| instr groundedInstr term constituents |
+	| instr groundedInstr encoding constituents |
 	instr := AcProcessorDescriptions powerpc instructionAt: 'twi'.
 	groundedInstr := instr inEnvironment: (Dictionary new
 		at: 'ra' put: 12;
 		at: 'si' put: 12345;
 		yourself).
-	term := groundedInstr binaryEncoding term.
-	self assert: term functorName  equals: 'concat'.
-	constituents := term args.
+	encoding := groundedInstr binaryEncoding .
+	self assert: encoding functorName  equals: 'concat'.
+	constituents := encoding args.
 	self assert: constituents size equals: 3.
 	self assert: constituents first length equals: 6.
 	self assert: constituents first value equals: 3.
 	self assert: constituents second sym equals: 'to'.
 	self assert: constituents third value == 16rC3039.
-	
+
 ]
