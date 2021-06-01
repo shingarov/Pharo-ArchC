@@ -46,7 +46,7 @@ ProcessorInstruction >> alwaysFitsBinary: aBV [
 	encodingIsCorrect := self binaryEncoding eq: aBV.
 	myUnknowns := self binaryEncoding variables asArray.
 	myUnknowns isEmpty ifFalse: [encodingIsCorrect := encodingIsCorrect exists: myUnknowns].
-	solver := Solver new.
+	solver := Z3Solver new.
 	answer := [solver proveValid: encodingIsCorrect. true]
 		on: NotValid do: [false].
 	solver del.
@@ -67,7 +67,7 @@ ProcessorInstruction >> binaryEncoding: anInt [
 { #category : #solving }
 ProcessorInstruction >> canFitBinary: aBV [
 	| solver answer |
-	solver := Solver new.
+	solver := Z3Solver new.
 	solver assert: (self binaryEncoding eq: aBV).
 	answer := solver check.
 	solver del.
