@@ -23,6 +23,24 @@ ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
 	self mnemonics add: aMnemonicSpec
 ]
 
+{ #category : #solving }
+ProcessorInstructionDeclaration >> alwaysFitsBinary: aBV [
+	"Answer true if the argument, aBV, can possibly be the binary encoding
+	of the receiver.
+	
+	The meaning of this, is straightforward if aBV is concrete.
+	
+	If aBV is symbolic, answer true unless aBV is inconsistent with
+	the receiver's encoding schema.  In other words, answer true if there
+	exists an interpretation of aBV's variables that makes aBV a correct
+	encoding for the receiver.
+	
+	Care must be taken that client code does not try to intern names
+	used by instruction operands."
+	
+	^self inEmptyEnvironment alwaysFitsBinary: aBV
+]
+
 { #category : #converting }
 ProcessorInstructionDeclaration >> as: instructionClass [
 	| insn |
@@ -40,24 +58,6 @@ ProcessorInstructionDeclaration >> as: instructionClass [
 		insn instVarAt: i put: v.
 	].
 	^ insn
-]
-	
-{ #category : #solving }
-ProcessorInstructionDeclaration >> alwaysFitsBinary: aBV [
-	"Answer true if the argument, aBV, can possibly be the binary encoding
-	of the receiver.
-	
-	The meaning of this, is straightforward if aBV is concrete.
-	
-	If aBV is symbolic, answer true unless aBV is inconsistent with
-	the receiver's encoding schema.  In other words, answer true if there
-	exists an interpretation of aBV's variables that makes aBV a correct
-	encoding for the receiver.
-	
-	Care must be taken that client code does not try to intern names
-	used by instruction operands."
-	
-	^self inEmptyEnvironment alwaysFitsBinary: aBV
 ]
 
 { #category : #'as yet unclassified' }
