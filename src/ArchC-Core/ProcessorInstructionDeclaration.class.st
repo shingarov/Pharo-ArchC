@@ -27,7 +27,7 @@ ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
 ProcessorInstructionDeclaration >> as: instructionClass [
 	| insn |
 
-	self assert: (instructionClass inheritsFrom: self class).
+	self assert: (instructionClass includesBehavior: self class).
 
 	insn := instructionClass new.
 	(1 to: self class instSize) do: [:i | 
