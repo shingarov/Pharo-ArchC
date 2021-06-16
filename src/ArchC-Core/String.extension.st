@@ -6,6 +6,13 @@ String >> asOperandInstantiation [
 ]
 
 { #category : #'*ArchC-Core' }
+String >> getOSEnvironment [
+	^((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ])
+		ifTrue: [#OperatingSystem asClass getEnvironment: self]
+		ifFalse: [#OSEnvironment asClass current at: self ifAbsent: [ nil ]	]
+]
+
+{ #category : #'*ArchC-Core' }
 String >> replaceKeywords: aBlockOrDictionary [
 	^self replaceKeywords: aBlockOrDictionary leftDelimiter: $< rightDelimiter: $>
 ]

@@ -35,13 +35,7 @@ AcProcessorDescriptions class >> baseDirectory [
 	"
 
 	| base slash |
-
-	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [
-		base := #OperatingSystem asClass getEnvironment: 'ARCHC_PDL_DIR'
-	] ifFalse: [
-		base := #OSEnvironment asClass current at: 'ARCHC_PDL_DIR' ifAbsent: [ nil ]
-	].
-
+	base := 'ARCHC_PDL_DIR' getOSEnvironment.
 	base isNil ifTrue:[
 		base := self baseDirectoryGuess.
 		base isNil ifTrue:[
