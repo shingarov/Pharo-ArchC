@@ -43,3 +43,10 @@ String >> replaceKeywordsUsingBlock: aBlock leftDelimiter: ld rightDelimiter: rd
 String >> replaceValueKeywords: aBlockOrDictionary [
 	^self replaceKeywords: aBlockOrDictionary leftDelimiter: ${ rightDelimiter: $}
 ]
+
+{ #category : #'*ArchC-Core' }
+String >> stripLeftSeparator [
+	self isEmpty ifTrue: [ ^self ].
+	self first isSpaceSeparator ifFalse: [ ^self ].
+	^self copyWithoutFirst stripLeftSeparator
+]
