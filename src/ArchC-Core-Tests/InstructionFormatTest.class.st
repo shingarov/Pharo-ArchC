@@ -11,6 +11,20 @@ InstructionFormatTest >> allFormatsAre32bits: aPDL [
 		self assert: f binaryEncoding length equals: 32 ]
 ]
 
+{ #category : #'total widths' }
+InstructionFormatTest >> maxOperandWidth: archSym [
+	| instructions |
+	instructions := (AcProcessorDescriptions perform: archSym)
+			instructions values.
+	^instructions inject: 0 into: [ :soFar :instr |
+		| thisWidth |
+		thisWidth := instr externalBindingBits.
+		thisWidth > soFar
+			ifTrue: [thisWidth]
+			ifFalse: [soFar]].
+
+]
+
 { #category : #all }
 InstructionFormatTest >> testAllFormatsAre32bits [
 	self allFormatsAre32bits: AcProcessorDescriptions powerpc.
@@ -76,4 +90,63 @@ InstructionFormatTest >> testLwzWidth [
 	| lwz |
 	lwz := AcProcessorDescriptions powerpc instructionAt: #lwz.
 	self assert: lwz externalBindingBits equals: 5+5+16
+]
+
+{ #category : #'total widths' }
+InstructionFormatTest >> testMostVariedOperands [
+	| maxPPC maxMIPS maxARM maxSPARC |
+	maxPPC   := self maxOperandWidth: #powerpc.
+	maxMIPS  := self maxOperandWidth: #mips.
+	maxARM   := self maxOperandWidth: #armv5.
+	maxSPARC := self maxOperandWidth: #sparcv8.
+	
+]
+
+{ #category : #'total widths' }
+InstructionFormatTest >> testMostVariedOperandsARM [
+	| instructions max fatInstructions fatInstructionNames |
+	instructions := AcProcessorDescriptions armv5 instructions values.
+	max := instructions inject: 0 into: [ :soFar :instr |
+		| thisWidth |
+		thisWidth := instr externalBindingBits.
+		thisWidth > soFar
+			ifTrue: [thisWidth]
+			ifFalse: [soFar]].
+	fatInstructions := instructions select: [ :inst | inst externalBindingBits = max ].
+	fatInstructionNames := fatInstructions collect: #name.
+	self assert: fatInstructionNames equals: #(b)
+]
+
+{ #category : #'total widths' }
+InstructionFormatTest >> testMostVariedOperandsPPC [
+	| instructions max fatInstructions fatInstructionNames |
+	instructions := AcProcessorDescriptions powerpc instructions values.
+	max := instructions inject: 0 into: [ :soFar :instr |
+		| thisWidth |
+		thisWidth := instr externalBindingBits.
+		thisWidth > soFar
+			ifTrue: [thisWidth]
+			ifFalse: [soFar]].
+	self assert: max equals: 5+5+16.
+	fatInstructions := instructions select: [ :inst | inst externalBindingBits = max ].
+	fatInstructionNames := fatInstructions collect: #name.
+	self assert: (fatInstructionNames includes: #lwz).
+	self assert: (fatInstructionNames includes: #stw).
+]
+
+{ #category : #'total widths' }
+InstructionFormatTest >> testMostVariedOperandsSPARC [
+	| instructions max fatInstructions fatInstructionNames |
+	instructions := AcProcessorDescriptions sparcv8 instructions values.
+	max := instructions inject: 0 into: [ :soFar :instr |
+		| thisWidth |
+		thisWidth := instr externalBindingBits.
+		thisWidth > soFar
+			ifTrue: [thisWidth]
+			ifFalse: [soFar]].
+	self assert: max equals: 30.
+	fatInstructions := instructions select: [ :inst | inst externalBindingBits = max ].
+	fatInstructionNames := fatInstructions collect: #name.
+	"CALL is the only one that can jump anywhere in the 32-bit space"
+	self assert: fatInstructionNames equals: #(call)
 ]
