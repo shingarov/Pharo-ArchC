@@ -110,6 +110,19 @@ ProcessorInstructionDeclaration >> decode: aBV [
 	^self copyWithBinary: aBV
 ]
 
+{ #category : #disassembly }
+ProcessorInstructionDeclaration >> externalBindingBits [
+	"Answer the total number of bits in external-bound operands.
+	This does NOT mean operands whose value we don't yet know,
+	e.g. an RA register-number operand is still external even if
+	we may already know which register it is."
+	| sum |
+	sum := 0.
+	format bitFields do: [ :ass |
+		(ass key isString and: (internalBindings includesKey: ass key) not) ifTrue: [ sum := sum + ass value abs ]].
+	^sum
+]
+
 { #category : #accessing }
 ProcessorInstructionDeclaration >> format [
 	^ format
@@ -200,4 +213,9 @@ ProcessorInstructionDeclaration >> rangeOf: fieldName [
 	start := format positionOf: fieldName.
 	stop := start + 1 - (format widthOf: fieldName).
 	^Interval from: start to: stop by: -1
+]
+
+{ #category : #'as yet unclassified' }
+ProcessorInstructionDeclaration >> totalOperandWidth [
+	self shouldBeImplemented.
 ]

@@ -70,3 +70,10 @@ InstructionFormatTest >> testFormatOfInstruction [
 
 
 ]
+
+{ #category : #'total widths' }
+InstructionFormatTest >> testLwzWidth [
+	| lwz |
+	lwz := AcProcessorDescriptions powerpc instructionAt: #lwz.
+	self assert: lwz externalBindingBits equals: 5+5+16
+]
