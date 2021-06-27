@@ -150,3 +150,12 @@ InstructionFormatTest >> testMostVariedOperandsSPARC [
 	"CALL is the only one that can jump anywhere in the 32-bit space"
 	self assert: fatInstructionNames equals: #(call)
 ]
+
+{ #category : #powerpc }
+InstructionFormatTest >> testPpcBLA [
+	| pdl bla instance |
+	pdl := AcProcessorDescriptions powerpc.
+	bla := pdl instructionAt: #bla.
+	instance := bla inEnvironment: (Dictionary newFromAssociations: {'li'->0}).
+	self assert: instance binaryEncoding value equals: 2r01001000000000000000000000000011   "16r48000003"
+]
