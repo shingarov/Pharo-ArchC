@@ -134,6 +134,7 @@ AcProcessorDescriptions class >> knownGdbArchNames [
 	^Dictionary new
 		at: 'powerpc' put: #powerpc;
 		at: 'powerpc:e500' put: #powerpc;
+		at: 'powerpc:common' put: #powerpc;
 		at: 'powerpc:common64' put: #powerpc;
 		
 		at: 'arm' put: #armv5;
