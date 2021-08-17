@@ -85,9 +85,10 @@ AcInstructionFormat >> opcdFieldInterval [
 AcInstructionFormat >> opcdFieldName [
 	| opcdFields |
 	opcdFields :=  bitFields
-		select: [ :f | f key = 'op' or: f key = 'opcd' ].
+		select: [ :f | f key = 'op' or: [ f key = 'opcd' or: [ f key = 'opcode' ] ] ].
 	opcdFields size = 1 ifFalse: [self error].
 	^opcdFields first key
+
 ]
 
 { #category : #accessing }
