@@ -19,7 +19,9 @@ Class {
 		'abi',
 		'instructionMnemonics',
 		'opcodeDecoder',
-		'grounder'
+		'grounder',
+		'opcodeFieldName',
+		'opcodeFieldInterval'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -335,12 +337,20 @@ AcProcessorDescription >> maps [
 
 { #category : #'opcd field' }
 AcProcessorDescription >> opcdFieldInterval [
-	^instructionFormats values anyOne opcdFieldInterval 
+	opcodeFieldInterval isNil ifTrue: [ 
+		opcodeFieldInterval := instructionFormats values anyOne opcdFieldInterval         
+	].
+	^ opcodeFieldInterval
+
 ]
 
 { #category : #'opcd field' }
 AcProcessorDescription >> opcdFieldName [
-	^instructionFormats values anyOne opcdFieldName 
+	opcodeFieldName isNil ifTrue: [ 
+		opcodeFieldName := instructionFormats values anyOne opcdFieldName         
+	].
+	^ opcodeFieldName
+
 ]
 
 { #category : #private }
