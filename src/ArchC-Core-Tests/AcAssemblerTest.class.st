@@ -173,6 +173,34 @@ AcAssemblerTest >> testLdrPCRELPositive [
 ]
 
 { #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvADD [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'add zero, zero, zero'.
+	self assert: insn emit32 = 16r00000013.
+
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvADDI [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'addi  sp,sp,-16'.
+	self assert: insn emit32 = 16r00000013.
+
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvAUIPC [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'auipc a0, 0xfab00'.
+
+	self assert: insn emit32 = 16rfab00517.
+
+]
+
+{ #category : #'riscv-r32i' }
 AcAssemblerTest >> testRiscvJAL [
 	self
 		isa: #riscv
@@ -182,6 +210,19 @@ AcAssemblerTest >> testRiscvJAL [
 	
 "16r12345  =   74565"
 	self flag: #BOGUS "see TextDisassemblyTest>>testRiscvJAL"
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvJALR [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'jalr zero, ra, 0x0'.
+
+	self assert: insn emit32 = 16r00008067.
+
+	insn := pdl assembler parse: 'jalr ra, a0, 8'.
+	self assert: insn emit32 = 16r008500e7.
+
 ]
 
 { #category : #powerpc }

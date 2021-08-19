@@ -149,7 +149,7 @@ AcProcessorDescriptions class >> knownGdbArchNames [
 
 { #category : #'known processors' }
 AcProcessorDescriptions class >> knownISAs [
-	^#(arm mips powerpc r3000 riscv sparc IA32)
+	^#(arm mips powerpc r3000 riscv64 sparc IA32)
 ]
 
 { #category : #'known processors' }
@@ -180,12 +180,6 @@ AcProcessorDescriptions class >> r3000 [
 { #category : #cache }
 AcProcessorDescriptions class >> reset [ 
 	cache := nil
-]
-
-{ #category : #'known processors' }
-AcProcessorDescriptions class >> riscv [
-	"  AcProcessorDescriptions riscv  "
-	^self processor: 'riscv' in: 'riscv'
 ]
 
 { #category : #'known processors' }

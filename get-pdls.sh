@@ -8,7 +8,7 @@ branch=master
 
 if [ ! -d "$path" ]; then
 	mkdir -p "$path"
-	git clone --branch "$branch" "$repo" "$path"
+	git clone --recurse-submodules --branch "$branch" "$repo" "$path"
 elif [ -d "$path/.git" ]; then
 	echo "$path"
 	git -C "$path" pull
