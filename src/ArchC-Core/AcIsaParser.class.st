@@ -260,7 +260,8 @@ AcIsaParser >> format [
 	id,
 	$= asParser trim,
 	$" asParser, bitfield trim plus, '";' asParser
-	==> [ :x | Array with: 'ac_format' -> (x third -> x sixth) ]
+	==> [ :x | Array with: 'ac_format' -> (AcInstructionFormat new name: x third; bitFields: x sixth) ]
+
 ]
 
 { #category : #grammar }
@@ -286,11 +287,16 @@ AcIsaParser >> instr [
 	idList,
 	$; asParser
 	==> [ :x |
-		| instrs f |
-		f := x second.
+		| format instrs  |
+		format := x second.
 		instrs := x fifth.
-		instrs collect: [ :i |
-			'ac_instr' -> ( i -> f )
+		instrs collect: [ :name |
+			| instr |
+
+			instr := ProcessorInstructionDeclaration new.
+			instr name: name.
+			instr format: format.
+			'ac_instr' -> instr
 		] ]
 
 ]
