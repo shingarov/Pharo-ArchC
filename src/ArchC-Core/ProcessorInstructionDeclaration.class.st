@@ -20,7 +20,12 @@ Class {
 
 { #category : #'parser access for construction' }
 ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
-	self mnemonics add: aMnemonicSpec
+	mnemonics isNil ifTrue: [ 
+		mnemonics := Array with: aMnemonicSpec
+	] ifFalse: [ 
+		mnemonics := mnemonics copyWith: aMnemonicSpec
+	].
+
 ]
 
 { #category : #solving }
@@ -64,14 +69,14 @@ ProcessorInstructionDeclaration >> as: instructionClass [
 ProcessorInstructionDeclaration >> assertInvariants [
 	self assert: name notNil.
 	self assert: isa notNil.
-	self assert: format notNil.
+	self assert: self format notNil.
 	self assert: internalBindings isEmptyOrNil not
 		 description: 'At least opcode must be specified'.
-	self assert: (isa instructionFormats includes: format).
+	self assert: (isa instructionFormats includes: self format).
 	self assert: (isa instructions includes: self).
 
 	internalBindings keysDo: [ :bitField |
-		self assert: (format bitFields contains: [:each | each key = bitField])
+		self assert: (self format bitFields contains: [:each | each key = bitField])
 			 description: 'Instruction format '' , format name , '' has not bitfield '' , bitField , ''!'.
 	].
 
@@ -143,6 +148,7 @@ ProcessorInstructionDeclaration >> externalBindingBits [
 { #category : #accessing }
 ProcessorInstructionDeclaration >> format [
 	^ format
+
 ]
 
 { #category : #'parser access for construction' }
@@ -170,8 +176,9 @@ ProcessorInstructionDeclaration >> internalBindings [
 ]
 
 { #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> internalBindings: aDict [
-	internalBindings := aDict
+ProcessorInstructionDeclaration >> internalBindings: aDictionary [
+	internalBindings := aDictionary
+
 ]
 
 { #category : #accessing }
@@ -180,8 +187,27 @@ ProcessorInstructionDeclaration >> isa [
 ]
 
 { #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> isa: anObject [
-	isa := anObject
+ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
+	isa := anAcProcessorDescription.
+
+	format isString ifTrue: [ 
+		format := isa instructionFormats at: format
+	].     
+	mnemonics notNil ifTrue: [ 
+		mnemonics withIndexDo: [ :mnemonicSpecOrString :index |
+			mnemonicSpecOrString isString ifTrue: [ 
+				| mnemonicSpecSource mnemonicSpec |
+
+				mnemonicSpecSource := mnemonicSpecOrString allButLast allButFirst.
+				mnemonicSpec := (AcSetAsmParser pdl: isa) parse: mnemonicSpecSource.
+				mnemonicSpec source: mnemonicSpecSource.
+				mnemonicSpec instruction: self.
+				mnemonics at: index put: mnemonicSpec.
+				isa addMnemonic: mnemonicSpec assembler                  
+			].
+		]. 
+	].
+
 ]
 
 { #category : #private }
@@ -191,8 +217,11 @@ ProcessorInstructionDeclaration >> leastKnownBinary [
 
 { #category : #accessing }
 ProcessorInstructionDeclaration >> mnemonics [
-	mnemonics isNil ifTrue: [ mnemonics := Set new ].
+	mnemonics isNil ifTrue: [
+		^ #()
+	].
 	^ mnemonics
+
 ]
 
 { #category : #accessing }
