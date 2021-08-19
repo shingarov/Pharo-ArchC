@@ -35,7 +35,8 @@ Class {
 		'delayCond',
 		'strList',
 		'asmMapBody1',
-		'asmMapBody2'
+		'asmMapBody2',
+		'riscvOpcodes'
 	],
 	#category : #'ArchC-Core-Parsing'
 }
@@ -307,7 +308,9 @@ AcIsaParser >> instructionStatement [
 	format /
 	asmMap /
 	ctor /
-	helper
+	helper /
+	riscvOpcodes
+
 ]
 
 { #category : #grammar }
@@ -385,6 +388,26 @@ AcIsaParser >> rangeSubscript [
 	number,
 	$] asParser
 	==> [ :x | x second to: x fourth ]
+]
+
+{ #category : #grammar }
+AcIsaParser >> riscvOpcodes [
+	"Pharo-ArchC extension - read RISC-V instructions from
+	 upstream RISC-V opcodes definition [1].
+
+	 [1] https://github.com/riscv/riscv-opcodes
+	"
+
+	^'_ac_riscv_opcodes("' asParser, $" asParser negate star flatten, '");' asParser
+	==>	[ :x | 
+
+		| riscvOpcodesParser |
+
+		riscvOpcodesParser := Smalltalk at: #AcRISCVOpcodeParser 
+					  ifAbsent: [ self error: 'No RISC-V opcodes parser, please load package ArchC-RISCV' ].
+		riscvOpcodesParser parseFile: x second in: directory 
+		]   
+
 ]
 
 { #category : #grammar }

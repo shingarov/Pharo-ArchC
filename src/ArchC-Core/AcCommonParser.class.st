@@ -23,6 +23,14 @@ Class {
 	#category : #'ArchC-Core-Parsing'
 }
 
+{ #category : #accessing }
+AcCommonParser class >> ignoredNames [
+		"Answer a collection of instance-variables that should not be automatically initialized with productions, but that are used internal to the composite parser."
+
+	   ^ super ignoredNames , #(directory)
+
+]
+
 { #category : #API }
 AcCommonParser class >> inWorkingDirectory: path [
 	^self new
