@@ -26,6 +26,14 @@ Class {
 	#category : #'ArchC-Core-Core'
 }
 
+{ #category : #'instance creation' }
+AcProcessorDescription class >> new [
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+]
+
 { #category : #'as yet unclassified' }
 AcProcessorDescription class >> systemIcon [
 	^Form extent: 12@12 depth: 32 fromArray: (#(
@@ -202,41 +210,36 @@ AcProcessorDescription >> fillISAFrom: aCollectionOfAssociations [
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillInstructionFormatsFrom: aCollectionOfAssociations [
-	| formatAssociations |
-	formatAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'ac_format'].
-	formatAssociations := formatAssociations collect: [ :ass | ass value ].
 	instructionFormats := Dictionary new.
-	formatAssociations do: [ :ass |
-		| format |
-		(instructionFormats includesKey: ass key asSymbol) ifTrue: [ self error: 'Duplicate instruction format' ].
-		format := AcInstructionFormat new.
-		format bitFields: ass value.
-		format name: ass key.
-		instructionFormats at: ass key asSymbol put: format
-	]
+	aCollectionOfAssociations do: [:assoc | 
+		assoc key = 'ac_format' ifTrue: [ 
+			| format |
 
+			format := assoc value.
+			(instructionFormats includesKey: format name) ifTrue: [ 
+				self error: 'Duplicate definition of instruction format "', format name , '"!'.
+			].
+			instructionFormats at: format name asSymbol put: format.
+		].        
+	].
 
 ]
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
-	| instructionAssociations |
-	instructionAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'ac_instr'].
-	instructionAssociations := instructionAssociations collect: [ :ass | ass value ].
 	instructions := Dictionary new.
-	instructionAssociations do: [ :ass |
-		| instruction |
-		(instructions includesKey: ass key asSymbol) ifTrue: [ self error: 'Duplicate instruction' ].
-		instruction := ProcessorInstructionDeclaration new.
-		instruction
-			isa: self;
-			name: (ass key);
-			format: (instructionFormats  at: ass value asSymbol).
-		instructions at: ass key asSymbol put: instruction
-	]
+	aCollectionOfAssociations do: [:assoc |  
+		assoc key = 'ac_instr' ifTrue: [ 
+			| instruction |
 
+			instruction := assoc value.
+			(instructions includesKey: instruction name) ifTrue: [ 
+				self error: 'Duplicate instruction "' , instruction name , '"'
+			].
+			instruction isa: self.
+			instructions at: instruction name put: instruction.
+		].
+	].
 
 ]
 
@@ -262,7 +265,6 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	collected during parsing <isaname>_isa.ac.
 	Filter the set_asm statements, parse them, and attach them to their instructions."
 	| associations |
-	instructionMnemonics := OrderedCollection new.
 	
 	associations := aCollectionOfAssociations select: [ :ass | ass key = 'set_asm']
 		thenCollect: [ :ass | ass value ].
@@ -272,6 +274,7 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	(which can be more than one per instruction)"
 	AcSetAsmParser processAssociations: associations in: self.
 	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics 
+
 ]
 
 { #category : #'collaboration with parser' }
@@ -312,6 +315,31 @@ AcProcessorDescription >> gtViewInstructionsOn: aView [
 { #category : #'constant width' }
 AcProcessorDescription >> hasConstantInstructionWidth [
 	^true "BOGUS"
+]
+
+{ #category : #initialization }
+AcProcessorDescription >> initialize [
+	"Invoked when a new instance is created."
+
+	"  please change as required (and remove this comment)"
+	"  memories := nil."
+	"  regbanks := nil."
+	"  regs := nil."
+	"  maps := nil."
+	"  wordsize := nil."
+	"  endian := nil."
+	"  instructionFormats := nil."
+	"  instructions := nil."
+	"  regsInGPacket := nil."
+	"  tgtimm := nil."
+	"  architectureName := nil."
+	"  abi := nil."
+	instructionMnemonics := OrderedCollection new.
+	"  opcodeDecoder := nil."
+	"  grounder := nil."
+
+	"  super initialize.   -- commented since inherited method does nothing"
+
 ]
 
 { #category : #accessing }
