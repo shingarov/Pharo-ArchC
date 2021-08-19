@@ -24,6 +24,11 @@ AcInstructionFormat class >> opcodePositionIn: aPDL [
 	self shouldBeImplemented.
 ]
 
+{ #category : #assertions }
+AcInstructionFormat >> assertInvariants [
+
+]
+
 { #category : #'instruction encoding' }
 AcInstructionFormat >> binaryEncoding [
 	"Answer the bit vector representing this format's binary encoding.

@@ -60,6 +60,23 @@ ProcessorInstructionDeclaration >> as: instructionClass [
 	^ insn
 ]
 
+{ #category : #assertions }
+ProcessorInstructionDeclaration >> assertInvariants [
+	self assert: name notNil.
+	self assert: isa notNil.
+	self assert: format notNil.
+	self assert: internalBindings isEmptyOrNil not
+		 description: 'At least opcode must be specified'.
+	self assert: (isa instructionFormats includes: format).
+	self assert: (isa instructions includes: self).
+
+	internalBindings keysDo: [ :bitField |
+		self assert: (format bitFields contains: [:each | each key = bitField])
+			 description: 'Instruction format '' , format name , '' has not bitfield '' , bitField , ''!'.
+	].
+
+]
+
 { #category : #'as yet unclassified' }
 ProcessorInstructionDeclaration >> binaryEncoding [
 	^format binaryEncoding 
@@ -201,12 +218,17 @@ ProcessorInstructionDeclaration >> opcode [
 { #category : #printing }
 ProcessorInstructionDeclaration >> printOn: aStream [ 
 	aStream nextPutAll: self name.
-	aStream nextPutAll: ' [a '.
-	aStream nextPutAll: isa architectureName.
+	isa isNil ifTrue: [ 
+		aStream nextPutAll: ' [as yet unknown architecture'
+	] ifFalse: [ 
+		aStream nextPutAll: ' [a '.
+		aStream nextPutAll: isa architectureName.
+	].
 	aStream nextPutAll: ' instruction]'.
+
 ]
 
-{ #category : #access }
+{ #category : #accessing }
 ProcessorInstructionDeclaration >> rangeOf: fieldName [
 	"Answer the interval of bit-positions of the requested field."
 	| start stop |
