@@ -94,6 +94,13 @@ AcProcessorDescription >> assembler [
 	^instructionMnemonics 
 ]
 
+{ #category : #assertions }
+AcProcessorDescription >> assertInvariants [
+	instructionFormats do: [:format | format assertInvariants ].
+	instructions do: [:insn | insn assertInvariants ].
+
+]
+
 { #category : #'constant width' }
 AcProcessorDescription >> constantInstructionWidth [
 	"Return something like 32 on something like MIPS,

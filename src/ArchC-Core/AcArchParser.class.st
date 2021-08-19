@@ -180,7 +180,9 @@ AcArchParser >> start [
 		AcProcessorDescription new
 			architectureName: (x key);
 			fillFrom: components;
+			assertInvariants;
 			yourself ]
+
 ]
 
 { #category : #grammar }
