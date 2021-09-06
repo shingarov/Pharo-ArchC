@@ -91,7 +91,7 @@ ProcessorInstructionTest >> testFullyUngrounded [
 	pdl := AcProcessorDescriptions powerpc.
 	cmp := pdl instructionAt: #cmp.
 	self assert: cmp class equals: ProcessorInstructionDeclaration.
-	concreteCmp := cmp inEnvironment: Dictionary new.
+	concreteCmp := cmp inEnvironment: IdentityDictionary new.
 	self assert: concreteCmp class equals: ProcessorInstruction.
 ]
 
