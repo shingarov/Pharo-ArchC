@@ -173,20 +173,11 @@ AcAssemblerTest >> testLdrPCRELPositive [
 ]
 
 { #category : #'riscv-r32i' }
-AcAssemblerTest >> testRiscvADD [
-	| pdl insn |
-	pdl := AcProcessorDescriptions reset; riscv.
-	insn := pdl assembler parse: 'add zero, zero, zero'.
-	self assert: insn emit32 = 16r00000013.
-
-]
-
-{ #category : #'riscv-r32i' }
 AcAssemblerTest >> testRiscvADDI [
 	| pdl insn |
 	pdl := AcProcessorDescriptions reset; riscv.
-	insn := pdl assembler parse: 'addi  sp,sp,-16'.
-	self assert: insn emit32 = 16r00000013.
+	insn := pdl assembler parse: 'addi a4, a5, 0'.
+	self assert: insn asByteArray = #[ 16r13 16r87 16r07 16r00 ]
 
 ]
 
@@ -201,15 +192,37 @@ AcAssemblerTest >> testRiscvAUIPC [
 ]
 
 { #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvBNE [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'bne a5, a3, -12'.
+	self assert: insn asByteArray = #[ 16re3 16r9a 16rd7 16rfe ]
+
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvEBREAK [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'ebreak'.
+
+	self assert: insn asByteArray = #[115 0 16 0]
+
+]
+
+{ #category : #'riscv-r32i' }
 AcAssemblerTest >> testRiscvJAL [
+	^self flag: 'Completely bogus'.
+	"
 	self
 		isa: #riscv
 		assemble: 'JAL $sp, 74565'
 		operandKeys:  #(  op    rd   imm1  imm2  imm3  imm4  )
 		shouldBe:     #(  111   14   837   0     36    0     ).
 	
-"16r12345  =   74565"
-	self flag: #BOGUS "see TextDisassemblyTest>>testRiscvJAL"
+""16r12345  =   74565""
+	self flag: #BOGUS ""see TextDisassemblyTest>>testRiscvJAL""
+	"
 ]
 
 { #category : #'riscv-r32i' }
@@ -222,6 +235,26 @@ AcAssemblerTest >> testRiscvJALR [
 
 	insn := pdl assembler parse: 'jalr ra, a0, 8'.
 	self assert: insn emit32 = 16r008500e7.
+
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvSLLI [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'slli zero, zero, 0x1f'.
+
+	self assert: insn asByteArray = #[19 16 240 1]
+
+]
+
+{ #category : #'riscv-r32i' }
+AcAssemblerTest >> testRiscvSRAI [
+	| pdl insn |
+	pdl := AcProcessorDescriptions reset; riscv.
+	insn := pdl assembler parse: 'srai zero, zero, 7'.
+
+	self assert: insn asByteArray = #[16r13 16r50 16r70 16r40]
 
 ]
 
