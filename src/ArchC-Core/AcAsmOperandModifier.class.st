@@ -17,6 +17,13 @@ AcAsmOperandModifier class >> unparseOn: aStream [
 ]
 
 { #category : #API }
+AcAsmOperandModifier >> encode: value inFields: fs accordingTo: format [
+	^ fs isMultiField
+		ifTrue: [ fs encodeComplexValue: value accordingTo: format ]
+		ifFalse: [ fs encodeSimpleValue: value ]
+]
+
+{ #category : #API }
 AcAsmOperandModifier >> encodeInFields: fs accordingTo: format [
 	self subclassResponsibility 
 ]

@@ -37,11 +37,38 @@ AsmOperandInstantiation >> asOperandInstantiation [
 	^self
 ]
 
-{ #category : #'as yet unclassified' }
-AsmOperandInstantiation >> encodeSimpleValue: v [
+{ #category : #encoding }
+AsmOperandInstantiation >> encodeComplexValue: value accordingTo: format [ 
+	| bitlen  bitvec  bitindex  bitfields |
+
+	"First, compute total bit-length of the operand and convert
+	 operand value into a bit-vector of given length"
+	bitlen := operands 
+				inject: 0
+				into: [:length :field | length + (format widthOf: field) ].
+	bitvec := value toBitVector: bitlen.
+	 "Then, work from lowest bit to highest bit, extracting
+	 portions according to the format"
+	bitfields := Dictionary new: operands size.
+	bitindex := 0.
+	operands do: [:field | 
+		| fieldWidth  fieldValue |
+
+		fieldWidth := format widthOf: field.
+		fieldValue := bitvec copyFrom: bitindex + fieldWidth - 1 to: bitindex.
+		bitfields at: field put: fieldValue.
+		bitindex := bitindex + fieldWidth.
+	].
+	^ bitfields
+
+]
+
+{ #category : #encoding }
+AsmOperandInstantiation >> encodeSimpleValue: value [
 	^Dictionary new
-		at: self operand put: v;
+		at: self operand put: value;
 		yourself
+
 ]
 
 { #category : #private }
