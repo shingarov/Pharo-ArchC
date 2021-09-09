@@ -21,7 +21,6 @@ CARRY class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironmen
 
 { #category : #API }
 CARRY >> encodeInFields: fs accordingTo: format [
-	fs isMultiField
-		ifTrue: [ self error ]
-		ifFalse: [ ^fs encodeSimpleValue: self x ]
+	^ self encode: self x inFields: fs accordingTo: format
+
 ]

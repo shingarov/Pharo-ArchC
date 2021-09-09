@@ -18,10 +18,13 @@ BIMM class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment
 
 { #category : #API }
 BIMM >> encodeInFields: fs accordingTo: format [
-	fs isMultiField ifTrue: [ ^self error ].
-	^self x isString
-		ifTrue: [ 	Dictionary new
+	self x isString ifTrue: [       
+		fs isMultiField ifTrue: [ ^ self error ]. 
+		^ Dictionary new
 			at: fs operand put: '(', self x, ') >> 2';
-			yourself ]
-		ifFalse: [ fs encodeSimpleValue: self x >> 2 ]
+			yourself 
+	] ifFalse: [ 
+		^ self encode: self x >> 2 inFields: fs accordingTo: format        
+	].
+
 ]
