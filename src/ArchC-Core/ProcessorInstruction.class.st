@@ -127,12 +127,49 @@ ProcessorInstruction >> initializeBinaryEncoding [
 	binaryEncoding := self leastKnownBinary
 ]
 
+{ #category : #inspecting }
+ProcessorInstruction >> inspectorExtraAttributes [
+	"Smalltalk/X inspector extras"
+	| attrs |
+
+	attrs := super inspectorExtraAttributes.
+	attrs at: '-encoding' put: (String streamContents: [:s | self printEncodingOn: s]).
+	^attrs
+
+]
+
 { #category : #LWISEM }
 ProcessorInstruction >> instantiateLWISEM: aString [ 
 	"First, substitute uninterpreted fields."
 	^(aString replaceKeywords: [ :key | (self field: key) representSmalltalkInPython ])
 	"Then, substitute field values"
 	replaceValueKeywords: [ :key | (self fieldValue: key) representSmalltalkInPython ]
+]
+
+{ #category : #printing }
+ProcessorInstruction >> printEncodingOn: aStream [
+	| bin idx |
+
+	bin := String streamContents:[:b|self emit32 printOn:b paddedWith:$0 to:32 base:2].
+
+	idx := 0.
+	format bitFields do:[:field |
+		aStream nextPutAll: (bin copyFrom: idx + 1 to: idx + field value abs).
+		aStream space.
+		idx := idx + field value abs
+	].
+	aStream cr.
+	format bitFields do:[:field |
+		| fieldName |
+
+		fieldName := (field key size > field value abs) 
+						ifTrue:[field key copyFrom: 1 to: field value abs]
+						ifFalse:[ field key ].
+		aStream nextPutAll: fieldName.
+		aStream next: field value abs - fieldName size put: Character space.
+		aStream space.
+	].
+
 ]
 
 { #category : #semantics }
