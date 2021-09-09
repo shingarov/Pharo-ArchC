@@ -69,6 +69,27 @@ AcProcessorDescription >> assemble: aLineOfAssembly [
 ]
 
 { #category : #assembly }
+AcProcessorDescription >> assemble: aStringOrArray"of Strings" on: aStream [
+	aStringOrArray isString ifTrue: [ 
+		(self assemble: aStringOrArray) emitOn: aStream
+	] ifFalse: [ 
+		aStringOrArray do: [:each | 
+			(self assemble: each) emitOn: aStream
+		].
+	].
+
+	"
+	ByteArray streamContents: [ :s |
+		AcProcessorDescriptions riscv
+			assemble: #('addi a5, a0, 0'
+						'bne a5, a3, -12')
+			on: s
+	]
+	"
+
+]
+
+{ #category : #assembly }
 AcProcessorDescription >> assembler [
 	^instructionMnemonics 
 ]
