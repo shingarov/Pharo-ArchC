@@ -43,6 +43,16 @@ AcRISCVOpcodeParser >> fm [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> funct12 [
+	^ ('31..20=' asParser , self number) trim ==> [ :nodes | nodes second ]
+
+	"
+	AcRISCVOpcodeParser parse: '31..20=0x002 ' startingAt: #funct12
+	"
+
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> funct3 [
 	^ ('14..12=' asParser , self number) trim ==> [ :nodes | nodes second ]
 
@@ -104,8 +114,7 @@ AcRISCVOpcodeParser >> mnemonic [
 
 { #category : #'parsing - utils' }
 AcRISCVOpcodeParser >> number [
-	^ (('0x' asParser , #hex asParser plus) trim ==> [ :nodes | Integer readFrom: nodes second radix: 16 ])
-	/ ((#digit asParser plus) trim ==> [ :digits | Integer readFrom: digits ])
+	^ hexNumber / decimalNumber 
 
 	"
 	AcRISCVOpcodeParser parse: '123' startingAt: #number
@@ -164,8 +173,20 @@ AcRISCVOpcodeParser >> rd [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> rd0 [
+	^ '11..7=0' asParser trim
+
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> rs1 [
 	^ 'rs1' asParser trim
+
+]
+
+{ #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> rs10 [
+	^ '19..15=0' asParser trim
 
 ]
 
@@ -211,11 +232,14 @@ AcRISCVOpcodeParser >> shfunw [
 
 { #category : #parsing }
 AcRISCVOpcodeParser >> start [
-	^ self type_R
+	^ 
+	  self type_R
+	/ self type_Rsys
 
 	/ self type_Ish
 	/ self type_Ishw
 	/ self type_Ifence
+	/ self type_Isys
 	/ self type_I
 
 	/ self type_S
@@ -230,6 +254,7 @@ AcRISCVOpcodeParser >> start [
 	AcRISCVOpcodeParser parse: 'slli    rd rs1 31..26=0  shamt 14..12=1 6..2=0x04 1..0=3' startingAt: #type_I
 	AcRISCVOpcodeParser parse: 'srai    rd rs1 31..26=16 shamt 14..12=5 6..2=0x04 1..0=3' startingAt: #type_Ish    
 	AcRISCVOpcodeParser parse: 'sb     imm12hi rs1 rs2 imm12lo 14..12=0 6..2=0x08 1..0=3' startingAt: #type_S
+	AcRISCVOpcodeParser parse: '11..7=0 19..15=0 31..20=0x001 14..12=0 6..2=0x1C 1..0=3' startingAt: #type_Isys
 
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv32i')
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv64i')
@@ -258,7 +283,7 @@ AcRISCVOpcodeParser >> type_B [
 		instr name: nodes first.
 		instr format: 'Type_B'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm(bimm)", rs1, rs2, imm1+imm2+imm3+imm4)'.
+		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp(bimm16)", rs1, rs2, imm1+imm2+imm3+imm4)'.
 
 		instr
 		]
@@ -285,7 +310,7 @@ AcRISCVOpcodeParser >> type_I [
 		instr name: nodes first.
 		instr format: 'Type_I'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, imm)'.
+		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
 
 		instr
 		])
@@ -380,6 +405,7 @@ AcRISCVOpcodeParser >> type_Ishw [
 
 		internalBindings := Dictionary new.
 		internalBindings at: 'shfunw' put: (nodes at: 4).
+		internalBindings at: 'zerobit' put: 0.
 		internalBindings at: 'funct3' put: (nodes at: 6).
 		internalBindings at: 'opcode' put: (nodes at: 7).
 
@@ -401,6 +427,36 @@ AcRISCVOpcodeParser >> type_Ishw [
 ]
 
 { #category : #parsing }
+AcRISCVOpcodeParser >> type_Isys [
+	^ (self mnemonic , self rd0 , self rs10, self funct12, self funct3 , self opcode)
+	==> [ :nodes |
+
+		| internalBindings instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'rd' put: 0.
+		internalBindings at: 'rs1' put: 0.
+		internalBindings at: 'imm' put: (nodes at: 4).
+		internalBindings at: 'funct3' put: (nodes at: 5).
+		internalBindings at: 'opcode' put: (nodes at: 6).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_I'.
+		instr internalBindings: internalBindings.  
+		instr addMnemonic: '("' , nodes first , '")'.
+
+		instr
+		]
+
+
+	"
+	AcRISCVOpcodeParser parse: 'ebreak 11..7=0 19..15=0 31..20=0x001 14..12=0 6..2=0x1C 1..0=3' startingAt: #type_Isys
+	"
+
+]
+
+{ #category : #parsing }
 AcRISCVOpcodeParser >> type_J [
 	^ self mnemonic , self rd , self jimm20, self opcode
 	==> [ :nodes |
@@ -414,7 +470,7 @@ AcRISCVOpcodeParser >> type_J [
 		instr name: nodes first.
 		instr format: 'Type_J'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %imm(bimm)", rd, imm1+imm2+imm3+imm4)'.
+		instr addMnemonic: '("' , nodes first , ' %gpr, %exp(bimm16)", rd, imm1+imm2+imm3+imm4)'.
 
 		instr
 		]
@@ -455,6 +511,34 @@ AcRISCVOpcodeParser >> type_R [
 ]
 
 { #category : #parsing }
+AcRISCVOpcodeParser >> type_Rsys [
+	^ self mnemonic , self rd0 , self rs1, self rs2 , self funct7 , self funct3 , self opcode
+	==> [ :nodes |
+
+		| internalBindings instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'rd' put: 0.
+		internalBindings at: 'funct7' put: (nodes at: 5).
+		internalBindings at: 'funct3' put: (nodes at: 6).
+		internalBindings at: 'opcode'put: (nodes at: 7).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_R'.
+		instr internalBindings: internalBindings.  
+		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr", rs1, rs2)'.
+
+		instr
+		]
+
+	"
+	AcRISCVOpcodeParser parse: 'sfence.vma 11..7=0 rs1 rs2 31..25=0x09  14..12=0 6..2=0x1C 1..0=3' startingAt: #type_Rsys
+	"
+
+]
+
+{ #category : #parsing }
 AcRISCVOpcodeParser >> type_S [
 	^ self mnemonic , self imm12hi , self rs1, self rs2 , self imm12lo , self funct3 , self opcode
 	==> [ :nodes |
@@ -469,7 +553,7 @@ AcRISCVOpcodeParser >> type_S [
 		instr name: nodes first.
 		instr format: 'Type_S'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, imm1+imm2+imm3)'.
+		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm1+imm2+imm3)'.
 
 		instr
 		]
@@ -495,7 +579,7 @@ AcRISCVOpcodeParser >> type_U [
 		instr name: nodes first.
 		instr format: 'Type_U'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %imm", rd, imm)'.
+		instr addMnemonic: '("' , nodes first , ' %gpr, %exp", rd, imm)'.
 
 		instr
 		]

@@ -110,10 +110,11 @@ AcInstrDecodeTest >> testPowerSc [
 AcInstrDecodeTest >> testR32iRadd [
 	| instr |
 	instr := AcProcessorDescriptions riscv decode: 16r00000893. "addi r17 <- 0"
-	self assert: instr name equals: 'ADDI'.
+	self assert: instr name equals: 'addi'.
 	self assert: (instr fieldValue: 'rs1') equals: 0.
 	self assert: (instr fieldValue: 'rd')  equals: 17.
-	self assert: (instr fieldValue: 'op') equals: 19.
+	self assert: (instr fieldValue: 'opcode') equals: 19.
+
 ]
 
 { #category : #powerpc }
