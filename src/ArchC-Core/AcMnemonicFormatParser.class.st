@@ -72,9 +72,9 @@ AcMnemonicFormatParser >> escape [
 
 { #category : #grammar }
 AcMnemonicFormatParser >> modifier [
-	^$( asParser, #letter asParser star flatten, $) asParser ==> [ :x |
+	^$( asParser, #letter asParser , (#letter asParser / #digit asParser) star flatten, $) asParser ==> [ :x |
 		| modifierName |
-		modifierName := x second.
+		modifierName := x second asString , x third.
 		modifierName asUppercase asSymbol asClassIfAbsent: [ self error: 'Unknown operand modifier ', modifierName ] ]
 
 ]
