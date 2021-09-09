@@ -53,6 +53,16 @@ ProcessorInstruction >> alwaysFitsBinary: aBV [
 	^answer
 ]
 
+{ #category : #converting }
+ProcessorInstruction >> asByteArray [
+	"Return bytes encoding this instruction. The instruction
+	 must be fully grounded (that is: not symbolic) otherwise 
+	 an error is thrown.
+	"
+	^ ByteArray streamContents: [ :s | self emitOn: s ]
+
+]
+
 { #category : #access }
 ProcessorInstruction >> binaryEncoding [
 	binaryEncoding isNil ifTrue: [ self initializeBinaryEncoding ].
@@ -90,6 +100,15 @@ ProcessorInstruction >> emit32 [
 	Some not-so-nice ISAs do not allow this (not that I care)."
 	format binaryEncoding length = 32 ifFalse: [ self error: 'Instruction size not 32' ].
 	^self binaryEncoding value
+]
+
+{ #category : #emitting }
+ProcessorInstruction >> emitOn: aStream [
+	"Emit (encode) instruction on given (binary) stream. The instruction
+	 must be fully grounded (that is: not symbolic) otherwise an error is
+	 thrown.
+	"
+	self binaryEncoding toByteArrayEndian: isa endian on: aStream
 ]
 
 { #category : #disassembly }
