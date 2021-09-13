@@ -39,7 +39,8 @@ BuiltinOperandChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: 
 
 { #category : #'parsing - private' }
 BuiltinOperandChunk >> hexImmLiteral [
-	^'0x' asParser, #digit asParser plus flatten ==> [ :prefAndnumeral | Integer readFrom: prefAndnumeral second  base: 16 ]
+	^'0x' asParser, #hex asParser plus flatten ==> [ :prefAndnumeral | Integer readFrom: prefAndnumeral second  base: 16 ]
+
 ]
 
 { #category : #'parsing - private' }
