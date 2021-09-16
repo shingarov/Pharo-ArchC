@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+SetAsmAssemblerTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #common }
 SetAsmAssemblerTest >> mnemonic: setAsm disassemble: source operandKeys: keys shouldBe: values [
 	| result expected |

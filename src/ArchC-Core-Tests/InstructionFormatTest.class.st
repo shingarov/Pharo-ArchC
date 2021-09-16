@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+InstructionFormatTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #all }
 InstructionFormatTest >> allFormatsAre32bits: aPDL [
 	aPDL instructionFormats do: [ :f |

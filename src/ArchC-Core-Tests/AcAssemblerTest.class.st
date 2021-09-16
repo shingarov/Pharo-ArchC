@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcAssemblerTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #common }
 AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: values [
 	| pdl result expected |
@@ -26,6 +32,26 @@ AcAssemblerTest >> testADD [
 		assemble: 'add 1, 2, 3'
 		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
 		shouldBe:     #(  31    1   2   3   0   266   0   ).
+
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testADDI [
+	self
+		isa: #powerpc
+		assemble: 'addi 1, 2, 3'
+		operandKeys:  #(  opcd  rt  ra  d  )
+		shouldBe:     #(  14    1   2   3  ).
+
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testADDIoutOfRange [
+	self
+		isa: #powerpc
+		assemble: 'addi 1, 2, 65540'
+		operandKeys:  #(  opcd  rt  ra  d  )
+		shouldBe:     #(  14    1   2   4  ).
 
 ]
 

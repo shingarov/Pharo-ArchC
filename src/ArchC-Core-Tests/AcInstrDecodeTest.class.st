@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcInstrDecodeTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #arm }
 AcInstrDecodeTest >> testArmB [
 	| b |

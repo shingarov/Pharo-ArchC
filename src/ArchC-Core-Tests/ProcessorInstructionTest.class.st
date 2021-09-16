@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+ProcessorInstructionTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #'tests - binary width' }
 ProcessorInstructionTest >> allInstructionsAre32bits: aPDL [
 	aPDL instructions do: [ :instr |

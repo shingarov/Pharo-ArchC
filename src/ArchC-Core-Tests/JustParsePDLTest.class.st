@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+JustParsePDLTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #tests }
 JustParsePDLTest >> testParseARM [
 	self assert: AcProcessorDescriptions armv5 architectureName equals: 'arm'

@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+TextDisassemblyTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #'tests - arm' }
 TextDisassemblyTest >> testArmLdrPCREL [
 	| instr |
