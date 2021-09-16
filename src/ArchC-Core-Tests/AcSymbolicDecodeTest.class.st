@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcSymbolicDecodeTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #'test objects' }
 AcSymbolicDecodeTest >> lbz [
 	^AcProcessorDescriptions powerpc instructionAt: #lbz

@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcMnemonicTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #'tests - instructions - ARM' }
 AcMnemonicTest >> add1 [
 	^AcProcessorDescriptions armv5 instructionAt: #add1

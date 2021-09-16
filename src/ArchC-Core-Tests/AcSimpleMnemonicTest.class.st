@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcSimpleMnemonicTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #tests }
 AcSimpleMnemonicTest >> forPowerPC [
 	^AcSetAsmParser pdl: AcProcessorDescriptions powerpc

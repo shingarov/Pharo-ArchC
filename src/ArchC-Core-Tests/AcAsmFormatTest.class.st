@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Core-Tests'
 }
 
+{ #category : #accessing }
+AcAsmFormatTest class >> resources [
+	^ Array with: AcProcessorDescriptionsResource
+
+]
+
 { #category : #mips }
 AcAsmFormatTest >> forMIPS [
 	^AcSetAsmParser pdl: AcProcessorDescriptions mips 
