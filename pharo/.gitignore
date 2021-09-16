@@ -1,0 +1,14 @@
+GNUMakefile.local
+
+*.image
+*.changes
+
+*Test.xml
+*.fuel
+
+pharo-local
+Pharo*
+pharo*
+icon-packs
+
+progress.log

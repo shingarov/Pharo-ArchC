@@ -11,7 +11,18 @@ Metacello new
   load.
 ````
 
-To create fresh image for development:
+#### To create fresh image for development:
+
+Either use shortcut:
+
+     ```
+     git clone https://github.com/shingarov/Pharo-ArchC ArchC
+     cd ArchC/pharo
+     make
+     pharo-ui ArchC.image
+     ```
+
+...or do it by hand:
 
   1. Clone the repository
 
