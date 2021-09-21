@@ -80,10 +80,10 @@ AcAsmOperandsParser >> decimalNumber [
 
 { #category : #grammar }
 AcAsmOperandsParser >> format [
-	^ ($" asParser,
-	(( PPPredicateObjectParser anyExceptAnyOf: '"' ) star flatten ==> [ :x |
-		(AcMnemonicFormatParser maps: self class pdl maps) parse: x ]),
-	$" asParser) ==> [ :f | f second ]
+	^ ($" asParser 
+		, ((PPPredicateObjectParser anyExceptAnyOf: '"') star flatten 
+				==> [:x | (AcAsmFormatParser maps: self class pdl maps) parse: x ]) 
+			, $" asParser) ==> [:f | f second ]
 ]
 
 { #category : #grammar }

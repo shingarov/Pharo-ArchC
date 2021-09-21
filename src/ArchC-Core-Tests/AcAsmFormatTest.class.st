@@ -1,26 +1,26 @@
 Class {
-	#name : #AcMnemonicFormatTest,
+	#name : #AcAsmFormatTest,
 	#superclass : #TestCase,
 	#category : #'ArchC-Core-Tests'
 }
 
 { #category : #mips }
-AcMnemonicFormatTest >> forMIPS [
+AcAsmFormatTest >> forMIPS [
 	^AcSetAsmParser pdl: AcProcessorDescriptions mips 
 ]
 
 { #category : #powerpc }
-AcMnemonicFormatTest >> forPowerPC [
+AcAsmFormatTest >> forPowerPC [
 	^AcSetAsmParser pdl: AcProcessorDescriptions powerpc
 ]
 
 { #category : #sparc }
-AcMnemonicFormatTest >> forSPARC [
+AcAsmFormatTest >> forSPARC [
 	^AcSetAsmParser pdl: AcProcessorDescriptions sparcv8
 ]
 
 { #category : #generic }
-AcMnemonicFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues: v format: f expect: e [
+AcAsmFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues: v format: f expect: e [
 	| env parseResult s |
 	parseResult := parser parse: aSetAsmString. "a SetAsm"
 	f isNil ifFalse: [
@@ -32,16 +32,18 @@ AcMnemonicFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandV
 ]
 
 { #category : #arm }
-AcMnemonicFormatTest >> testADD3 [
-	| parseResult fmt |
+AcAsmFormatTest >> testADD3 [
+	| parseResult  fmt |
+
 	fmt := 'adr%[cond]%sf %reg, %exp(pcrelrot)'.
-	parseResult := (AcMnemonicFormatParser maps: AcProcessorDescriptions armv5 maps) parse: fmt.
-	"parseResult is a sequence of chunks"
-	self deny: parseResult isPetitFailure 
+	parseResult := (AcAsmFormatParser maps: AcProcessorDescriptions armv5 maps) 
+			parse: fmt.
+	 "parseResult is a sequence of chunks"
+	self deny: parseResult isPetitFailure
 ]
 
 { #category : #powerpc }
-AcMnemonicFormatTest >> testBasic [
+AcAsmFormatTest >> testBasic [
 	| parseResult ass |
 	parseResult := self forPowerPC parse: '"Simple"'.
 	"parserResult is an AcSetAsm"
@@ -53,18 +55,23 @@ AcMnemonicFormatTest >> testBasic [
 ]
 
 { #category : #generic }
-AcMnemonicFormatTest >> testBasicFormat [
-	| formatParser parseResult firstChunk stream |
-	formatParser := 	AcMnemonicFormatParser maps: AcProcessorDescriptions powerpc maps.
+AcAsmFormatTest >> testBasicFormat [
+	| formatParser  parseResult  firstChunk  stream |
+
+	formatParser := AcAsmFormatParser 
+			maps: AcProcessorDescriptions powerpc maps.
 	parseResult := formatParser parse: 'Simple string'.
 	firstChunk := parseResult first.
 	stream := WriteStream on: String new.
-	firstChunk disassembleTo: stream operands: #() inEnvironment: OrderedCollection new.
+	firstChunk 
+		disassembleTo: stream
+		operands: #()
+		inEnvironment: OrderedCollection new.
 	self assert: stream contents equals: 'S'
 ]
 
 { #category : #powerpc }
-AcMnemonicFormatTest >> testEscapePercent [
+AcAsmFormatTest >> testEscapePercent [
 	| env parseResult fmt x |
 	fmt := '"a\%b"'.
 	parseResult := self forPowerPC parse: fmt.
@@ -75,7 +82,7 @@ AcMnemonicFormatTest >> testEscapePercent [
 ]
 
 { #category : #sparc }
-AcMnemonicFormatTest >> testOneCondSPARC [
+AcAsmFormatTest >> testOneCondSPARC [
 	self
 		proc: self forSPARC 
 		spec: '"Condition %cond", cond'
@@ -86,7 +93,7 @@ AcMnemonicFormatTest >> testOneCondSPARC [
 ]
 
 { #category : #mips }
-AcMnemonicFormatTest >> testOneImm [
+AcAsmFormatTest >> testOneImm [
 	self
 		proc: self forMIPS
 		spec: '"One #%imm imm", addr'
@@ -98,7 +105,7 @@ AcMnemonicFormatTest >> testOneImm [
 ]
 
 { #category : #powerpc }
-AcMnemonicFormatTest >> testOneRegPPC [
+AcAsmFormatTest >> testOneRegPPC [
 	self
 		proc: self forPowerPC 
 		spec: '"Register %reg", RRR'
@@ -109,7 +116,7 @@ AcMnemonicFormatTest >> testOneRegPPC [
 ]
 
 { #category : #powerpc }
-AcMnemonicFormatTest >> testWeirdCharsPPC [
+AcAsmFormatTest >> testWeirdCharsPPC [
 	self
 		proc: self forPowerPC 
 		spec: '"la %reg, %exp@l(%imm)", rt, d, ra'

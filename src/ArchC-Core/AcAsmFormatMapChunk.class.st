@@ -1,6 +1,6 @@
 Class {
-	#name : #PercentAcMnemonicChunk,
-	#superclass : #AcMnemonicChunk,
+	#name : #AcAsmFormatMapChunk,
+	#superclass : #AcAsmFormatChunk,
 	#instVars : [
 		'map',
 		'name',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-PercentAcMnemonicChunk class >> map: aDictionary named: nameString source: sourceString [
+AcAsmFormatMapChunk class >> map: aDictionary named: nameString source: sourceString [
 	^super new
 		map: aDictionary;
 		name: nameString;
@@ -19,7 +19,7 @@ PercentAcMnemonicChunk class >> map: aDictionary named: nameString source: sourc
 ]
 
 { #category : #'API - assembly' }
-PercentAcMnemonicChunk >> assembler [ 
+AcAsmFormatMapChunk >> assembler [ 
 	| alternativeParsers nilForEmptySym defaultInt |
 	defaultInt := nil.
 	alternativeParsers := map forwardMap associations  collect: [ :ass |
@@ -38,7 +38,7 @@ PercentAcMnemonicChunk >> assembler [
 ]
 
 { #category : #'API - disassembly' }
-PercentAcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: aDictionary [
+AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: aDictionary [
 	| op v symbolic |
 	op := ops removeFirst operand.
 	v := aDictionary at: op.
@@ -47,31 +47,31 @@ PercentAcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironmen
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> map [
+AcAsmFormatMapChunk >> map [
 	^ map
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> map: anObject [
+AcAsmFormatMapChunk >> map: anObject [
 	map := anObject
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> name [
+AcAsmFormatMapChunk >> name [
 	^ name
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> name: anObject [
+AcAsmFormatMapChunk >> name: anObject [
 	name := anObject
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> source [
+AcAsmFormatMapChunk >> source [
 	^ source
 ]
 
 { #category : #accessing }
-PercentAcMnemonicChunk >> source: anObject [
+AcAsmFormatMapChunk >> source: anObject [
 	source := anObject
 ]

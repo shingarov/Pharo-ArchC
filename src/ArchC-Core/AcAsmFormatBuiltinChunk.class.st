@@ -1,6 +1,6 @@
 Class {
-	#name : #BuiltinOperandChunk,
-	#superclass : #AcMnemonicChunk,
+	#name : #AcAsmFormatBuiltinChunk,
+	#superclass : #AcAsmFormatChunk,
 	#instVars : [
 		'type',
 		'modifier'
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-BuiltinOperandChunk class >> type: aNameSuchAsImm modifier: aClass [
+AcAsmFormatBuiltinChunk class >> type: aNameSuchAsImm modifier: aClass [
 	(((aNameSuchAsImm = '%imm')
 		or: [aNameSuchAsImm = '%exp'])
 		or: [aNameSuchAsImm = '%addr'])
@@ -21,30 +21,30 @@ BuiltinOperandChunk class >> type: aNameSuchAsImm modifier: aClass [
 ]
 
 { #category : #'API - assembly' }
-BuiltinOperandChunk >> assembler [
+AcAsmFormatBuiltinChunk >> assembler [
 	^self immLiteral / self immExpression ==> [ :x | modifier new x: x; yourself ]
 ]
 
 { #category : #'parsing - private' }
-BuiltinOperandChunk >> decImmLiteral [
+AcAsmFormatBuiltinChunk >> decImmLiteral [
 	^#digit asParser plus flatten ==> [ :numeralString | numeralString asInteger ]
 ]
 
 { #category : #'API - disassembly' }
-BuiltinOperandChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
+AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	| op |
 	op := ops removeFirst.
 	self modifier disassemble: op to: aWriteStream inEnvironment: e format: self instruction format
 ]
 
 { #category : #'parsing - private' }
-BuiltinOperandChunk >> hexImmLiteral [
+AcAsmFormatBuiltinChunk >> hexImmLiteral [
 	^'0x' asParser, #hex asParser plus flatten ==> [ :prefAndnumeral | Integer readFrom: prefAndnumeral second  base: 16 ]
 
 ]
 
 { #category : #'parsing - private' }
-BuiltinOperandChunk >> immLiteral [
+AcAsmFormatBuiltinChunk >> immLiteral [
 	| il |
 	il := self hexImmLiteral / self decImmLiteral.
 	self type = '%exp' ifTrue: [ 
@@ -61,21 +61,21 @@ BuiltinOperandChunk >> immLiteral [
 ]
 
 { #category : #accessing }
-BuiltinOperandChunk >> modifier [
+AcAsmFormatBuiltinChunk >> modifier [
 	^ modifier
 ]
 
 { #category : #accessing }
-BuiltinOperandChunk >> modifier: anObject [
+AcAsmFormatBuiltinChunk >> modifier: anObject [
 	modifier := anObject
 ]
 
 { #category : #accessing }
-BuiltinOperandChunk >> type [
+AcAsmFormatBuiltinChunk >> type [
 	^ type
 ]
 
 { #category : #accessing }
-BuiltinOperandChunk >> type: anObject [
+AcAsmFormatBuiltinChunk >> type: anObject [
 	type := anObject
 ]
