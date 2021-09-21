@@ -8,7 +8,7 @@ Each form is a sequence of chunks.  Chunks work at the last stage
 of the target-agnostic pipeline, i.e. the actual assembly/disassembly.
 "
 Class {
-	#name : #AcMnemonicChunk,
+	#name : #AcAsmFormatChunk,
 	#superclass : #Object,
 	#instVars : [
 		'instruction'
@@ -17,27 +17,27 @@ Class {
 }
 
 { #category : #'API - assembly' }
-AcMnemonicChunk >> assembler [ 
+AcAsmFormatChunk >> assembler [ 
 	self subclassResponsibility 
 ]
 
 { #category : #'API - disassembly' }
-AcMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
+AcAsmFormatChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	self subclassResponsibility 
 ]
 
 { #category : #'API - disassembly' }
-AcMnemonicChunk >> immExpression [
+AcAsmFormatChunk >> immExpression [
 	^${ asParser, (PPPredicateObjectParser anyExceptAnyOf: #($})) star flatten, $} asParser
 	==> [ :expr | expr second "the string inside {...} will become the variable name" ]
 ]
 
 { #category : #accessing }
-AcMnemonicChunk >> instruction [
+AcAsmFormatChunk >> instruction [
 	^ instruction
 ]
 
 { #category : #accessing }
-AcMnemonicChunk >> instruction: anObject [
+AcAsmFormatChunk >> instruction: anObject [
 	instruction := anObject
 ]

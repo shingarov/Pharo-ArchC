@@ -1,6 +1,6 @@
 Class {
-	#name : #LiteralTextChunk,
-	#superclass : #AcMnemonicChunk,
+	#name : #AcAsmFormatLiteralTextChunk,
+	#superclass : #AcAsmFormatChunk,
 	#instVars : [
 		'char'
 	],
@@ -8,34 +8,34 @@ Class {
 }
 
 { #category : #'factory-chars' }
-LiteralTextChunk class >> char: c [
+AcAsmFormatLiteralTextChunk class >> char: c [
 	^super new
 		char: c;
 		yourself 
 ]
 
 { #category : #'API - assembly' }
-LiteralTextChunk >> assembler [
+AcAsmFormatLiteralTextChunk >> assembler [
 	^self char asParser ==> nil K
 ]
 
 { #category : #accessing }
-LiteralTextChunk >> char [
+AcAsmFormatLiteralTextChunk >> char [
 	^ char
 ]
 
 { #category : #accessing }
-LiteralTextChunk >> char: anObject [
+AcAsmFormatLiteralTextChunk >> char: anObject [
 	char := anObject
 ]
 
 { #category : #'API - disassembly' }
-LiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
+AcAsmFormatLiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	aWriteStream nextPut: char
 ]
 
 { #category : #printing }
-LiteralTextChunk >> printOn: aStream [
+AcAsmFormatLiteralTextChunk >> printOn: aStream [
 	self char printOn: aStream.
 	aStream nextPutAll: ' literal chunk'
 ]

@@ -15,7 +15,7 @@ I answer a sequence of AcMnemonicChunks as the result.
 
 "
 Class {
-	#name : #AcMnemonicFormatParser,
+	#name : #AcAsmFormatParser,
 	#superclass : #PPCompositeParser,
 	#instVars : [
 		'percentId',
@@ -30,12 +30,12 @@ Class {
 }
 
 { #category : #parsing }
-AcMnemonicFormatParser class >> maps [
+AcAsmFormatParser class >> maps [
 	^maps
 ]
 
 { #category : #'instance creation' }
-AcMnemonicFormatParser class >> maps: m [
+AcAsmFormatParser class >> maps: m [
 	"The argument here is the final result of parsing
 	the ac_asm_map statements in *_isa.ac.
 	"
@@ -46,32 +46,34 @@ AcMnemonicFormatParser class >> maps: m [
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> allOperandTypes [
+AcAsmFormatParser >> allOperandTypes [
 	^self builtinOperandTypes, self userOperandTypes 
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> builtinOperandType: percentIdString [
-	^percentIdString asParser, modifier optional  ==> [ :immTokens |
-		| imm modifierClass |
-		imm := immTokens first.
-		modifierClass := immTokens second ifNil: [ NoOperandModifier ].
-		BuiltinOperandChunk type: imm modifier: modifierClass ]
+AcAsmFormatParser >> builtinOperandType: percentIdString [ 
+	^ (percentIdString asParser , modifier optional) 
+		==> [:immTokens | 
+			| imm  modifierClass |
+
+			imm := immTokens first.
+			modifierClass := immTokens second ifNil: [ NoOperandModifier ].
+			AcAsmFormatBuiltinChunk type: imm modifier: modifierClass
+		]
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> builtinOperandTypes [
+AcAsmFormatParser >> builtinOperandTypes [
 	^#('%imm' '%exp' '%addr') collect: [ :s | self builtinOperandType: s ]
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> escape [
-	^'\%' asParser ==> [ :x | LiteralTextChunk char: $% ]
-
+AcAsmFormatParser >> escape [
+	^ '\%' asParser ==> [:x | AcAsmFormatLiteralTextChunk char: $% ]
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> modifier [
+AcAsmFormatParser >> modifier [
 	^$( asParser, #letter asParser , (#letter asParser / #digit asParser) star flatten, $) asParser ==> [ :x |
 		| modifierName |
 		modifierName := x second asString , x third.
@@ -80,18 +82,18 @@ AcMnemonicFormatParser >> modifier [
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> normal [
-	^(PPPredicateObjectParser anyExceptAnyOf: '%\"') ==> [ :char |
-		LiteralTextChunk char: char ]
+AcAsmFormatParser >> normal [
+	^ (PPPredicateObjectParser anyExceptAnyOf: '%\"') 
+		==> [:char | AcAsmFormatLiteralTextChunk char: char ]
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> percentId [
+AcAsmFormatParser >> percentId [
 	^PPChoiceParser withAll: self allOperandTypes 
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> start [
+AcAsmFormatParser >> start [
 	"The result of parsing a format string is a 1-argument block which,
 	 given an ordered collection of operand values,
 	 answers a string of disassembly."
@@ -99,13 +101,18 @@ AcMnemonicFormatParser >> start [
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> userOperandTypeName: mapName mapping: aDictionary [
-	^('%', mapName) asParser / ('%[', mapName, ']') asParser ==> [ :token |
-		(PercentAcMnemonicChunk map: aDictionary named: mapName source: token) ]
+AcAsmFormatParser >> userOperandTypeName: mapName mapping: aDictionary [ 
+	^ ('%' , mapName) asParser / ('%[' , mapName , ']') asParser 
+		==> [:token | 
+			(AcAsmFormatMapChunk 
+				map: aDictionary
+				named: mapName
+				source: token)
+		]
 ]
 
 { #category : #grammar }
-AcMnemonicFormatParser >> userOperandTypes [
+AcAsmFormatParser >> userOperandTypes [
 	^self class maps associations collect: [ :a |
 		self userOperandTypeName: a key mapping: a value ]
 ]
