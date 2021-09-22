@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'source',
 		'instruction',
-		'formatChunks',
+		'format',
 		'operands',
 		'constraints'
 	],
@@ -26,9 +26,9 @@ AcSetAsm class >> format: aMnemonicFormat operandsAndConstraints: anArray [
 AcSetAsm >> assembler [
 	"Construct a parser which will parse the actual
 	assembly statements."
-	| chunkParsers |
-	chunkParsers := self format collect: #assembler.
-	^(PPSequenceParser withAll: chunkParsers) end ==> [ :actualOperandsFromChunks |
+	| parser |
+	parser := self format assembler.
+	^parser end ==> [ :actualOperandsFromChunks |
 		| actualOperands allOperands fieldValues |
 		actualOperands := actualOperandsFromChunks reject: #isNil.
 		actualOperands := Dictionary newFromKeys: self operands andValues: actualOperands.
@@ -37,6 +37,7 @@ AcSetAsm >> assembler [
 		allOperands keysAndValuesDo: [ :opDef :v |
 				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v accoringTo: instruction format) ].
 		self instruction inEnvironment: fieldValues ]
+
 ]
 
 { #category : #accessing }
@@ -78,18 +79,28 @@ AcSetAsm >> disassembleEnv: aDictionary [
 	(self constraintsSatisfiedBy: aDictionary) ifFalse: [ ^nil ].
 	theseOperands := operands asOrderedCollection copy.
 	stream := WriteStream on: String new.
-	self format do: [ :chunk | chunk disassembleTo: stream operands: theseOperands inEnvironment: aDictionary ].
+	self format disassembleTo: stream operands: theseOperands inEnvironment: aDictionary.
 	^stream contents -> constraints size
+
 ]
 
 { #category : #accessing }
 AcSetAsm >> format [
-	^ formatChunks
+	format isString ifTrue: [ 
+		format := AcAsmFormatParser parse: format.
+		format do: [:each | each instruction: instruction ]
+	].
+	^ format
+
 ]
 
 { #category : #accessing }
 AcSetAsm >> format: anObject [
-	formatChunks := anObject
+	format := anObject.
+	format isString ifFalse: [ 
+		format instruction: instruction
+	].
+
 ]
 
 { #category : #accessing }
@@ -100,7 +111,10 @@ AcSetAsm >> instruction [
 { #category : #accessing }
 AcSetAsm >> instruction: i [
 	instruction := i.
-	formatChunks do: [ :chunk | chunk instruction: i ]
+	format isString ifFalse: [ 
+		format instruction: instruction
+	].  
+
 ]
 
 { #category : #accessing }

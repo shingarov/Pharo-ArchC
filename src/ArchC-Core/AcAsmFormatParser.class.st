@@ -10,18 +10,23 @@ the format part in this example is
 lis %reg, %exp(carry)@ha
 
 As I am a Parser, my API is #parse:.
-I answer a sequence of AcMnemonicChunks as the result.
-
+I answer a sequence of `AcAsmFormatChunk`s as the result.
 
 "
 Class {
 	#name : #AcAsmFormatParser,
 	#superclass : #PPCompositeParser,
 	#instVars : [
-		'percentId',
-		'normal',
-		'escape',
-		'modifier'
+		'token',
+		'special',
+		'space',
+		'map',
+		'builtin',
+		'modifier',
+		'operand',
+		'mnemonic',
+		'operands',
+		'format'
 	],
 	#classInstVars : [
 		'maps'
@@ -46,30 +51,53 @@ AcAsmFormatParser class >> maps: m [
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> allOperandTypes [
-	^self builtinOperandTypes, self userOperandTypes 
-]
+AcAsmFormatParser >> builtin [
+	^ ('%imm' asParser / '%exp' asParser / '%addr' asParser) , modifier optional
+		==> [:nodes | 
+			| builtinName  modifierClass |
 
-{ #category : #grammar }
-AcAsmFormatParser >> builtinOperandType: percentIdString [ 
-	^ (percentIdString asParser , modifier optional) 
-		==> [:immTokens | 
-			| imm  modifierClass |
-
-			imm := immTokens first.
-			modifierClass := immTokens second ifNil: [ NoOperandModifier ].
-			AcAsmFormatBuiltinChunk type: imm modifier: modifierClass
+			builtinName := nodes first.
+			modifierClass := nodes second ifNil: [ NoOperandModifier ].
+			AcAsmFormatChunk builtin: builtinName modifier: modifierClass
 		]
+
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> builtinOperandTypes [
-	^#('%imm' '%exp' '%addr') collect: [ :s | self builtinOperandType: s ]
+AcAsmFormatParser >> format [
+	^ (mnemonic , (#space asParser plus , operands) optional) 
+		==> [ :nodes| 
+			| operands |
+
+			nodes second notNil ifTrue: [ 
+				operands := nodes second second.
+			] ifFalse: [ 
+				operands := AcAsmFormatChunk operands: #().
+			].
+			AcAsmFormat new mnemonic: nodes first; operands: operands
+			]
+
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> escape [
-	^ '\%' asParser ==> [:x | AcAsmFormatLiteralTextChunk char: $% ]
+AcAsmFormatParser >> map [
+	^( ($% asParser ,   #letter asParser plus flatten ) /
+	   ('%[' asParser , #letter asParser plus flatten , ']' asParser) )
+	   ==> [ :nodes | AcAsmFormatChunk map: nodes second ]
+
+]
+
+{ #category : #grammar }
+AcAsmFormatParser >> mnemonic [
+	| first rest |
+
+	first := #letter asParser / $_ asParser.
+	rest  := #letter asParser / #digit asParser / $_ asParser / $. asParser / $, asParser / '\%' asParser.
+
+	^(((first , rest star) flatten ==> [ :token | AcAsmFormatChunk text: (self unescape: token) ])
+	  , (map / (rest plus flatten  ==> [ :token | AcAsmFormatChunk text: (self unescape: token) ])) star)
+	  ==> [ :nodes | AcAsmFormatChunk mnemonic: (Array with: nodes first) , nodes second]
+
 ]
 
 { #category : #grammar }
@@ -82,37 +110,73 @@ AcAsmFormatParser >> modifier [
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> normal [
-	^ (PPPredicateObjectParser anyExceptAnyOf: '%\"') 
-		==> [:char | AcAsmFormatLiteralTextChunk char: char ]
+AcAsmFormatParser >> operand [
+	^ (builtin / map / token / special / space) star
+	==> [ :nodes | AcAsmFormatChunk sequence: nodes ]
+
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> percentId [
-	^PPChoiceParser withAll: self allOperandTypes 
+AcAsmFormatParser >> operands [
+	^ operand , ($, asParser , operand) star
+	==> [ :nodes |
+		| operandNodes |
+
+		operandNodes := { nodes first } , (nodes second collect: #second).
+		AcAsmFormatChunk operands: operandNodes.
+	].
+
+]
+
+{ #category : #grammar }
+AcAsmFormatParser >> space [
+   ^ #space asParser plus flatten
+   ==> [ :token | AcAsmFormatChunk space: token ]
+
+]
+
+{ #category : #grammar }
+AcAsmFormatParser >> special [
+	^('\%' asParser
+	/ (PPPredicateObjectParser anyExceptAnyOf: ' ,\%";')) flatten
+	==> [ :token | AcAsmFormatChunk text: (self unescape: token) ]
+
 ]
 
 { #category : #grammar }
 AcAsmFormatParser >> start [
-	"The result of parsing a format string is a 1-argument block which,
-	 given an ordered collection of operand values,
-	 answers a string of disassembly."
-	^ (normal / escape / percentId) star end
+	^ format end
+
 ]
 
 { #category : #grammar }
-AcAsmFormatParser >> userOperandTypeName: mapName mapping: aDictionary [ 
-	^ ('%' , mapName) asParser / ('%[' , mapName , ']') asParser 
-		==> [:token | 
-			(AcAsmFormatMapChunk 
-				map: aDictionary
-				named: mapName
-				source: token)
-		]
+AcAsmFormatParser >> token [
+   "a-zA-Z 0-9 $."
+   ^ (#letter asParser / #digit asParser / $_ asParser / $. asParser / $$ asParser) flatten
+   ==> [ :token | AcAsmFormatChunk text: token ]
+
 ]
 
-{ #category : #grammar }
-AcAsmFormatParser >> userOperandTypes [
-	^self class maps associations collect: [ :a |
-		self userOperandTypeName: a key mapping: a value ]
+{ #category : #utilities }
+AcAsmFormatParser >> unescape: aString [
+	"Replace escape-sequences from `aString` by their respective characters.
+	 Currently only supports '\%'."
+
+	(aString indexOf: $\) == 0 ifTrue: [ ^ aString ].
+	^ String streamContents: [ :out |
+		| in |
+
+		in := aString readStream.
+		[ in atEnd ] whileFalse: [ 
+			| c |
+
+			c := in next.
+			c == $\ ifTrue:[
+				c := in next.
+				c ~~ $% ifTrue: [ self error: 'Unsupported escape sequence' ]
+			].
+			out nextPut: c.
+		].
+	].
+
 ]

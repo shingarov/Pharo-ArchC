@@ -30,10 +30,10 @@ AcAssemblerTest >> testADD [
 ]
 
 { #category : #powerpc }
-AcAssemblerTest >> testADD_ [
+AcAssemblerTest >> testADDwithSpacesOrNot [
 	self
 		isa: #powerpc
-		assemble: 'add 1, 2, 3'
+		assemble: '     add   1,    2,3'
 		operandKeys:  #(  opcd  rt  ra  rb  oe  xos   rc  )
 		shouldBe:     #(  31    1   2   3   0   266   0   ).
 
@@ -63,6 +63,7 @@ AcAssemblerTest >> testB [
 AcAssemblerTest >> testExpressionImm [
 	| pdl instr binary concretePart offset |
 	pdl := AcProcessorDescriptions powerpc.
+	pdl instructionAt: 'lbzu'.
 	instr := pdl assembler parse: 'lbzu 1, {x+y} (2)'.
 	binary := instr binaryEncoding.
 	concretePart := (binary copyFrom: 31 to: 16) simplify.
@@ -78,7 +79,7 @@ AcAssemblerTest >> testExpressionImm [
 AcAssemblerTest >> testLBZU1 [
 	self
 		isa: #powerpc
-		assemble: 'lbzu 1, 1234 (2)'
+		assemble: 'lbzu 1,1234 (2      )'
 		operandKeys:  #(  opcd  rt  ra  d     )
 		shouldBe:     #(  35    1   2   1234  ).
 
@@ -88,7 +89,7 @@ AcAssemblerTest >> testLBZU1 [
 AcAssemblerTest >> testLBZU2 [
 	self
 		isa: #powerpc
-		assemble: 'lbzu 1, 1234@l(2)'
+		assemble: 'lbzu 1,1234@l (   2)'
 		operandKeys:  #(  opcd  rt  ra  d     )
 		shouldBe:     #(  35    1   2   1234  ).
 

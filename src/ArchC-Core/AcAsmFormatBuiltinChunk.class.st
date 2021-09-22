@@ -1,9 +1,15 @@
+"
+A builtin - either `%imm` (unsigned numeric value) or `%exp` (signed numeric value)
+with optional modifier - see `AcAsmOperandModifier`.
+
+"
 Class {
 	#name : #AcAsmFormatBuiltinChunk,
 	#superclass : #AcAsmFormatChunk,
 	#instVars : [
 		'type',
-		'modifier'
+		'modifier',
+		'instruction'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -22,7 +28,8 @@ AcAsmFormatBuiltinChunk class >> type: aNameSuchAsImm modifier: aClass [
 
 { #category : #'API - assembly' }
 AcAsmFormatBuiltinChunk >> assembler [
-	^self immLiteral / self immExpression ==> [ :x | modifier new x: x; yourself ]
+	^self immLiteral / self immExpression ==> [ :x | { modifier new x: x; yourself } ]
+
 ]
 
 { #category : #'parsing - private' }
@@ -34,7 +41,7 @@ AcAsmFormatBuiltinChunk >> decImmLiteral [
 AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	| op |
 	op := ops removeFirst.
-	self modifier disassemble: op to: aWriteStream inEnvironment: e format: self instruction format
+	self modifier disassemble: op to: aWriteStream inEnvironment: e format: instruction format
 ]
 
 { #category : #'parsing - private' }
@@ -61,6 +68,11 @@ AcAsmFormatBuiltinChunk >> immLiteral [
 ]
 
 { #category : #accessing }
+AcAsmFormatBuiltinChunk >> instruction: aProcessorInstructionDeclaration [
+	instruction := aProcessorInstructionDeclaration
+]
+
+{ #category : #accessing }
 AcAsmFormatBuiltinChunk >> modifier [
 	^ modifier
 ]
@@ -78,4 +90,12 @@ AcAsmFormatBuiltinChunk >> type [
 { #category : #accessing }
 AcAsmFormatBuiltinChunk >> type: anObject [
 	type := anObject
+]
+
+{ #category : #'printing & storing' }
+AcAsmFormatBuiltinChunk >> unparseOn: aStream [
+	"Print this chunk on `aStream` using the syntax recognized by AcAsmFormatParser."
+
+	aStream nextPutAll: type.
+	modifier unparseOn: aStream.
 ]

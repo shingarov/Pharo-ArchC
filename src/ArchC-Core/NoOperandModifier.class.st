@@ -20,6 +20,14 @@ NoOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStream 
 
 ]
 
+{ #category : #'printing & storing' }
+NoOperandModifier class >> unparseOn: aStream [
+	"See AcAsmFormatChunk >> #unparseOn:"
+
+	"Intentionally left empty"
+
+]
+
 { #category : #API }
 NoOperandModifier >> encodeBitVector: v inFields: fields accordingTo: format [ 
 	| thisField thisWidth thisBV restFields rest restBV |
@@ -50,4 +58,10 @@ NoOperandModifier >> encodeInFields: fs accordingTo: format [
 	^self encodeBitVector: bv
 		inFields: fs operands 
 		accordingTo: format
+]
+
+{ #category : #'printing & storing' }
+NoOperandModifier >> unparseOn: aStream [
+	"Intentionally left empty"
+
 ]

@@ -2,40 +2,43 @@ Class {
 	#name : #AcAsmFormatLiteralTextChunk,
 	#superclass : #AcAsmFormatChunk,
 	#instVars : [
-		'char'
+		'text'
 	],
 	#category : #'ArchC-Core-Core'
 }
 
 { #category : #'factory-chars' }
 AcAsmFormatLiteralTextChunk class >> char: c [
-	^super new
-		char: c;
+	^self new
+		text: c asString;
 		yourself 
+
 ]
 
 { #category : #'API - assembly' }
 AcAsmFormatLiteralTextChunk >> assembler [
-	^self char asParser ==> nil K
-]
+	^self text asParser flatten  ==> [ :token | #() ]
 
-{ #category : #accessing }
-AcAsmFormatLiteralTextChunk >> char [
-	^ char
-]
-
-{ #category : #accessing }
-AcAsmFormatLiteralTextChunk >> char: anObject [
-	char := anObject
 ]
 
 { #category : #'API - disassembly' }
 AcAsmFormatLiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
-	aWriteStream nextPut: char
+	aWriteStream nextPutAll: text
+
 ]
 
-{ #category : #printing }
-AcAsmFormatLiteralTextChunk >> printOn: aStream [
-	self char printOn: aStream.
-	aStream nextPutAll: ' literal chunk'
+{ #category : #accessing }
+AcAsmFormatLiteralTextChunk >> text [
+	^ text
+]
+
+{ #category : #accessing }
+AcAsmFormatLiteralTextChunk >> text:aString [
+	text := aString.
+
+]
+
+{ #category : #'printing & storing' }
+AcAsmFormatLiteralTextChunk >> unparseOn: aStream [
+   aStream nextPutAll: text
 ]
