@@ -1,6 +1,6 @@
 Class {
 	#name : #PCREL,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }
 

@@ -1,6 +1,6 @@
 Class {
 	#name : #NoOperandModifier,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }
 

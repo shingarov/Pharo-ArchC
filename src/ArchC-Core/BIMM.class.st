@@ -3,7 +3,7 @@ Branch offset on ARM
 "
 Class {
 	#name : #BIMM,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }
 

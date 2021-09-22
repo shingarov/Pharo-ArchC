@@ -1,5 +1,5 @@
 Class {
 	#name : #PCRELROT,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }

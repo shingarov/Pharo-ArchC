@@ -1,5 +1,5 @@
 Class {
 	#name : #LOW,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }

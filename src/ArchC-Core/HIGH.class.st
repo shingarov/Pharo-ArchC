@@ -1,5 +1,5 @@
 Class {
 	#name : #HIGH,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }
