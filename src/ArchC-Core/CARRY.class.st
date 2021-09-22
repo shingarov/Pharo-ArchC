@@ -5,7 +5,7 @@ As of today, I don't do anything, instead adapting to Cog design where all this 
 "
 Class {
 	#name : #CARRY,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }
 

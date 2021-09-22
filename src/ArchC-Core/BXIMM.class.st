@@ -1,5 +1,5 @@
 Class {
 	#name : #BXIMM,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }

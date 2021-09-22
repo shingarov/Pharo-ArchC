@@ -1,5 +1,5 @@
 Class {
 	#name : #ALIGN,
-	#superclass : #AsmOperandModifier,
+	#superclass : #AcAsmOperandModifier,
 	#category : #'ArchC-Core-Parsing'
 }

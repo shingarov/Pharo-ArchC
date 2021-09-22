@@ -1,5 +1,5 @@
 Class {
-	#name : #AsmOperandModifier,
+	#name : #AcAsmOperandModifier,
 	#superclass : #Object,
 	#instVars : [
 		'x'
@@ -8,16 +8,16 @@ Class {
 }
 
 { #category : #API }
-AsmOperandModifier >> encodeInFields: fs accordingTo: format [
+AcAsmOperandModifier >> encodeInFields: fs accordingTo: format [
 	self subclassResponsibility 
 ]
 
 { #category : #accessing }
-AsmOperandModifier >> x [
+AcAsmOperandModifier >> x [
 	^ x
 ]
 
 { #category : #accessing }
-AsmOperandModifier >> x: anObject [
+AcAsmOperandModifier >> x: anObject [
 	x := anObject
 ]
