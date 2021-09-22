@@ -2,9 +2,8 @@ Class {
 	#name : #AcAsmFormatMapChunk,
 	#superclass : #AcAsmFormatChunk,
 	#instVars : [
-		'map',
 		'name',
-		'source'
+		'instruction'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -22,7 +21,7 @@ AcAsmFormatMapChunk class >> map: aDictionary named: nameString source: sourceSt
 AcAsmFormatMapChunk >> assembler [ 
 	| alternativeParsers nilForEmptySym defaultInt |
 	defaultInt := nil.
-	alternativeParsers := map forwardMap associations  collect: [ :ass |
+	alternativeParsers := self map forwardMap associations  collect: [ :ass |
 		| sym i |
 		i := ass value.
 		sym := ass key.
@@ -33,8 +32,9 @@ AcAsmFormatMapChunk >> assembler [
 	nilForEmptySym := alternativeParsers remove: nil ifAbsent: [ #NoEmpty ].
 	alternativeParsers := PPChoiceParser withAll: alternativeParsers.
 	defaultInt isNil ifFalse: [ alternativeParsers :=
-		alternativeParsers optional ==> [ :x | x ifNil: [defaultInt] ] ].
-	^alternativeParsers / self immExpression  ==> [ :x | NoOperandModifier new x: x; yourself ]
+		alternativeParsers optional ==> [ :x | x ifNil: [defaultInt] ] ] .
+	^alternativeParsers / self immExpression  ==> [ :x | { NoOperandModifier new x: x; yourself } ]
+
 ]
 
 { #category : #'API - disassembly' }
@@ -47,13 +47,22 @@ AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: 
 ]
 
 { #category : #accessing }
-AcAsmFormatMapChunk >> map [
-	^ map
+AcAsmFormatMapChunk >> instruction: aProcessorInstructionDeclaration [
+	instruction := aProcessorInstructionDeclaration
 ]
 
 { #category : #accessing }
-AcAsmFormatMapChunk >> map: anObject [
-	map := anObject
+AcAsmFormatMapChunk >> map [
+	| maps |
+
+	instruction notNil ifTrue: [ 
+		maps := instruction isa maps
+	] ifFalse: [ 
+		"  This is a super-ugly hack for backward compatibility"
+		maps := AcAsmFormatParser maps
+	].
+	^ maps at: name ifAbsent: [ self error: 'No map named ' , name ]
+
 ]
 
 { #category : #accessing }
@@ -66,12 +75,9 @@ AcAsmFormatMapChunk >> name: anObject [
 	name := anObject
 ]
 
-{ #category : #accessing }
-AcAsmFormatMapChunk >> source [
-	^ source
-]
-
-{ #category : #accessing }
-AcAsmFormatMapChunk >> source: anObject [
-	source := anObject
+{ #category : #'printing & storing' }
+AcAsmFormatMapChunk >> unparseOn: aStream [
+	aStream nextPut: $%; nextPut: $[.
+	aStream nextPutAll: name.
+	aStream nextPut: $].
 ]

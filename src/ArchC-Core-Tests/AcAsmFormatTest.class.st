@@ -56,29 +56,30 @@ AcAsmFormatTest >> testBasic [
 
 { #category : #generic }
 AcAsmFormatTest >> testBasicFormat [
-	| formatParser  parseResult  firstChunk  stream |
+	| formatParser  format  stream |
 
 	formatParser := AcAsmFormatParser 
 			maps: AcProcessorDescriptions powerpc maps.
-	parseResult := formatParser parse: 'Simple string'.
-	firstChunk := parseResult first.
+	format := formatParser parse: 'Simple string'.
 	stream := WriteStream on: String new.
-	firstChunk 
+	format
 		disassembleTo: stream
 		operands: #()
 		inEnvironment: OrderedCollection new.
-	self assert: stream contents equals: 'S'
+	self assert: stream contents equals: 'Simple string'
+
 ]
 
 { #category : #powerpc }
 AcAsmFormatTest >> testEscapePercent [
-	| env parseResult fmt x |
-	fmt := '"a\%b"'.
-	parseResult := self forPowerPC parse: fmt.
+	| env format formatString x |
+	formatString := '"a\%b"'.
+	format := self forPowerPC parse: formatString.
 	env := Dictionary new.
-	x := parseResult disassembleEnv: env.
+	x := format disassembleEnv: env.
 	self assert: x key equals: 'a%b'.
 	self assert: x value equals: 0
+
 ]
 
 { #category : #sparc }
@@ -96,12 +97,12 @@ AcAsmFormatTest >> testOneCondSPARC [
 AcAsmFormatTest >> testOneImm [
 	self
 		proc: self forMIPS
-		spec: '"One #%imm imm", addr'
+		spec: '"One #%imm@imm", addr'
 		operandKeys: #('addr')
 		operandValues: #(5)
 		format: 'Type_J'
-		expect: 'One #0x5 imm'.
-	
+		expect: 'One #0x5@imm'.
+
 ]
 
 { #category : #powerpc }

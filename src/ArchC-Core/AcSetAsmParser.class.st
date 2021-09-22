@@ -35,18 +35,19 @@ AcSetAsmParser class >> processAssociations: aCollectionOfAssociations in: aPDL 
 
 { #category : #API }
 AcSetAsmParser >> parse: s [ 
-	| quote1  quote2  formatString  f  opString  op |
+	| quote1  quote2  formatString  format  opString  op |
 
 	quote1 := s indexOf: $".
 	quote2 := s indexOf: $" startingAt: quote1 + 1.
 	formatString := s copyFrom: quote1 + 1 to: quote2 - 1.
-	f := (AcAsmFormatParser maps: self pdl maps) parse: formatString.
-	f isPetitFailure ifTrue: [
+	format := (AcAsmFormatParser maps: self pdl maps) parse: formatString.
+	format isPetitFailure ifTrue: [
 		self error
 	].
 	opString := s copyFrom: quote2 + 1 to: s size.
 	op := (AcAsmOperandsParser pdl: self pdl) parse: opString.
-	^ AcSetAsm format: f operandsAndConstraints: op
+	^ AcSetAsm format: format operandsAndConstraints: op
+
 ]
 
 { #category : #accessing }

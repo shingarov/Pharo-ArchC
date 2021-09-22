@@ -6,6 +6,7 @@ Class {
 	#name : #MockFormatPoznavach,
 	#superclass : #Object,
 	#instVars : [
+		'pdl',
 		'format'
 	],
 	#category : #'ArchC-Core-Tests'
@@ -13,11 +14,13 @@ Class {
 
 { #category : #formatting }
 MockFormatPoznavach class >> format: formatName pdl: pdl [
-	| f |
-	f := pdl instructionFormats at: formatName asString.
+	| format |
+	format := pdl instructionFormats at: formatName asString.
 	^self new
-		format: f;
+		pdl: pdl;
+		format: format;
 		yourself
+
 ]
 
 { #category : #accessing }
@@ -35,4 +38,20 @@ MockFormatPoznavach >> inEnvironment: fieldValues [
 	"Quick hack to assist the forward-assemble side of AcSimpleMnemonicTest.
 	Just return the operands."
 	^fieldValues 
+]
+
+{ #category : #accessing }
+MockFormatPoznavach >> isa [
+	^ pdl
+
+]
+
+{ #category : #accessing }
+MockFormatPoznavach >> pdl [
+	^ pdl
+]
+
+{ #category : #accessing }
+MockFormatPoznavach >> pdl:something [
+	pdl := something.
 ]

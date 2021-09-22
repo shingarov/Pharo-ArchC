@@ -23,10 +23,11 @@ SetAsmAssemblerTest >> testANDGTS [
 	
 	rrxSetAsm := and1 mnemonics detect: [ :m | (m source indexOfSubCollection: 'rrx') > 0 ].
 	self mnemonic: rrxSetAsm
-		disassemble:  'andgts sp, lr, pc, rrx'   "cond, s, rd, rn, rm, shift=3, shiftamount=0"
+		disassemble:  'andgts   sp,   lr,   pc,rrx' "cond, s, rd, rn, rm, shift=3, shiftamount=0"
 		operandKeys:  #(shiftamount rn s op subop1 cond rd func1 shift rm)
 		shouldBe:     #(0           14 1 0  0      12   13 0     3     15).
 					  "             lr s           gt   sp             pc  "
+
 ]
 
 { #category : #'tests - arm' }
