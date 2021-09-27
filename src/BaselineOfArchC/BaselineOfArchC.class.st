@@ -34,6 +34,7 @@ BaselineOfArchC >> baseline: spec [
 				package: #'ArchC-Core' with:[spec requires: 'PetitParser'];
 				package: #'ArchC-Core-Tests';
 				package: #'ArchC-RISCV';
+				package: #'ArchC-RISCV-Tests';
 				package: #'ArchC-Extras-Pharo-Tests'.
 		]
 ]
