@@ -30,7 +30,7 @@ Class {
 		'pseudoInstr',
 		'helper',
 		'delay',
-		'xColumnNumber',
+		'bitfield',
 		'pseudoInstrConstituent',
 		'delayCond',
 		'strList',
@@ -185,6 +185,15 @@ AcIsaParser >> behavior [
 ]
 
 { #category : #grammar }
+AcIsaParser >> bitfield [
+	"Instruction encoding fields like %opcode:6."
+	
+	^ ((percentId / number) , $: asParser , number , ':s' asParser optional) 
+		==> [:nodes | AcInstructionBitfield name: nodes first width: nodes third signed: nodes fourth notNil ]
+
+]
+
+{ #category : #grammar }
 AcIsaParser >> cond [
 	^id,
 	'.cond' asParser,
@@ -250,7 +259,7 @@ AcIsaParser >> format [
 	#space asParser star,
 	id,
 	$= asParser trim,
-	$" asParser, xColumnNumber trim plus, '";' asParser
+	$" asParser, bitfield trim plus, '";' asParser
 	==> [ :x | Array with: 'ac_format' -> (x third -> x sixth) ]
 ]
 
@@ -425,21 +434,4 @@ AcIsaParser >> strList [
 		initial addAllLast: rest.
 		initial
 	 ]
-]
-
-{ #category : #grammar }
-AcIsaParser >> xColumnNumber [
-	"Instruction encoding fields like %opcode:6.
-	NB: because the parser records the parsing result in associations
-	such as '%opcode' -> 6, the 'signed' tag is conveyed via a horrible
-	hack: by negating the width.  That is, if the width is negative then
-	the operand is to be treated as signed."
-	^(percentId / number), $: asParser, number, ':s' asParser optional
-	==> [ :x |
-		| fieldName width signed |
-		fieldName := x first.
-		width := x third.
-		signed := x fourth.
-		signed isNil ifFalse: [ width := width negated ].
-		fieldName -> width ]
 ]
