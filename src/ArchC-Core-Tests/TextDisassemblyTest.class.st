@@ -49,12 +49,3 @@ TextDisassemblyTest >> testPowerSc [
 	self assert: text equals: 'sc'.
 
 ]
-
-{ #category : #tests }
-TextDisassemblyTest >> testRiscvJAL [
-	| instr text |
-	instr := AcProcessorDescriptions riscv decode: 16r008500e7 . "jalr ra, a0, 8"
-	text := instr disassemble.
-	self assert: text equals: 'jalr ra, a0, 0x8'.
-
-]

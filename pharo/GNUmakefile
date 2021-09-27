@@ -26,7 +26,7 @@ endif
 
 test: $(PROJECT).image pharo
 	#./pharo $< test --fail-on-failure "$(PROJECT).*Tests.*"
-	./pharo $< test --fail-on-failure "ArchC-Core-Tests"
+	./pharo $< test --fail-on-failure "ArchC-Core-Tests" "ArchC-RISCV-Tests"
 
 clean:
 	rm -f $(PROJECT).image $(PROJECT).changes *Test.xml *.fuel
