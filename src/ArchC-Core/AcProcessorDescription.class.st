@@ -103,9 +103,9 @@ AcProcessorDescription >> decodeInt: anInteger [
 AcProcessorDescription >> decodeableFormFor: code [
 	(code isInteger and: [ self hasConstantInstructionWidth ]) ifTrue: [ ^code toBitVector: self constantInstructionWidth ].
 	((code isKindOf: ByteArray)  and: [ self hasConstantInstructionWidth ])
-		ifTrue: [ ^self endian = #little
-			ifTrue: [code asBitVectorLE]
-			ifFalse: [code asBitVectorBE]].
+		ifTrue: [ ^self endian 
+					ifBig: [code asBitVectorBE]
+					ifLittle: [code asBitVectorLE]].
 	^code
 ]
 
