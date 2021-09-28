@@ -98,9 +98,8 @@ AcArchParser >> doubleQuoted [
 
 { #category : #grammar }
 AcArchParser >> endian [
-	^('set_endian("little");' asParser ==> [ :x | 'endian' -> #little ]) /
-	('set_endian("big");' asParser ==> [ :x | 'endian' -> #big ])
-
+	^('set_endian("little");' asParser ==> [ :x | 'endian' -> Endian little ]) /
+	('set_endian("big");' asParser ==> [ :x | 'endian' -> Endian big ])
 ]
 
 { #category : #grammar }
