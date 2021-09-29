@@ -101,12 +101,18 @@ AcProcessorDescription >> decodeInt: anInteger [
 
 { #category : #'constant width' }
 AcProcessorDescription >> decodeableFormFor: code [
-	(code isInteger and: [ self hasConstantInstructionWidth ]) ifTrue: [ ^code toBitVector: self constantInstructionWidth ].
-	((code isKindOf: ByteArray)  and: [ self hasConstantInstructionWidth ])
-		ifTrue: [ ^self endian 
-					ifBig: [code asBitVectorBE]
-					ifLittle: [code asBitVectorLE]].
-	^code
+	self hasConstantInstructionWidth ifTrue: [
+		(code isKindOf: ByteArray)"Sigh, Pharo has no #isByteArray"
+			ifTrue: [ 
+				code size == (self constantInstructionWidth // 8) 
+					ifFalse: [ self error: 'Invalid bytes (too few or too much)' ].
+				^code toBitVectorEndian: self endian ].
+		(code isCollection and:[code isSequenceable])
+			ifTrue:[ ^code ].
+		^code toBitVector: self constantInstructionWidth
+	] ifFalse: [ 
+		self error: 'Not applicable for variable-width ISA'
+	].
 ]
 
 { #category : #disassembly }
