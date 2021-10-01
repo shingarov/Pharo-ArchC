@@ -2,18 +2,26 @@ Class {
 	#name : #AcAsmMapEntry,
 	#superclass : #Object,
 	#instVars : [
-		'i',
-		'sym',
+		'name',
+		'value',
 		'cardinality'
 	],
 	#category : #'ArchC-Core-Core'
 }
 
 { #category : #'instance creation' }
-AcAsmMapEntry class >> i: i sym: sym cardinality: c [
-	^self new
-		i: i; sym: sym; cardinality: c;
-		yourself
+AcAsmMapEntry class >> name: name value: value [
+	^ self new name: name value: value cardinality: 1
+]
+
+{ #category : #'instance creation' }
+AcAsmMapEntry class >> name: name value: value cardinality: cardinality [
+	^ self new name: name value: value cardinality: cardinality
+]
+
+{ #category : #converting }
+AcAsmMapEntry >> aString [
+	^ name
 ]
 
 { #category : #accessing }
@@ -22,34 +30,48 @@ AcAsmMapEntry >> cardinality [
 ]
 
 { #category : #accessing }
-AcAsmMapEntry >> cardinality: anObject [
-	cardinality := anObject
+AcAsmMapEntry >> key [
+	"For compatibility with association"
+	^ name
 ]
 
 { #category : #accessing }
-AcAsmMapEntry >> i [
-	^ i
+AcAsmMapEntry >> name [
+	^ name
 ]
 
-{ #category : #accessing }
-AcAsmMapEntry >> i: anObject [
-	i := anObject
+{ #category : #initialization }
+AcAsmMapEntry >> name:nameArg value:valueArg cardinality: cardinalityArg [
+	self assert: nameArg isString.
+	self assert: valueArg isInteger.
+	self assert: cardinalityArg isInteger. 
+
+	name := nameArg.
+	value := valueArg.
+	cardinality := cardinalityArg
 ]
 
 { #category : #printing }
 AcAsmMapEntry >> printOn: aStream [
-	aStream nextPutAll: self sym; nextPutAll: '->'.
-	self i printOn: aStream.
-	aStream nextPutAll: '*'.
-	self cardinality printOn: aStream.
+	aStream nextPutAll: self name.
+]
+
+{ #category : #converting }
+AcAsmMapEntry >> toBitVector: xlen [
+	^ value toBitVector: xlen
+]
+
+{ #category : #converting }
+AcAsmMapEntry >> toInt [
+	^ value toInt
 ]
 
 { #category : #accessing }
-AcAsmMapEntry >> sym [
-	^ sym
+AcAsmMapEntry >> value [
+	^ value
 ]
 
 { #category : #accessing }
-AcAsmMapEntry >> sym: anObject [
-	sym := anObject
+AcAsmMapEntry >> value: anInteger [
+	self shouldNotImplement
 ]
