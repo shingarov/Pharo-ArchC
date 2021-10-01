@@ -39,10 +39,10 @@ AcAsmFormatMapChunk >> assembler [
 
 { #category : #'API - disassembly' }
 AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: aDictionary [
-	| op v symbolic |
+	| op value symbolic |
 	op := ops removeFirst operand.
-	v := aDictionary at: op.
-	symbolic := self map backLookup: v.
+	value := aDictionary at: op.
+	symbolic := (self map backLookup: value) name.
 	aWriteStream nextPutAll: symbolic
 ]
 
