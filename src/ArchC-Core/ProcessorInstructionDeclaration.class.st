@@ -11,7 +11,7 @@ Class {
 		'name',
 		'format',
 		'internalBindings',
-		'mnemonics',
+		'syntax',
 		'semantics',
 		'isa'
 	],
@@ -19,13 +19,12 @@ Class {
 }
 
 { #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
-	mnemonics isNil ifTrue: [ 
-		mnemonics := Array with: aMnemonicSpec
-	] ifFalse: [ 
-		mnemonics := mnemonics copyWith: aMnemonicSpec
+ProcessorInstructionDeclaration >> addSyntax: aMnemonicSpec [ 
+	syntax isNil ifTrue: [
+		syntax := Array with: aMnemonicSpec
+	] ifFalse: [
+		syntax := syntax copyWith: aMnemonicSpec
 	].
-
 ]
 
 { #category : #solving }
@@ -193,8 +192,8 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 	format isString ifTrue: [ 
 		format := isa instructionFormats at: format
 	].     
-	mnemonics notNil ifTrue: [ 
-		mnemonics withIndexDo: [ :mnemonicSpecOrString :index |
+	syntax notNil ifTrue: [ 
+		syntax withIndexDo: [ :mnemonicSpecOrString :index |
 			mnemonicSpecOrString isString ifTrue: [ 
 				| mnemonicSpecSource mnemonicSpec |
 
@@ -202,26 +201,16 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 				mnemonicSpec := (AcSetAsmParser pdl: isa) parse: mnemonicSpecSource.
 				mnemonicSpec source: mnemonicSpecSource.
 				mnemonicSpec instruction: self.
-				mnemonics at: index put: mnemonicSpec.
-				isa addMnemonic: mnemonicSpec assembler                  
+				syntax at: index put: mnemonicSpec.
+				isa addSyntax: mnemonicSpec assembler                  
 			].
 		]. 
 	].
-
 ]
 
 { #category : #private }
 ProcessorInstructionDeclaration >> leastKnownBinary [
 	^self format binaryEncoding inEnvironment: self internalBindings
-]
-
-{ #category : #accessing }
-ProcessorInstructionDeclaration >> mnemonics [
-	mnemonics isNil ifTrue: [
-		^ #()
-	].
-	^ mnemonics
-
 ]
 
 { #category : #accessing }
@@ -264,6 +253,16 @@ ProcessorInstructionDeclaration >> rangeOf: fieldName [
 	start := format positionOf: fieldName.
 	stop := start + 1 - (format widthOf: fieldName).
 	^Interval from: start to: stop by: -1
+]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> syntax [
+	"Return a collection of assembly syntax forms (as `AcAsmSyntax` instances)."
+
+	syntax isNil ifTrue: [
+		^ #()
+	].
+	^ syntax
 ]
 
 { #category : #'as yet unclassified' }

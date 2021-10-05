@@ -1,5 +1,5 @@
 Class {
-	#name : #AcSetAsm,
+	#name : #AcAsmSyntax,
 	#superclass : #Object,
 	#instVars : [
 		'source',
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-AcSetAsm class >> format: aMnemonicFormat operandsAndConstraints: anArray [
+AcAsmSyntax class >> format: aMnemonicFormat operandsAndConstraints: anArray [
 	^self new
 		format: aMnemonicFormat ;
 		"Generally speaking, anArray will contain a mixture of operand names (Strings)
@@ -23,7 +23,7 @@ AcSetAsm class >> format: aMnemonicFormat operandsAndConstraints: anArray [
 ]
 
 { #category : #'API - assembly' }
-AcSetAsm >> assembler [
+AcAsmSyntax >> assembler [
 	"Construct a parser which will parse the actual
 	assembly statements."
 	| parser |
@@ -41,17 +41,17 @@ AcSetAsm >> assembler [
 ]
 
 { #category : #accessing }
-AcSetAsm >> constraints [
+AcAsmSyntax >> constraints [
 	^ constraints
 ]
 
 { #category : #accessing }
-AcSetAsm >> constraints: anObject [
+AcAsmSyntax >> constraints: anObject [
 	constraints := anObject
 ]
 
 { #category : #'API - disassembly' }
-AcSetAsm >> constraintsSatisfiedBy: aDictionary [
+AcAsmSyntax >> constraintsSatisfiedBy: aDictionary [
 	"Answer whether the operand valuation given by aDictionary,
 	satisfies the constraints of this syntactic form.
 	Note that aDictionary MUST include everything in <constraints>."
@@ -64,7 +64,7 @@ AcSetAsm >> constraintsSatisfiedBy: aDictionary [
 ]
 
 { #category : #'API - disassembly' }
-AcSetAsm >> disassembleEnv: aDictionary [
+AcAsmSyntax >> disassembleEnv: aDictionary [
 	"Given the operand environment aDictionary,
 	 answer a string of disassembly, or nil if
 	 the environment does not fit this spec.
@@ -85,7 +85,7 @@ AcSetAsm >> disassembleEnv: aDictionary [
 ]
 
 { #category : #accessing }
-AcSetAsm >> format [
+AcAsmSyntax >> format [
 	format isString ifTrue: [ 
 		format := AcAsmFormatParser parse: format.
 		format do: [:each | each instruction: instruction ]
@@ -95,7 +95,7 @@ AcSetAsm >> format [
 ]
 
 { #category : #accessing }
-AcSetAsm >> format: anObject [
+AcAsmSyntax >> format: anObject [
 	format := anObject.
 	format isString ifFalse: [ 
 		format instruction: instruction
@@ -104,12 +104,12 @@ AcSetAsm >> format: anObject [
 ]
 
 { #category : #accessing }
-AcSetAsm >> instruction [
+AcAsmSyntax >> instruction [
 	^ instruction
 ]
 
 { #category : #accessing }
-AcSetAsm >> instruction: i [
+AcAsmSyntax >> instruction: i [
 	instruction := i.
 	format isString ifFalse: [ 
 		format instruction: instruction
@@ -118,27 +118,27 @@ AcSetAsm >> instruction: i [
 ]
 
 { #category : #accessing }
-AcSetAsm >> operands [
+AcAsmSyntax >> operands [
 	^ operands
 ]
 
 { #category : #accessing }
-AcSetAsm >> operands: anArray [
+AcAsmSyntax >> operands: anArray [
 	
 	operands := anArray 
 ]
 
 { #category : #printing }
-AcSetAsm >> printOn: aStream [
+AcAsmSyntax >> printOn: aStream [
 	aStream nextPutAll: (self source ifNil: [ 'AcSetAsm (no source)' ])
 ]
 
 { #category : #accessing }
-AcSetAsm >> source [
+AcAsmSyntax >> source [
 	^ source
 ]
 
 { #category : #accessing }
-AcSetAsm >> source: anObject [
+AcAsmSyntax >> source: anObject [
 	source := anObject
 ]

@@ -43,8 +43,7 @@ AcAsmOperandsParser class >> processAssociation: instrNameToSetAsm in: aPDL [
 	setAsm := (self pdl: aPDL) parse: setAsmSource.
 	setAsm source: setAsmSource.
 	instruction := aPDL instructions at: instructionName.
-	instruction addMnemonic: setAsm.
-
+	instruction addSyntax: setAsm.
 ]
 
 { #category : #'instance creation' }

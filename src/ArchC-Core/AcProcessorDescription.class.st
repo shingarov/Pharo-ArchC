@@ -55,9 +55,8 @@ AcProcessorDescription class >> systemIcon [
 ]
 
 { #category : #'collaboration with parser' }
-AcProcessorDescription >> addMnemonic: aParser [
-	instructionMnemonics add: aParser 
-
+AcProcessorDescription >> addSyntax: aParser [ 
+	instructionMnemonics add: aParser
 ]
 
 { #category : #accessing }
