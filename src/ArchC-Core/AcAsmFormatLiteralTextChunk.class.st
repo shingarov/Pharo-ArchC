@@ -27,6 +27,18 @@ AcAsmFormatLiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvir
 
 ]
 
+{ #category : #testing }
+AcAsmFormatLiteralTextChunk >> isTextChunk [
+	^ true
+]
+
+{ #category : #accessing }
+AcAsmFormatLiteralTextChunk >> mnemonicsInto: aSet [
+	"See AcAsmFormat >> #mnemonicsInto:"
+
+	^ aSet add: text
+]
+
 { #category : #accessing }
 AcAsmFormatLiteralTextChunk >> text [
 	^ text

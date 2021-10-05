@@ -32,6 +32,38 @@ AcAsmFormatMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironm
 
 ]
 
+{ #category : #accessing }
+AcAsmFormatMnemonicChunk >> mnemonicsInto: aSet [
+	"See AcAsmFormat >> #mnemonicsInto:"
+
+	| mnemonics |
+
+	mnemonics := Set with:''.
+	subchunks do: [:each | 
+		each isTextChunk ifTrue: [ 
+			mnemonics := mnemonics collect: [ :prefix | prefix , each text ].
+		] ifFalse: [ 
+			each isMapChunk ifTrue: [ 
+				mnemonics := mnemonics collect: [ :prefix | each map forwardMap keys collect: [:sym | prefix , sym ] ].
+				mnemonics := mnemonics flattened.
+			] ifFalse: [ 
+				self error: 'Not a text nor map chunk in mnemonic, should not happen!'
+			].
+		].
+	].
+	aSet addAll: mnemonics.
+
+	"
+	((AcProcessorDescriptions armv5) instructionAt: 'add1') mnemonics
+	((AcProcessorDescriptions riscv) instructionAt: 'addi') mnemonics
+	"
+]
+
+{ #category : #accessing }
+AcAsmFormatMnemonicChunk >> subchunks:aSequenceableCollection [
+	subchunks := aSequenceableCollection.
+]
+
 { #category : #'printing & storing' }
 AcAsmFormatMnemonicChunk >> unparseOn: aStream [            
 	subchunks do: [:each | each unparseOn: aStream ]
