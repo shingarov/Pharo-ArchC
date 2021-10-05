@@ -118,6 +118,28 @@ AcAsmSyntax >> instruction: i [
 ]
 
 { #category : #accessing }
+AcAsmSyntax >> mnemonics [
+	"Return all mnemonics (as array of strings) defined by this format. 
+	 See AcAsmFormat >> #mnemonicsInto: for details."
+
+	| mnemonics |
+
+	mnemonics := Set new.
+	self mnemonicsInto: mnemonics.
+	^ mnemonics
+
+	"
+	((AcProcessorDescriptions reset; armv5) instructionAt: 'add1') mnemonics
+	((AcProcessorDescriptions reset; riscv) instructionAt: 'addi') mnemonics
+	"
+]
+
+{ #category : #accessing }
+AcAsmSyntax >> mnemonicsInto: aSet [
+	format mnemonicsInto: aSet
+]
+
+{ #category : #accessing }
 AcAsmSyntax >> operands [
 	^ operands
 ]

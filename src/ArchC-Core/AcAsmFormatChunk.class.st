@@ -104,6 +104,16 @@ AcAsmFormatChunk >> instruction: aProcessorInstructionDeclaration [
 	"Nothing to do"
 ]
 
+{ #category : #testing }
+AcAsmFormatChunk >> isMapChunk [
+	^ false
+]
+
+{ #category : #testing }
+AcAsmFormatChunk >> isTextChunk [
+	^ false
+]
+
 { #category : #'printing & storing' }
 AcAsmFormatChunk >> printOn: aStream [
 	super printOn: aStream.

@@ -52,6 +52,29 @@ AcAsmFormat >> mnemonic:anAcAsmFormatChunk [
 ]
 
 { #category : #accessing }
+AcAsmFormat >> mnemonicsInto: aSet [
+	"Add all mnemonics (as strings) defined by this format into given
+	 set.
+
+	 Usually, each asm format defines one mnemonic but some ISAs
+	 define multiple mnemonics in single asm format by means of 
+	 maps. 
+
+	 For example, consider ARMv5 ISA and 'add1' instruction format
+	 'add%[cond]%sf %reg, %reg, %reg'. 
+	 Then
+
+		 (armv5 instructionAt: 'add1') mnemonicsInto: set
+
+	 adds to the set following: 
+
+		 #('addeq' 'addeqs' 'addne' 'addnes' ... 'addle' 'addles')
+
+	"
+	^ mnemonic mnemonicsInto: aSet
+]
+
+{ #category : #accessing }
 AcAsmFormat >> operands [
 	^ operands
 

@@ -51,6 +51,11 @@ AcAsmFormatMapChunk >> instruction: aProcessorInstructionDeclaration [
 	instruction := aProcessorInstructionDeclaration
 ]
 
+{ #category : #testing }
+AcAsmFormatMapChunk >> isMapChunk [
+	^ true
+]
+
 { #category : #accessing }
 AcAsmFormatMapChunk >> map [
 	| maps |

@@ -214,6 +214,31 @@ ProcessorInstructionDeclaration >> leastKnownBinary [
 ]
 
 { #category : #accessing }
+ProcessorInstructionDeclaration >> mnemonics [
+	"Return all mnemonics (as array of strings) defined by this format. 
+	 See AcAsmFormat >> #mnemonicsInto: for details."
+
+	| mnemonics |
+
+	mnemonics := Set new.
+	self mnemonicsInto: mnemonics.
+	^ mnemonics
+
+	"
+	((AcProcessorDescriptions reset; armv5) instructionAt: 'add1') mnemonics
+	((AcProcessorDescriptions reset; riscv) instructionAt: 'addi') mnemonics
+	"
+]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> mnemonicsInto: aSet [
+	"Add all mnemonics for this instruction into given set.
+	 See AcAsmFormat >> #mnemonicsInto: for details."
+
+	self syntax do: [:each | each mnemonicsInto: aSet ]
+]
+
+{ #category : #accessing }
 ProcessorInstructionDeclaration >> name [
 	^ name
 ]
