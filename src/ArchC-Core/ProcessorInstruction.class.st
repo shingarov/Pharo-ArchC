@@ -87,8 +87,7 @@ ProcessorInstruction >> canFitBinary: aBV [
 { #category : #disassembly }
 ProcessorInstruction >> disassemble [
 	| variants |
-	variants := mnemonics collect: [ :mnem |
-		mnem disassembleEnv: self allBindingValues ].
+	variants := self syntax collect: [ :each | each disassembleEnv: self allBindingValues ].
 	variants := variants reject: [ :v | v isNil ].
 	variants := variants sorted: [ :a :b | a value > b value ].
 	^variants first key
