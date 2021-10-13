@@ -15,6 +15,11 @@ AcAsmFormatCompositeChunk class >> new [
 
 ]
 
+{ #category : #accessing }
+AcAsmFormatCompositeChunk >> at: index [
+	^ subchunks at: index
+]
+
 { #category : #initialization }
 AcAsmFormatCompositeChunk >> initialize [
 	"Invoked when a new instance is created."
@@ -38,10 +43,25 @@ AcAsmFormatCompositeChunk >> isEmpty [
 
 ]
 
+{ #category : #accessing }
+AcAsmFormatCompositeChunk >> modifier [
+	| builtins |
+
+	builtins := subchunks select: [ :each | each isBuiltinChunk ].
+	builtins isEmpty ifTrue: [ ^ NoOperandModifier ].
+	builtins size == 1 ifTrue: [ ^ builtins first modifier ].
+	self error: 'Oops, more than one builtin chunk!'.
+]
+
 { #category : #testing }
 AcAsmFormatCompositeChunk >> notEmpty [
 	^ subchunks notEmpty
 
+]
+
+{ #category : #accessing }
+AcAsmFormatCompositeChunk >> size [
+	^ subchunks size
 ]
 
 { #category : #accessing }

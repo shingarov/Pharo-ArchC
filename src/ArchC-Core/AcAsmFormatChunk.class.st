@@ -105,6 +105,13 @@ AcAsmFormatChunk >> instruction: aProcessorInstructionDeclaration [
 ]
 
 { #category : #testing }
+AcAsmFormatChunk >> isBuiltinChunk [
+	"return false here; to be redefined in subclass(es)"
+
+	^ false
+]
+
+{ #category : #testing }
 AcAsmFormatChunk >> isMapChunk [
 	^ false
 ]
@@ -112,6 +119,11 @@ AcAsmFormatChunk >> isMapChunk [
 { #category : #testing }
 AcAsmFormatChunk >> isTextChunk [
 	^ false
+]
+
+{ #category : #accessing }
+AcAsmFormatChunk >> modifier [
+	^ NoOperandModifier
 ]
 
 { #category : #'printing & storing' }
