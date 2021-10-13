@@ -72,6 +72,11 @@ AcAsmFormatBuiltinChunk >> instruction: aProcessorInstructionDeclaration [
 	instruction := aProcessorInstructionDeclaration
 ]
 
+{ #category : #testing }
+AcAsmFormatBuiltinChunk >> isBuiltinChunk [
+	^ true
+]
+
 { #category : #accessing }
 AcAsmFormatBuiltinChunk >> modifier [
 	^ modifier

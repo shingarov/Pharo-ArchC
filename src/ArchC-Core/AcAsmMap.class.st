@@ -40,6 +40,26 @@ AcAsmMap >> forwardMap: anObject [
 	forwardMap := anObject
 ]
 
+{ #category : #API }
+AcAsmMap >> lookup: symbol [
+	^forwardMap at: symbol 
+]
+
+{ #category : #accessing }
+AcAsmMap >> name [
+	^ name
+]
+
+{ #category : #helpers }
+AcAsmMap >> name2self [
+	^self name -> self
+]
+
+{ #category : #accessing }
+AcAsmMap >> name: anObject [
+	name := anObject
+]
+
 { #category : #initialization }
 AcAsmMap >> name: nameArg entries: entriesArg [
 	"For disassembly purposes, select the most specific symbolic names
@@ -79,26 +99,6 @@ AcAsmMap >> name: nameArg entries: entriesArg [
 					cardinalities at: entryValue put: entryCardinality.
 					backMap at: entryValue put: entry ] ] ] .
 	^self
-]
-
-{ #category : #API }
-AcAsmMap >> lookup: symbol [
-	^forwardMap at: symbol 
-]
-
-{ #category : #accessing }
-AcAsmMap >> name [
-	^ name
-]
-
-{ #category : #helpers }
-AcAsmMap >> name2self [
-	^self name -> self
-]
-
-{ #category : #accessing }
-AcAsmMap >> name: anObject [
-	name := anObject
 ]
 
 { #category : #printing }
