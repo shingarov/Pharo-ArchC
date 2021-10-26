@@ -83,8 +83,11 @@ Either use shortcut:
     Smalltalk loadPackage: 'MachineArithmetic'.
     Smalltalk loadPackage: 'MachineArithmetic-Tests'.
     Smalltalk loadPackage: 'stx:goodies/petitparser'.
-	Smalltalk loadPackage: 'ArchC-Core'.
-	Smalltalk loadPackage: 'ArchC-Core-Tests'.
+    Smalltalk loadPackage: 'ArchC-Core'.
+    Smalltalk loadPackage: 'ArchC-Core-Tests'.
+    Smalltalk loadPackage: 'ArchC-RISCV'.
+    Smalltalk loadPackage: 'ArchC-RISCV-Tests'.
+
 
     "/ Set `libz3.so` to use
     (Smalltalk at: #LibZ3) libraryName: '/where/you/cloned/it/z3/build/libz3.so'
