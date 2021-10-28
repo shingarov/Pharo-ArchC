@@ -20,6 +20,11 @@ AcInstructionBitfield >> key [
 ]
 
 { #category : #accessing }
+AcInstructionBitfield >> name [
+	^ name
+]
+
+{ #category : #accessing }
 AcInstructionBitfield >> name:nameArg width:widthArg signed:signedArg [
 	name := nameArg.
 	width := widthArg.
@@ -39,4 +44,9 @@ AcInstructionBitfield >> printOn:aStream [
 { #category : #'accessing - compatibility' }
 AcInstructionBitfield >> value [
 	^ signed ifTrue: [ width negated ] ifFalse: [ width ]
+]
+
+{ #category : #accessing }
+AcInstructionBitfield >> width [
+	^ width
 ]
