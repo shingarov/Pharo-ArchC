@@ -294,3 +294,10 @@ ProcessorInstructionDeclaration >> syntax [
 ProcessorInstructionDeclaration >> totalOperandWidth [
 	self shouldBeImplemented.
 ]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> width [
+	"Answer the width of instructions in bits."
+
+	^ self format width
+]
