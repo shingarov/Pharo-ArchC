@@ -545,7 +545,7 @@ AcRISCVOpcodeParser >> type_S [
 		instr name: nodes first.
 		instr format: 'Type_S'.
 		instr internalBindings: internalBindings.
-		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm1+imm2+imm3)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rs1, rs2, imm1+imm2)'.
 
 		instr
 		]
