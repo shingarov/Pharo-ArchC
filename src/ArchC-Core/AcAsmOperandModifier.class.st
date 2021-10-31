@@ -7,6 +7,11 @@ Class {
 	#category : #'ArchC-Core-Parsing'
 }
 
+{ #category : #disassembling }
+AcAsmOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
+	^ self subclassResponsibility
+]
+
 { #category : #'printing & storing' }
 AcAsmOperandModifier class >> unparseOn: aStream [
 	"See AcAsmFormatChunk >> #unparseOn:"
