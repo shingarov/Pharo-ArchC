@@ -38,7 +38,7 @@ AsmOperandInstantiation >> asOperandInstantiation [
 ]
 
 { #category : #decoding }
-AsmOperandInstantiation >> decodeComplexValue: bitfields accordingTo: format [ 
+AsmOperandInstantiation >> decode: bitfields accordingTo: format [ 
 	| value |
 
 	value := BitVector empty.
@@ -50,11 +50,6 @@ AsmOperandInstantiation >> decodeComplexValue: bitfields accordingTo: format [
 		value := value , ((bitfields at: bitfield) toBitVector: bitwidth).
 	].
 	^ value simplify
-]
-
-{ #category : #decoding }
-AsmOperandInstantiation >> decodeSimpleValue: bitfields [
-	^bitfields at: self operand
 ]
 
 { #category : #encoding }

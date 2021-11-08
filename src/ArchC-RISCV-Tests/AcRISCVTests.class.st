@@ -83,7 +83,9 @@ AcRISCVTests >> testRiscvJAL [
 	self assert: insn emit32 equals: 16r008500e7.
 
 	insn := pdl decode: 16r008500e7 .
-	self assert: insn disassemble equals: 'jalr ra, a0, 0x8'.
+	"Dissasembly prints displacement as signed decimal since
+	 in syntax format, %exp is used"
+	self assert: insn disassemble equals: 'jalr ra, a0, 8'.
 ]
 
 { #category : #'tests - RISC-V' }
