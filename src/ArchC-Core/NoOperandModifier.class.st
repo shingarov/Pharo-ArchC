@@ -4,20 +4,9 @@ Class {
 	#category : #'ArchC-Core-Parsing'
 }
 
-{ #category : #disassembling }
-NoOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
-	| subfieldValues fullBitVector |
-	subfieldValues := anOperandInstantiation inEnvironment: e format: f.
-	fullBitVector := (BitVector concatAll: subfieldValues) simplify.
-	fullBitVector isSymbolic ifTrue: [
-			aWriteStream nextPut: ${.
-			aWriteStream nextPutAll: fullBitVector astToString.
-			aWriteStream nextPut: $} 
-	] ifFalse: [
-		aWriteStream nextPutAll: '0x'.
-		fullBitVector value printOn: aWriteStream base: 16 showRadix: false
-	]
-
+{ #category : #API }
+NoOperandModifier class >> decode: bitfields fromFields: operandInstantiation accordingTo: format [
+	^ operandInstantiation decode: bitfields accordingTo: format
 ]
 
 { #category : #'printing & storing' }

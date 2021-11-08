@@ -7,24 +7,16 @@ Class {
 	#category : #'ArchC-Core-Parsing'
 }
 
-{ #category : #disassembling }
-BIMM class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
-	| encodedOffsets offset |
-	encodedOffsets := anOperandInstantiation inEnvironment: e format: f.
-	offset := encodedOffsets first signedValue * 4.
-	"aWriteStream nextPutAll: '0x'; nextPutAll: (offset radix: 16)"
-	aWriteStream nextPutAll: offset printString
+{ #category : #API }
+BIMM class >> decode: bitfields fromFields: operandInstantiation accordingTo: format [
+	^ (operandInstantiation decode: bitfields accordingTo: format) << 2
 ]
 
 { #category : #API }
 BIMM >> encodeInFields: fs accordingTo: format [
-	self x isString ifTrue: [       
-		fs isMultiField ifTrue: [ ^ self error ]. 
-		^ Dictionary new
-			at: fs operand put: '(', self x, ') >> 2';
-			yourself 
-	] ifFalse: [ 
-		^ self encode: self x >> 2 inFields: fs accordingTo: format        
-	].
+	| width value |
 
+	width := (fs widthAccordingTo: format).
+	value := self x toBitVector: width.
+	^ self encode: (value bitShiftRightArithmetic: 2) inFields: fs accordingTo: format
 ]

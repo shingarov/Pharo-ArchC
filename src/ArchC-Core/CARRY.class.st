@@ -10,13 +10,19 @@ Class {
 }
 
 { #category : #disassembling }
-CARRY class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f [
-	| subfieldValues immValue |
+CARRY class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f chunk: anObject [ 
+	| subfieldValues  immValue |
+
 	subfieldValues := anOperandInstantiation inEnvironment: e format: f.
-	subfieldValues size = 1 ifFalse: [ self error ].
+	subfieldValues size = 1 ifFalse: [
+		self error
+	].
 	immValue := subfieldValues first value.
 	aWriteStream nextPutAll: '0x'.
-	immValue printOn: aWriteStream base: 16 showRadix: false
+	immValue 
+		printOn: aWriteStream
+		base: 16
+		showRadix: false
 ]
 
 { #category : #API }
