@@ -95,7 +95,7 @@ AcMnemonicTest >> testArmAddPC [
 		at: 'shift' put: 0;
 		yourself).
 	s := groundedInstr disassemble.
-	self assert:  s = 'addgts a1, PC, sp'
+	self assert:  s = 'addgts a1, pc, sp'
 ]
 
 { #category : #'tests - simple' }

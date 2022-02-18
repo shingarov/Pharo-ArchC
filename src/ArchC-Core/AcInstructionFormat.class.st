@@ -26,7 +26,7 @@ AcInstructionFormat class >> opcodePositionIn: aPDL [
 
 { #category : #assertions }
 AcInstructionFormat >> assertInvariants [
-
+	self assert: (self width \\ 8) == 0
 ]
 
 { #category : #'instruction encoding' }
@@ -126,14 +126,18 @@ AcInstructionFormat >> removeFirst [
 ]
 
 { #category : #accessing }
+AcInstructionFormat >> width [
+	"Answer the width of instructions of this format in bits."
+
+	^ self bitFields sum: [ :bitfield | bitfield width ].
+]
+
+{ #category : #accessing }
 AcInstructionFormat >> widthOf: fieldName [
-	"Answer the width of the field (always positive)."
+	"Answer the width of the field in bits (always positive)."
 	
-	"NB we can't use Dictionary>>newFromAssociations:, because some
-	 constant (Integer-named) fields can have the same key.
-	 See InstructionFormatTest>>testMcrf"
-	self bitFields do: [ :assoc |
-		assoc key = fieldName ifTrue: [ ^assoc value abs ]
+	self bitFields do: [ :bitfield |
+		bitfield name = fieldName ifTrue: [ ^ bitfield width ]  
 	].
 	KeyNotFound signalFor: fieldName
 ]

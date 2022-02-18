@@ -19,10 +19,10 @@ AcSetAsmParser class >> processAssociation: instrNameToSetAsm in: aPDL [
 	setAsmSource := instrNameToSetAsm value allButLast allButFirst.
 	setAsm := (self pdl: aPDL) parse: setAsmSource.
 	instruction := aPDL instructions at: instructionName.
-	instruction addMnemonic: setAsm.
+	instruction addSyntax: setAsm.
 	setAsm source: setAsmSource.
 	setAsm instruction: instruction.
-	aPDL addMnemonic: setAsm assembler 
+	aPDL addSyntax: setAsm assembler 
 ]
 
 { #category : #'instance creation' }
@@ -46,8 +46,7 @@ AcSetAsmParser >> parse: s [
 	].
 	opString := s copyFrom: quote2 + 1 to: s size.
 	op := (AcAsmOperandsParser pdl: self pdl) parse: opString.
-	^ AcSetAsm format: format operandsAndConstraints: op
-
+	^ AcAsmSyntax format: format operandsAndConstraints: op
 ]
 
 { #category : #accessing }

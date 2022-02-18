@@ -128,7 +128,7 @@ AcAsmFormatTest >> testWeirdCharsPPC [
 		proc: self forPowerPC 
 		spec: '"la %reg, %exp@l(%imm)", rt, d, ra'
 		operandKeys: #('rt' 'ra' 'd')
-		operandValues: #(2 0 16r555)
+		operandValues: #(2 0 555)
 		format: 'D1'
-		expect: 'la 2, 0x555@l(0x0)' "Fun: ra here is %imm, not %reg"
+		expect: 'la 2, 555@l(0x0)' "Fun: ra here is %imm, not %reg"
 ]

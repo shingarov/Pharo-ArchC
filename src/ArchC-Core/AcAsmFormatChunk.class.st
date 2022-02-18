@@ -104,6 +104,28 @@ AcAsmFormatChunk >> instruction: aProcessorInstructionDeclaration [
 	"Nothing to do"
 ]
 
+{ #category : #testing }
+AcAsmFormatChunk >> isBuiltinChunk [
+	"return false here; to be redefined in subclass(es)"
+
+	^ false
+]
+
+{ #category : #testing }
+AcAsmFormatChunk >> isMapChunk [
+	^ false
+]
+
+{ #category : #testing }
+AcAsmFormatChunk >> isTextChunk [
+	^ false
+]
+
+{ #category : #accessing }
+AcAsmFormatChunk >> modifier [
+	^ NoOperandModifier
+]
+
 { #category : #'printing & storing' }
 AcAsmFormatChunk >> printOn: aStream [
 	super printOn: aStream.

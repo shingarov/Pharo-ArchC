@@ -95,12 +95,11 @@ AcIsaParser >> asmMap [
 	asmMapBody trim plus,
 	$} asParser
 	==> [ :x |
-		| mapId mapbodylist map |
-		mapId := x second.
-		mapbodylist := x fifth.
-		map := AcAsmMap from: mapbodylist.
-		Array with: 'ac_map' -> (map name: mapId) ]
-	
+		| name entries map |
+		name := x second.
+		entries := x fifth flattened.
+		map := AcAsmMap name: name entries: entries.
+		Array with: 'ac_map' -> map ]
 ]
 
 { #category : #grammar }
@@ -115,16 +114,16 @@ AcIsaParser >> asmMapBody [
 
 { #category : #grammar }
 AcIsaParser >> asmMapBody1 [
-	"Map body, Form 1: symbolList = int;	"
+	"Map body, Form 1: symbolList = int;        "
 	^strList,
 	$= asParser trim,
 	number,
 	$; asParser
 	==> [ :x |
-		| names i |
+		| names value |
 		names := x first.
-		i := x third.
-		names collect: [ :aName | AcAsmMapEntry i: i sym: aName cardinality: 1 ]
+		value := x third.
+		names collect: [ :name | AcAsmMapEntry name: name value: value ]
 		]
 ]
 
@@ -137,17 +136,16 @@ AcIsaParser >> asmMapBody2 [
 	rangeSubscript,
 	$; asParser
 	==> [ :x |
-		| name l r answer |
+		| name lhsRange rhsRange entries |
 		name := x first.
-		l := x second.
-		r := x fourth.
-		l size = r size ifFalse: [ self error: l incommensurable: r ].
-		answer := Array new: l size.
-		r doWithIndex: [ :rightSubscript :i |
-			answer
-				at: i
-				put: ( AcAsmMapEntry i: rightSubscript sym: name, (l at: i) printString cardinality: l size ) ].
-		answer
+		lhsRange := x second.
+		rhsRange := x fourth.
+		lhsRange size = rhsRange size ifFalse: [ self error: lhsRange incommensurable: rhsRange ].
+		entries := (0 to: lhsRange size - 1) 
+						collect: [ :i | AcAsmMapEntry name: name , (lhsRange first + i) printString 
+														value: (rhsRange first + i) 
+														cardinality: rhsRange size ].
+		entries
 		]
 ]
 

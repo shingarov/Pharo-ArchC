@@ -283,7 +283,7 @@ AcRISCVOpcodeParser >> type_B [
 		instr name: nodes first.
 		instr format: 'Type_B'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp(bimm16)", rs1, rs2, imm1+imm2+imm3+imm4)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp(bimm16)", rs1, rs2, imm1+imm2+imm3+imm4)'.
 
 		instr
 		]
@@ -292,7 +292,6 @@ AcRISCVOpcodeParser >> type_B [
 	"
 	AcRISCVOpcodeParser parse: 'bgeu    bimm12hi rs1 rs2 bimm12lo 14..12=7 6..2=0x18 1..0=3' startingAt: #type_B
 	"
-
 ]
 
 { #category : #parsing }
@@ -310,7 +309,7 @@ AcRISCVOpcodeParser >> type_I [
 		instr name: nodes first.
 		instr format: 'Type_I'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
 
 		instr
 		])
@@ -327,7 +326,7 @@ AcRISCVOpcodeParser >> type_I [
 		instr name: nodes first.
 		instr format: 'Type_I'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, imm)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, imm)'.
 
 		instr
 		])
@@ -338,7 +337,6 @@ AcRISCVOpcodeParser >> type_I [
 	AcRISCVOpcodeParser parse: 'add     rd rs1 rs2 31..25=0  14..12=0 6..2=0x0C 1..0=3' startingAt: #type_I
 	AcRISCVOpcodeParser parse: 'fence.i     imm12                       rs1 14..12=1 rd 6..2=0x03 1..0=3' startingAt: #type_I
 	"
-
 ]
 
 { #category : #parsing }
@@ -384,7 +382,7 @@ AcRISCVOpcodeParser >> type_Ish [
 		instr name: nodes first.
 		instr format: 'Type_Ish'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, shamt)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, shamt)'.
 
 		instr
 		]
@@ -393,7 +391,6 @@ AcRISCVOpcodeParser >> type_Ish [
 	"
 	AcRISCVOpcodeParser parse: 'srai    rd rs1 31..26=16 shamt 14..12=5 6..2=0x04 1..0=3' startingAt: #type_Ish
 	"
-
 ]
 
 { #category : #parsing }
@@ -413,7 +410,7 @@ AcRISCVOpcodeParser >> type_Ishw [
 		instr name: nodes first.
 		instr format: 'Type_Ishw'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, shamtw)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %imm", rd, rs1, shamtw)'.
 
 		instr
 		]
@@ -423,7 +420,6 @@ AcRISCVOpcodeParser >> type_Ishw [
 	AcRISCVOpcodeParser parse: 'slliw   rd rs1 31..25=0  shamtw 14..12=1 6..2=0x06 1..0=3' startingAt: #type_Ish
 	AcRISCVOpcodeParser parse: 'slliw   rd rs1 31..25=0  shamtw 14..12=1 6..2=0x06 1..0=3'
 	"
-
 ]
 
 { #category : #parsing }
@@ -444,7 +440,7 @@ AcRISCVOpcodeParser >> type_Isys [
 		instr name: nodes first.
 		instr format: 'Type_I'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , '")'.
+		instr addSyntax: '("' , nodes first , '")'.
 
 		instr
 		]
@@ -453,7 +449,6 @@ AcRISCVOpcodeParser >> type_Isys [
 	"
 	AcRISCVOpcodeParser parse: 'ebreak 11..7=0 19..15=0 31..20=0x001 14..12=0 6..2=0x1C 1..0=3' startingAt: #type_Isys
 	"
-
 ]
 
 { #category : #parsing }
@@ -470,7 +465,7 @@ AcRISCVOpcodeParser >> type_J [
 		instr name: nodes first.
 		instr format: 'Type_J'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %exp(bimm16)", rd, imm1+imm2+imm3+imm4)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %exp(bimm16)", rd, imm1+imm2+imm3+imm4)'.
 
 		instr
 		]
@@ -480,7 +475,6 @@ AcRISCVOpcodeParser >> type_J [
 	AcRISCVOpcodeParser parse: 'jal     rd jimm20                          6..2=0x1b 1..0=3
 ' startingAt: #type_J
 	"
-
 ]
 
 { #category : #parsing }
@@ -499,7 +493,7 @@ AcRISCVOpcodeParser >> type_R [
 		instr name: nodes first.
 		instr format: 'Type_R'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %gpr", rd, rs1, rs2)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %gpr", rd, rs1, rs2)'.
 
 		instr
 		]
@@ -507,7 +501,6 @@ AcRISCVOpcodeParser >> type_R [
 	"
 	AcRISCVOpcodeParser parse: 'add     rd rs1 rs2 31..25=0  14..12=0 6..2=0x0C 1..0=3' startingAt: #type_R
 	"
-
 ]
 
 { #category : #parsing }
@@ -527,7 +520,7 @@ AcRISCVOpcodeParser >> type_Rsys [
 		instr name: nodes first.
 		instr format: 'Type_R'.
 		instr internalBindings: internalBindings.  
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr", rs1, rs2)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr", rs1, rs2)'.
 
 		instr
 		]
@@ -535,7 +528,6 @@ AcRISCVOpcodeParser >> type_Rsys [
 	"
 	AcRISCVOpcodeParser parse: 'sfence.vma 11..7=0 rs1 rs2 31..25=0x09  14..12=0 6..2=0x1C 1..0=3' startingAt: #type_Rsys
 	"
-
 ]
 
 { #category : #parsing }
@@ -553,7 +545,7 @@ AcRISCVOpcodeParser >> type_S [
 		instr name: nodes first.
 		instr format: 'Type_S'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm1+imm2+imm3)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rs1, rs2, imm1+imm2)'.
 
 		instr
 		]
@@ -562,7 +554,6 @@ AcRISCVOpcodeParser >> type_S [
 	"
 	AcRISCVOpcodeParser parse: 'sb     imm12hi rs1 rs2 imm12lo 14..12=0 6..2=0x08 1..0=3' startingAt: #type_S
 	"
-
 ]
 
 { #category : #parsing }
@@ -579,7 +570,7 @@ AcRISCVOpcodeParser >> type_U [
 		instr name: nodes first.
 		instr format: 'Type_U'.
 		instr internalBindings: internalBindings.
-		instr addMnemonic: '("' , nodes first , ' %gpr, %exp", rd, imm)'.
+		instr addSyntax: '("' , nodes first , ' %gpr, %exp", rd, imm)'.
 
 		instr
 		]
@@ -588,5 +579,4 @@ AcRISCVOpcodeParser >> type_U [
 	"
 	AcRISCVOpcodeParser parse: 'lui     rd imm20 6..2=0x0D 1..0=3' startingAt: #type_U
 	"
-
 ]

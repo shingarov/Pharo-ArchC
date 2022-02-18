@@ -87,6 +87,7 @@ Either use shortcut:
     Smalltalk loadPackage: 'ArchC-Core-Tests'.
     Smalltalk loadPackage: 'ArchC-RISCV'.
     Smalltalk loadPackage: 'ArchC-RISCV-Tests'.
+    Smalltalk loadPackage: 'ArchC-DSL'.
 
 
     "/ Set `libz3.so` to use

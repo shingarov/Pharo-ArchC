@@ -38,10 +38,16 @@ AcAsmFormatBuiltinChunk >> decImmLiteral [
 ]
 
 { #category : #'API - disassembly' }
-AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
+AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [ 
 	| op |
+
 	op := ops removeFirst.
-	self modifier disassemble: op to: aWriteStream inEnvironment: e format: instruction format
+	self modifier 
+		disassemble: op
+		to: aWriteStream
+		inEnvironment: e
+		format: instruction format
+		chunk: self
 ]
 
 { #category : #'parsing - private' }
@@ -72,6 +78,11 @@ AcAsmFormatBuiltinChunk >> instruction: aProcessorInstructionDeclaration [
 	instruction := aProcessorInstructionDeclaration
 ]
 
+{ #category : #testing }
+AcAsmFormatBuiltinChunk >> isBuiltinChunk [
+	^ true
+]
+
 { #category : #accessing }
 AcAsmFormatBuiltinChunk >> modifier [
 	^ modifier
@@ -88,8 +99,9 @@ AcAsmFormatBuiltinChunk >> type [
 ]
 
 { #category : #accessing }
-AcAsmFormatBuiltinChunk >> type: anObject [
-	type := anObject
+AcAsmFormatBuiltinChunk >> type: aString [
+	self assert: (#('%imm' '%exp' '%addr') includes: aString).
+	type := aString
 ]
 
 { #category : #'printing & storing' }

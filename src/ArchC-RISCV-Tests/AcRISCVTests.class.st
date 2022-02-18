@@ -59,7 +59,12 @@ AcRISCVTests >> testRiscvBNE [
 	| insn |
 
 	insn := pdl assembler parse: 'bne  a5,  a3    , -12'.
-	self assert: insn asByteArray = #[ 16re3 16r9a 16rd7 16rfe ]
+	self assert: insn asByteArray equals: #[ 16re3 16r9a 16rd7 16rfe ].
+	self assert: insn disassemble equals: 'bne a5, a3, -12'.
+
+	"Test jump to label"
+	insn := pdl assembler parse: 'bne  a5, a3, {label}'.
+	self assert: insn disassemble equals: 'bne a5, a3, {label}'.
 ]
 
 { #category : #'tests - RISC-V' }
@@ -78,7 +83,9 @@ AcRISCVTests >> testRiscvJAL [
 	self assert: insn emit32 equals: 16r008500e7.
 
 	insn := pdl decode: 16r008500e7 .
-	self assert: insn disassemble equals: 'jalr ra, a0, 0x8'.
+	"Dissasembly prints displacement as signed decimal since
+	 in syntax format, %exp is used"
+	self assert: insn disassemble equals: 'jalr ra, a0, 8'.
 ]
 
 { #category : #'tests - RISC-V' }

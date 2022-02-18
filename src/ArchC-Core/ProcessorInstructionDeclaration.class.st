@@ -11,7 +11,7 @@ Class {
 		'name',
 		'format',
 		'internalBindings',
-		'mnemonics',
+		'syntax',
 		'semantics',
 		'isa'
 	],
@@ -19,13 +19,12 @@ Class {
 }
 
 { #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> addMnemonic: aMnemonicSpec [
-	mnemonics isNil ifTrue: [ 
-		mnemonics := Array with: aMnemonicSpec
-	] ifFalse: [ 
-		mnemonics := mnemonics copyWith: aMnemonicSpec
+ProcessorInstructionDeclaration >> addSyntax: aMnemonicSpec [ 
+	syntax isNil ifTrue: [
+		syntax := Array with: aMnemonicSpec
+	] ifFalse: [
+		syntax := syntax copyWith: aMnemonicSpec
 	].
-
 ]
 
 { #category : #solving }
@@ -193,8 +192,8 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 	format isString ifTrue: [ 
 		format := isa instructionFormats at: format
 	].     
-	mnemonics notNil ifTrue: [ 
-		mnemonics withIndexDo: [ :mnemonicSpecOrString :index |
+	syntax notNil ifTrue: [ 
+		syntax withIndexDo: [ :mnemonicSpecOrString :index |
 			mnemonicSpecOrString isString ifTrue: [ 
 				| mnemonicSpecSource mnemonicSpec |
 
@@ -202,12 +201,11 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 				mnemonicSpec := (AcSetAsmParser pdl: isa) parse: mnemonicSpecSource.
 				mnemonicSpec source: mnemonicSpecSource.
 				mnemonicSpec instruction: self.
-				mnemonics at: index put: mnemonicSpec.
-				isa addMnemonic: mnemonicSpec assembler                  
+				syntax at: index put: mnemonicSpec.
+				isa addSyntax: mnemonicSpec assembler                  
 			].
 		]. 
 	].
-
 ]
 
 { #category : #private }
@@ -217,11 +215,27 @@ ProcessorInstructionDeclaration >> leastKnownBinary [
 
 { #category : #accessing }
 ProcessorInstructionDeclaration >> mnemonics [
-	mnemonics isNil ifTrue: [
-		^ #()
-	].
+	"Return all mnemonics (as array of strings) defined by this format. 
+	 See AcAsmFormat >> #mnemonicsInto: for details."
+
+	| mnemonics |
+
+	mnemonics := Set new.
+	self mnemonicsInto: mnemonics.
 	^ mnemonics
 
+	"
+	((AcProcessorDescriptions reset; armv5) instructionAt: 'add1') mnemonics
+	((AcProcessorDescriptions reset; riscv) instructionAt: 'addi') mnemonics
+	"
+]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> mnemonicsInto: aSet [
+	"Add all mnemonics for this instruction into given set.
+	 See AcAsmFormat >> #mnemonicsInto: for details."
+
+	self syntax do: [:each | each mnemonicsInto: aSet ]
 ]
 
 { #category : #accessing }
@@ -266,7 +280,24 @@ ProcessorInstructionDeclaration >> rangeOf: fieldName [
 	^Interval from: start to: stop by: -1
 ]
 
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> syntax [
+	"Return a collection of assembly syntax forms (as `AcAsmSyntax` instances)."
+
+	syntax isNil ifTrue: [
+		^ #()
+	].
+	^ syntax
+]
+
 { #category : #'as yet unclassified' }
 ProcessorInstructionDeclaration >> totalOperandWidth [
 	self shouldBeImplemented.
+]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> width [
+	"Answer the width of instructions in bits."
+
+	^ self format width
 ]
