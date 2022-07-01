@@ -43,6 +43,15 @@ AcRISCVOpcodeParser >> fm [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> fmt [
+	^ ('26..25=' asParser , self number) trim ==> [ :nodes | nodes second ]
+
+	"
+	AcRISCVOpcodeParser parse: '26..25=0 ' startingAt: #fmt
+	"
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> funct12 [
 	^ ('31..20=' asParser , self number) trim ==> [ :nodes | nodes second ]
 
@@ -63,12 +72,26 @@ AcRISCVOpcodeParser >> funct3 [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> funct5 [
+	^ ('31..27=' asParser , self number) trim ==> [ :nodes | nodes second ]
+
+	"
+	AcRISCVOpcodeParser parse: '31..27=32 ' startingAt: #funct5
+	"
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> funct7 [
 	^ ('31..25=' asParser , self number) trim ==> [ :nodes | nodes second ]
 
 	"
 	 AcRISCVOpcodeParser parse: '31..25=32 ' startingAt: #func7"
 
+]
+
+{ #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> funct_rs2 [
+	^ ('24..20=' asParser , self number) trim ==> [ :nodes | nodes second ]
 ]
 
 { #category : #'parsing - bitfields' }
@@ -179,6 +202,16 @@ AcRISCVOpcodeParser >> rd0 [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> rm [
+	^ ('rm' asParser trim ==> [ :nodes | nil ])
+	/ (('14..12=' asParser , self number) trim ==> [ :nodes | nodes second ])
+
+	"
+	AcRISCVOpcodeParser new rm
+	"
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> rs1 [
 	^ 'rs1' asParser trim
 
@@ -194,6 +227,11 @@ AcRISCVOpcodeParser >> rs10 [
 AcRISCVOpcodeParser >> rs2 [
 	^ 'rs2' asParser trim
 
+]
+
+{ #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> rs3 [
+	^ 'rs3' asParser trim
 ]
 
 { #category : #'parsing - bitfields' }
@@ -235,6 +273,8 @@ AcRISCVOpcodeParser >> start [
 	^ 
 	  self type_R
 	/ self type_Rsys
+	/ self type_Rfd
+	/ self type_R4fd
 
 	/ self type_Ish
 	/ self type_Ishw
@@ -259,7 +299,6 @@ AcRISCVOpcodeParser >> start [
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv32i')
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv64i')
 	"
-
 ]
 
 { #category : #'parsing - bitfields' }
@@ -309,6 +348,7 @@ AcRISCVOpcodeParser >> type_I [
 		instr name: nodes first.
 		instr format: 'Type_I'.
 		instr internalBindings: internalBindings.  
+		instr addSyntax: '("' , nodes first , ' %fpr, %gpr, %exp", rd, rs1, imm, opcode=7)'.
 		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
 
 		instr
@@ -504,6 +544,106 @@ AcRISCVOpcodeParser >> type_R [
 ]
 
 { #category : #parsing }
+AcRISCVOpcodeParser >> type_R4fd [
+	^ (self mnemonic , self rd , self rs1, self rs2, self rs3 , self rm, self fmt , self opcode
+	==> [ :nodes |
+
+		| internalBindings rm instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'fmt' put: (nodes at: 7).
+		rm := nodes at: 6.
+		rm notNil ifTrue: [ 
+			internalBindings at: 'rm' put: rm.
+		].
+		internalBindings at: 'opcode' put: (nodes at: 8).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_R4fd'.
+		instr internalBindings: internalBindings.  
+		rm isNil ifTrue: [
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr, %fpr", rd, rs1, rs2, rs3, rm=7)'.
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr, %fpr, %rm", rd, rs1, rs2, rs3, rm)'.
+		] ifFalse: [ 
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr, %fpr", rd, rs1, rs2, rs3)'.
+		].
+
+		instr
+		])
+
+	"
+	AcRISCVOpcodeParser parse: 'fmadd.s   rd rs1 rs2 rs3 rm 26..25=0 6..2=0x10 1..0=3' startingAt: #type_R4fd
+
+	"
+]
+
+{ #category : #parsing }
+AcRISCVOpcodeParser >> type_Rfd [
+	^ (self mnemonic , self rd , self rs1, self funct_rs2, self funct5 , self rm, self fmt , self opcode
+	==> [ :nodes |
+
+		| internalBindings rm instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'funct5' put: (nodes at: 5).
+		internalBindings at: 'fmt' put: (nodes at: 7).
+		internalBindings at: 'rs2' put: (nodes at: 4).
+		rm := nodes at: 6.
+		rm notNil ifTrue: [ 
+			internalBindings at: 'rm' put: rm.
+		].
+		internalBindings at: 'opcode' put: (nodes at: 8).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_Rfd'.
+		instr internalBindings: internalBindings.  
+		rm isNil ifTrue: [
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr", rd, rs1, rm=7)'.
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %rm", rd, rs1, rm)'.
+		] ifFalse: [ 
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr", rd, rs1)'.
+		].
+
+		instr
+		])
+	/ (self mnemonic , self rd , self rs1, self rs2, self funct5 , self rm, self fmt , self opcode
+	==> [ :nodes |
+
+		| internalBindings rm instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'funct5' put: (nodes at: 5).
+		internalBindings at: 'fmt' put: (nodes at: 7).
+		rm := nodes at: 6.
+		rm notNil ifTrue: [ 
+			internalBindings at: 'rm' put: rm.
+		].
+		internalBindings at: 'opcode' put: (nodes at: 8).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_Rfd'.
+		instr internalBindings: internalBindings.  
+		rm isNil ifTrue: [
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr", rd, rs1, rs2, rm=7)'.
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr, %rm", rd, rs1, rs2, rm)'.
+		] ifFalse: [ 
+			instr addSyntax: '("' , nodes first , ' %fpr, %fpr, %fpr", rd, rs1, rs2)'.
+		].
+
+		instr
+		])
+
+	"
+	AcRISCVOpcodeParser parse: 'fadd.s    rd rs1 rs2      31..27=0x00 rm       26..25=0 6..2=0x14 1..0=3' startingAt: #type_Rfd
+	AcRISCVOpcodeParser parse: 'fsqrt.s   rd rs1 24..20=0 31..27=0x0B rm       26..25=0 6..2=0x14 1..0=3' startingAt: #type_Rfd
+
+	"
+]
+
+{ #category : #parsing }
 AcRISCVOpcodeParser >> type_Rsys [
 	^ self mnemonic , self rd0 , self rs1, self rs2 , self funct7 , self funct3 , self opcode
 	==> [ :nodes |
@@ -545,6 +685,7 @@ AcRISCVOpcodeParser >> type_S [
 		instr name: nodes first.
 		instr format: 'Type_S'.
 		instr internalBindings: internalBindings.
+		instr addSyntax: '("' , nodes first , ' %fpr, %gpr, %exp", rs1, rs2, imm1+imm2, opcode=39)'.
 		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rs1, rs2, imm1+imm2)'.
 
 		instr
