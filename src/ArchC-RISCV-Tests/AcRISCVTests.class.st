@@ -47,6 +47,23 @@ AcRISCVTests >> testRiscvADDI [
 ]
 
 { #category : #'tests - RISC-V' }
+AcRISCVTests >> testRiscvAMOXOR_D [
+	| insn |
+
+	insn := pdl assemble: 'amoxor.d.aqrl t1, t2, t3'.
+	self assert: insn asByteArray = #[16r2F 16rB3 16rC3 16r27].
+
+	insn := pdl disassemble: insn asByteArray.
+	self assert: insn = 'amoxor.d.aqrl t1, t2, t3'.
+
+	insn := pdl assemble: 'amoxor.d t1, t2, t3'.
+	self assert: insn asByteArray = #[16r2F 16rB3 16rC3 16r21].
+
+	insn := pdl disassemble: insn asByteArray.
+	self assert: insn = 'amoxor.d t1, t2, t3'.
+]
+
+{ #category : #'tests - RISC-V' }
 AcRISCVTests >> testRiscvAUIPC [
 	| insn |
 

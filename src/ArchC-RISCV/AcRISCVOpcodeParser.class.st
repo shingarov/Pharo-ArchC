@@ -25,6 +25,11 @@ AcRISCVOpcodeParser class >> parseFile: fileName in: path [
 ]
 
 { #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> aqrl [
+	^ 'aqrl' asParser trim
+]
+
+{ #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> bimm12hi [
 	^ 'bimm12hi' asParser trim
 
@@ -78,6 +83,16 @@ AcRISCVOpcodeParser >> funct5 [
 	"
 	AcRISCVOpcodeParser parse: '31..27=32 ' startingAt: #funct5
 	"
+]
+
+{ #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> funct5_h3 [
+	^ ('31..29=' asParser , self number) trim ==> [ :nodes | nodes second ]
+]
+
+{ #category : #'parsing - bitfields' }
+AcRISCVOpcodeParser >> funct5_l2 [
+	^ ('28..27=' asParser , self number) trim ==> [ :nodes | nodes second ]
 ]
 
 { #category : #'parsing - bitfields' }
@@ -275,6 +290,7 @@ AcRISCVOpcodeParser >> start [
 	/ self type_Rsys
 	/ self type_Rfd
 	/ self type_R4fd
+	/ self type_Ra
 
 	/ self type_Ish
 	/ self type_Ishw
@@ -575,6 +591,54 @@ AcRISCVOpcodeParser >> type_R4fd [
 	"
 	AcRISCVOpcodeParser parse: 'fmadd.s   rd rs1 rs2 rs3 rm 26..25=0 6..2=0x10 1..0=3' startingAt: #type_R4fd
 
+	"
+]
+
+{ #category : #parsing }
+AcRISCVOpcodeParser >> type_Ra [
+	^ (self mnemonic , self rd , self rs1, self rs2 , self aqrl, self funct5_h3, self funct5_l2, self funct3 , self opcode
+	==> [ :nodes |
+
+		| internalBindings instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'funct5_h3' put: (nodes at: 6).
+		internalBindings at: 'funct5_l2' put: (nodes at: 7).
+		internalBindings at: 'funct3' put: (nodes at: 8).
+		internalBindings at: 'opcode'put: (nodes at: 9).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_Ra'.
+		instr internalBindings: internalBindings.  
+		instr addSyntax: '("' , nodes first , '%aqrl %gpr, %gpr, %gpr", aqrl, rd, rs1, rs2)'.
+
+		instr
+		])
+	/ (self mnemonic , self rd , self rs1, self funct_rs2 , self aqrl, self funct5_h3, self funct5_l2, self funct3 , self opcode
+	==> [ :nodes |
+
+		| internalBindings instr |
+
+		internalBindings := Dictionary new.
+		internalBindings at: 'funct5_h3' put: (nodes at: 6).
+		internalBindings at: 'funct5_l2' put: (nodes at: 7).
+		internalBindings at: 'funct3' put: (nodes at: 8).
+		internalBindings at: 'opcode'put: (nodes at: 9).
+		internalBindings at: 'rs2' put: (nodes at: 4).
+
+		instr := ProcessorInstructionDeclaration new.
+		instr name: nodes first.
+		instr format: 'Type_Ra'.
+		instr internalBindings: internalBindings.  
+		instr addSyntax: '("' , nodes first , '%aqrl %gpr, %gpr", aqrl, rd, rs1)'.
+
+		instr
+		])
+	
+
+	"
+	AcRISCVOpcodeParser parse: 'amoadd.w    rd rs1 rs2      aqrl 31..29=0 28..27=0 14..12=2 6..2=0x0B 1..0=3' startingAt: #type_Ra
 	"
 ]
 
