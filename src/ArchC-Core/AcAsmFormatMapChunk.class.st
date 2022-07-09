@@ -19,9 +19,17 @@ AcAsmFormatMapChunk class >> map: aDictionary named: nameString source: sourceSt
 
 { #category : #'API - assembly' }
 AcAsmFormatMapChunk >> assembler [ 
-	| alternativeParsers nilForEmptySym defaultInt |
+	| alternativeParsers defaultInt mappings |
 	defaultInt := nil.
-	alternativeParsers := self map forwardMap associations  collect: [ :ass |
+	mappings := self map forwardMap associations.
+	"
+	Sort mappings by descending key length. This is needed
+	for cases where one key may be prefix of another. This
+	way, longer keys are tried before shorter.
+	"
+	mappings sort: [ :a :b | a key size > b key size ].
+
+	alternativeParsers := mappings collect: [ :ass |
 		| sym i |
 		i := ass value.
 		sym := ass key.
@@ -29,7 +37,7 @@ AcAsmFormatMapChunk >> assembler [
 			ifTrue: [ defaultInt:= i. nil ]
 			ifFalse: [ sym asParser ==> i K ]].
 	alternativeParsers := alternativeParsers asOrderedCollection.
-	nilForEmptySym := alternativeParsers remove: nil ifAbsent: [ #NoEmpty ].
+	alternativeParsers remove: nil ifAbsent: [ #NoEmpty ].
 	alternativeParsers := PPChoiceParser withAll: alternativeParsers.
 	defaultInt isNil ifFalse: [ alternativeParsers :=
 		alternativeParsers optional ==> [ :x | x ifNil: [defaultInt] ] ] .
