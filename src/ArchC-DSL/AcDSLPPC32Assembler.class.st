@@ -6,7 +6,7 @@ Class {
 
 { #category : #initialization }
 AcDSLPPC32Assembler class >> initialize [
-	AcDSLAssemblerGenerator generate: self
+	"AcDSLAssemblerGenerator generate: self"
 ]
 
 { #category : #accessing }

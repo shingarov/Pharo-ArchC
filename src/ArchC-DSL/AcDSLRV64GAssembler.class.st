@@ -6,7 +6,7 @@ Class {
 
 { #category : #initialization }
 AcDSLRV64GAssembler class >> initialize [
-	AcDSLAssemblerGenerator generate: self
+	"AcDSLAssemblerGenerator generate: self"
 ]
 
 { #category : #accessing }
