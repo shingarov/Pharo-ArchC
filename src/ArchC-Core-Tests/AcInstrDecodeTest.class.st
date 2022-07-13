@@ -1,6 +1,6 @@
 Class {
 	#name : #AcInstrDecodeTest,
-	#superclass : #TestCase,
+	#superclass : #TestCaseWithZ3Context,
 	#category : #'ArchC-Core-Tests'
 }
 
