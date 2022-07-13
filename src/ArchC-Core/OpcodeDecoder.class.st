@@ -49,7 +49,7 @@ OpcodeDecoder >> instrGroups: anObject [
 OpcodeDecoder >> instructionsWithOpcodeFitting: instrBinary [
 	| opcd |
 	opcd := instrBinary subrange: opcodeRange.
-	^instrGroups at: opcd value 
+	^instrGroups at: opcd value ifAbsent: [ IllegalInstruction signalWith: instrBinary ]
 ]
 
 { #category : #'as yet unclassified' }

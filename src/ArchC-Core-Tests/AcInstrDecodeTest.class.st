@@ -106,6 +106,13 @@ AcInstrDecodeTest >> testPowerSc [
 	self assert: (instr fieldValue: 'lev') equals: 0.
 ]
 
+{ #category : #riscv }
+AcInstrDecodeTest >> testRiscvIllegal [
+	self
+		should: [AcProcessorDescriptions riscv64 decode: 16rC000EF00]
+		raise: IllegalInstruction 
+]
+
 { #category : #powerpc }
 AcInstrDecodeTest >> testSequence [ 
 	| words instrs |
