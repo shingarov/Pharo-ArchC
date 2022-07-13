@@ -124,29 +124,6 @@ AcProcessorDescriptions class >> cachedProcessors [
 	^cache
 ]
 
-{ #category : #GDB }
-AcProcessorDescriptions class >> gdbArchName: aString [
-	^self perform: (self knownGdbArchNames at: aString)
-]
-
-{ #category : #GDB }
-AcProcessorDescriptions class >> knownGdbArchNames [
-	^Dictionary new
-		at: 'powerpc' put: #powerpc;
-		at: 'powerpc:e500' put: #powerpc;
-		at: 'powerpc:common' put: #powerpc;
-		at: 'powerpc:common64' put: #powerpc;
-		
-		at: 'arm' put: #armv5;
-		at: 'aarch64' put: #aarch64;
-
-		at: 'mips' put: #mips;
-		
-		at: 'i386:x86-64' put: #amd64;
-		
-	yourself
-]
-
 { #category : #'known processors' }
 AcProcessorDescriptions class >> knownISAs [
 	^#(arm mips powerpc r3000 riscv64 sparc IA32)
