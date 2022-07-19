@@ -42,6 +42,15 @@ TextDisassemblyTest >> testPowerOriSymbolic [
 ]
 
 { #category : #'tests - powerpc' }
+TextDisassemblyTest >> testPowerOriSymbolic2 [
+	| encoding disasm |
+
+	encoding := (2r01100010100 toBitVector: 11) , ('dstReg' toBitVector: 5) , (16r0001 toBitVector: 16).
+	disasm := AcProcessorDescriptions powerpc disassemble: encoding.
+	self assert: disasm equals: 'ori {dstReg}, 20, 0x1'
+]
+
+{ #category : #'tests - powerpc' }
 TextDisassemblyTest >> testPowerSc [
 	| instr text |
 	instr := AcProcessorDescriptions powerpc decode: 16r44000002 .
