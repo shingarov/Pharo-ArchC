@@ -1,41 +1,49 @@
 PROJECT=ArchC
 
-include GNUMakefile.local
+include GNUmakefile.local
 
-all: pharo-ui $(PROJECT).image
+# Pharo version to use. Currently, only 8.0 is supported,
+# Pharo 9.0 and later is known to crash when using Z3.
+PHARO_VERSION ?= 80
 
-pharo pharo-ui Pharo.image:
-	curl https://get.pharo.org/64/80+vm | bash
+ifndef ARCHC_PDL_DIR
+ARCHC_PDL_DIR=../pdl
 
-$(PROJECT).image: pharo Pharo.image ../src ../pdl/arm GNUMakefile.local
-	./pharo Pharo.image save $(PROJECT)
-ifdef MACHINEARITHMETIC_DIR
-	./pharo $@ eval --save "(IceRepositoryCreator new location: '$(MACHINEARITHMETIC_DIR)/' asFileReference; createRepository) register" || rm $@
-	./pharo $@ metacello install tonel://$(MACHINEARITHMETIC_DIR)/ BaselineOfMachineArithmetic || rm $@
+../pdl:
+	(cd .. && ./get-pdls.sh)
 endif
-	./pharo $@ eval --save "(IceRepositoryCreator new location: '..' asFileReference; createRepository) register" || rm $@
-	./pharo $@ eval --save "Metacello new baseline: '$(PROJECT)'; repository: 'tonel://../src'; onConflictUseLoaded; load." || rm $@
+
+all: $(PROJECT).image
+
+include ../pharo.gmk
+
+$(PROJECT).image: $(PHARO_VM) $(PHARO_IMAGE) ../src/*/*.st $(ARCHC_PDL_DIR)
+	$(PHARO_VM_HEADLESS) $(PHARO_IMAGE) save $(PROJECT)
+ifdef MACHINEARITHMETIC_DIR
+	$(PHARO_VM_HEADLESS) $@ eval --save "(IceRepositoryCreator new location: '$(MACHINEARITHMETIC_DIR)/' asFileReference; createRepository) register" || rm $@
+	$(PHARO_VM_HEADLESS) $@ metacello install tonel://$(MACHINEARITHMETIC_DIR)/ BaselineOfMachineArithmetic || rm $@
+endif
+	$(PHARO_VM_HEADLESS) $@ eval --save "(IceRepositoryCreator new location: '..' asFileReference; createRepository) register" || rm $@
+	$(PHARO_VM_HEADLESS) $@ eval --save "Metacello new baseline: '$(PROJECT)'; repository: 'tonel://../src'; onConflictUseLoaded; load." || rm $@
 	@echo ""
 	@echo "To open Pharo $(PROJECT) image run:"
 	@echo ""
-	@echo "    ./pharo-ui $(PROJECT).image"
+	@echo "    ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM) $(PROJECT).image"
 	@echo ""
 
-../pdl/arm:
-	(cd .. && ./get-pdls.sh)
 
-test: $(PROJECT).image pharo
-	#./pharo $< test --fail-on-failure "$(PROJECT).*Tests.*"
-	./pharo $< test --fail-on-failure "ArchC-Core-Tests" "ArchC-RISCV-Tests"
+
+test: $(PROJECT).image $(PHARO_VM)
+	#$(PHARO_VM_HEADLESS) $< test --fail-on-failure "$(PROJECT).*Tests.*"
+	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM_HEADLESS) $< test --fail-on-failure "ArchC-Core-Tests" "ArchC-RISCV-Tests"
 
 clean:
 	rm -f $(PROJECT).image $(PROJECT).changes *Test.xml *.fuel
 	rm -fr pharo-local
 
-mrproper: clean
-	rm -rf Pharo* pharo* icon-packs
+mrproper:: clean
 
-GNUMakefile.local:
+GNUmakefile.local::
 		@echo "# Local tunables. There's no need to change anything," >> $@
 		@echo "# suitable defaults are provided." >> $@
 		@echo "" >> $@
@@ -43,4 +51,9 @@ GNUMakefile.local:
 		@echo "# variable to directory where MachineArithmetic is cloned. If unset (default)" >> $@
 		@echo "# it will be fetched by Metacello as defined in ../src/BaselineOfArchC/BaselineOfArchC.class.st" >> $@
 		@echo "# MACHINEARITHMETIC_DIR=../../MachineArithmetic" >> $@
+		@echo "" >> $@
+		@echo "# To specify custom directory with PDLs, set ARCHC_PDL_DIR" >> $@
+		@echo "# variable to directory with PDLs. If unset (default)" >> $@
+		@echo "# it will be fetched by 'get-pdls.sh' script." >> $@
+		@echo "# ARCHC_PDL_DIR=../pdl" >> $@
 		@echo "" >> $@

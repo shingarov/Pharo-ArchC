@@ -1,4 +1,4 @@
-GNUMakefile.local
+GNUmakefile.local
 
 *.image
 *.changes
