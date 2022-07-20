@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Test
 
 # Controls when the action will run.
 on:
@@ -20,10 +20,14 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job
-  build:
-    name: "Test - Pharo"
+  test:
+    name: "${{matrix.dialect}}, ${{matrix.os}}"
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        dialect: [ pharo, stx ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -38,9 +42,9 @@ jobs:
 
       - name: Build
         run: |
-          make -C pharo
+          make -C ${{matrix.dialect}}
 
       - name: Test
         run: |
           export ARCHC_PDL_DIR=$(pwd)/pdl/
-          make -C pharo test
+          make -C ${{matrix.dialect}} test
