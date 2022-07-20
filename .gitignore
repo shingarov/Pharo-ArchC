@@ -1,1 +1,6 @@
+# Local customizations
+GNUmakefile.local
+
+# Build by-products 
 pdl
+MachineArithmetic
