@@ -79,19 +79,7 @@ Either use shortcut:
     "/ Tell Smalltalk/X where to look for ArchC packages
     Smalltalk packagePath add: '/where/you/cloned/it/Pharo-ArchC/src'.
 
-    Smalltalk loadPackage: 'MachineArithmetic-FFI-SmalltalkX'.
-    Smalltalk loadPackage: 'MachineArithmetic'.
-    Smalltalk loadPackage: 'MachineArithmetic-Tests'.
-    Smalltalk loadPackage: 'stx:goodies/petitparser'.
-    Smalltalk loadPackage: 'ArchC-Core'.
-    Smalltalk loadPackage: 'ArchC-Core-Tests'.
-    Smalltalk loadPackage: 'ArchC-RISCV'.
-    Smalltalk loadPackage: 'ArchC-RISCV-Tests'.
-    Smalltalk loadPackage: 'ArchC-DSL'.
-
-
-    "/ Set `libz3.so` to use
-    (Smalltalk at: #LibZ3) libraryName: '/where/you/cloned/it/z3/build/libz3.so'
+    Smalltalk loadPackage: 'BaselineOfArchC'.
     ```
 
 [1]: https://swing.fit.cvut.cz/projects/stx-jv/wiki/Download
