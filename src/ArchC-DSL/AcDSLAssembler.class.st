@@ -42,6 +42,15 @@ AcDSLAssembler >> initialize [
 	"  super initialize.   -- commented since inherited method does nothing"
 ]
 
+{ #category : #emitting }
+AcDSLAssembler >> label: anObject [
+	| insn |
+
+	insn := AcLabel symbol: anObject.
+	memory append: insn.
+	^ insn
+]
+
 { #category : #accessing }
 AcDSLAssembler >> isa [
 	^ self class isa

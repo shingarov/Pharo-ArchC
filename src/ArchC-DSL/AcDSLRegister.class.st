@@ -32,6 +32,11 @@ AcDSLRegister >> toInt [
 	^ value toInt
 ]
 
+{ #category : #accessing }
+AcDSLRegister >> value [
+	^ value value
+]
+
 { #category : #initialization }
 AcDSLRegister >> value: anAcAsmMapEntry [
 	self assert: value isNil.
