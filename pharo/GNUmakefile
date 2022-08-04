@@ -6,6 +6,8 @@ include GNUmakefile.local
 # Pharo 9.0 and later is known to crash when using Z3.
 PHARO_VERSION ?= 80
 
+all: $(PROJECT).image
+
 ifndef ARCHC_PDL_DIR
 ARCHC_PDL_DIR=../pdl
 
@@ -13,12 +15,10 @@ ARCHC_PDL_DIR=../pdl
 	(cd .. && ./get-pdls.sh)
 endif
 
-all: $(PROJECT).image
-
 include ../pharo.gmk
 
 $(PROJECT).image: $(PHARO_VM) $(PHARO_IMAGE) ../src/*/*.st $(ARCHC_PDL_DIR)
-	$(PHARO_VM_HEADLESS) $(PHARO_IMAGE) save $(PROJECT)
+	$(PHARO_VM_HEADLESS) $(PHARO_IMAGE) save $(shell pwd)/$(PROJECT)
 ifdef MACHINEARITHMETIC_DIR
 	$(PHARO_VM_HEADLESS) $@ eval --save "(IceRepositoryCreator new location: '$(MACHINEARITHMETIC_DIR)/' asFileReference; createRepository) register" || rm $@
 	$(PHARO_VM_HEADLESS) $@ metacello install tonel://$(MACHINEARITHMETIC_DIR)/ BaselineOfMachineArithmetic || rm $@
