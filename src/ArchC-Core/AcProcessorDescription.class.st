@@ -187,9 +187,7 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 	endian := (aCollectionOfAssociations detect: [ :ass | ass key = 'endian' ]) value.
 
 	self
-		fillISAFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'ac_isa' ]) value);
-		fillSemanticsFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'SEMANTICS' ]) value).
-"		fillLWISEMFrom:    ((aCollectionOfAssociations detect: [ :ass | ass key = 'LWISEM' ]) value)."
+		fillISAFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'ac_isa' ]) value).
 		
 	^self
 ]
