@@ -30,16 +30,6 @@ ProcessorInstruction >> allBindingValues [
 
 ]
 
-{ #category : #access }
-ProcessorInstruction >> allBindings [
-	| allBindings |
-	allBindings := format bitFieldNames collect: [ :fieldName |
-		fieldName -> (self field: fieldName) simplify].
-	^Dictionary newFromAssociations: allBindings 
-
-
-]
-
 { #category : #solving }
 ProcessorInstruction >> alwaysFitsBinary: aBV [
 	| encodingIsCorrect myUnknowns solver answer |
@@ -156,14 +146,6 @@ ProcessorInstruction >> inspectorExtraAttributes [
 
 ]
 
-{ #category : #LWISEM }
-ProcessorInstruction >> instantiateLWISEM: aString [ 
-	"First, substitute uninterpreted fields."
-	^(aString replaceKeywords: [ :key | (self field: key) representSmalltalkInPython ])
-	"Then, substitute field values"
-	replaceValueKeywords: [ :key | (self fieldValue: key) representSmalltalkInPython ]
-]
-
 { #category : #printing }
 ProcessorInstruction >> printEncodingOn: aStream [
 	| bin idx |
@@ -187,13 +169,6 @@ ProcessorInstruction >> printEncodingOn: aStream [
 		aStream next: field value abs - fieldName size put: Character space.
 		aStream space.
 	].
-
-]
-
-{ #category : #semantics }
-ProcessorInstruction >> printLogicOn: aStream [
-	semantics ifNil: [ ^self ].
-	semantics do: [ :sem | sem printLogicOn: aStream. aStream cr; cr ]
 ]
 
 { #category : #printing }
@@ -201,31 +176,4 @@ ProcessorInstruction >> printOn: aStream [
 	aStream nextPutAll: (self name); nextPutAll: ': '.
 	aStream nextPutAll: self disassemble.
 
-]
-
-{ #category : #access }
-ProcessorInstruction >> semantics [
-	semantics isNil ifTrue: [
-		"This is needed even though the instance is created
-		eagerly during DSL parsing.  This is a dirty hack."
-		semantics := #LwInstructionSemantics instruction: self.
-		^semantics  ].
-	^semantics copy
-		instruction: self;
-		yourself 
-]
-
-{ #category : #emitting }
-ProcessorInstruction >> substitute: operandDictionary [
-	"Answer a copy of myself with those operands in operandDictionary replaced by new values"
-	
-	| operandValues |
-	operandValues := self externalBindingValues.
-	operandValues addAll: operandDictionary.
-	^self inEnvironment: operandValues
-]
-
-{ #category : #VEX }
-ProcessorInstruction >> vezAt: addr [
-	^self semantics liftStartingAt: addr
 ]

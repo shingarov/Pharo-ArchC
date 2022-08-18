@@ -243,13 +243,6 @@ AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
 ]
 
 { #category : #'collaboration with parser' }
-AcProcessorDescription >> fillLWISEMFrom: aDictionary [
-	aDictionary keysAndValuesDo: [ :instrName :lwisem |
-		(self instructionAt: instrName) semantics dsl: lwisem ]	
-
-]
-
-{ #category : #'collaboration with parser' }
 AcProcessorDescription >> fillMapsFrom: aCollectionOfAssociations [
 	| mapAssociations m |
 	mapAssociations := aCollectionOfAssociations select: [ :ass |

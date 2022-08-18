@@ -12,7 +12,6 @@ Class {
 		'format',
 		'internalBindings',
 		'syntax',
-		'semantics',
 		'isa'
 	],
 	#category : #'ArchC-Core-Core'
@@ -288,11 +287,6 @@ ProcessorInstructionDeclaration >> syntax [
 		^ #()
 	].
 	^ syntax
-]
-
-{ #category : #'as yet unclassified' }
-ProcessorInstructionDeclaration >> totalOperandWidth [
-	self shouldBeImplemented.
 ]
 
 { #category : #accessing }
