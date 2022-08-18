@@ -171,18 +171,12 @@ AcArchParser >> start [
 	^processorDescription end
 	==> [ :x |
 		| components |
-		components := x value asOrderedCollection.
-		components := components 
-			inject: (OrderedCollection
-				with: 'SEMANTICS' -> (AcCompilerInfoParser parseFile: 'compiler_info.ac' in: directory)
-				"with: 'LWISEM' -> (LWISEMParser parseFile: 'lwisem' in: directory)")
-			into: [ :soFar :elem | soFar addAll: elem; yourself ].
+		components := x value flattened.
 		AcProcessorDescription new
 			architectureName: (x key);
 			fillFrom: components;
 			assertInvariants;
 			yourself ]
-
 ]
 
 { #category : #grammar }
