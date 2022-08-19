@@ -259,8 +259,7 @@ AcIsaParser >> format [
 	id,
 	$= asParser trim,
 	$" asParser, bitfield trim plus, '";' asParser
-	==> [ :x | Array with: 'ac_format' -> (AcInstructionFormat new name: x third; bitFields: x sixth) ]
-
+	==> [ :x | Array with: 'ac_format' -> (AcInstructionFormat name: x third bitfields: x sixth) ]
 ]
 
 { #category : #grammar }
