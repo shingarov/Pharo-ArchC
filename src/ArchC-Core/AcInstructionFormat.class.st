@@ -13,15 +13,14 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'name',
-		'bitFields'
+		'bitfields'
 	],
 	#category : #'ArchC-Core-Core'
 }
 
-{ #category : #'as yet unclassified' }
-AcInstructionFormat class >> opcodePositionIn: aPDL [
-	aPDL instructionFormats values anyOne.
-	self shouldBeImplemented.
+{ #category : #'instance creation' }
+AcInstructionFormat class >> name: name bitfields: bitFields [
+	^ self new initializeWithName: name bitfields: bitFields
 ]
 
 { #category : #assertions }
@@ -29,32 +28,33 @@ AcInstructionFormat >> assertInvariants [
 	self assert: (self width \\ 8) == 0
 ]
 
-{ #category : #'instruction encoding' }
+{ #category : #accessing }
 AcInstructionFormat >> binaryEncoding [
 	"Answer the bit vector representing this format's binary encoding.
 	Most bits in this vector will be variable, so the answer is an
 	algebraic expression over field values."
-	^self bitFields
-		inject: (BitVector empty)
-		into: [ :soFar :f | soFar, (f key toBitVector: f value abs) ]
+	^ bitfields
+			inject: (BitVector empty)
+			into: [ :soFar :f | soFar, (f key toBitVector: f value abs) ]
 ]
 
 { #category : #accessing }
 AcInstructionFormat >> bitFieldNames [
 	"Answer a sequenceable collection of bit-field names (Strings), in MSB to LSB order.
 	 This includes constants (if any)."
-	^ bitFields collect: [ :anAssociation | "each Association is FieldNameString -> width"
+	^ bitfields collect: [ :anAssociation | "each Association is FieldNameString -> width"
 		anAssociation key ] 
 ]
 
 { #category : #accessing }
 AcInstructionFormat >> bitFields [
-	^ bitFields
+	^ bitfields
 ]
 
-{ #category : #accessing }
-AcInstructionFormat >> bitFields: anObject [
-	bitFields := anObject
+{ #category : #initialization }
+AcInstructionFormat >> initializeWithName: aString bitfields: aCollection [
+	name := aString.
+	bitfields := aCollection.
 ]
 
 { #category : #accessing }
@@ -71,11 +71,6 @@ AcInstructionFormat >> name [
 	^ name
 ]
 
-{ #category : #accessing }
-AcInstructionFormat >> name: aString [
-	name := aString
-]
-
 { #category : #'opcd field' }
 AcInstructionFormat >> opcdFieldInterval [
 	^self rangeOfField: self opcdFieldName
@@ -84,11 +79,10 @@ AcInstructionFormat >> opcdFieldInterval [
 { #category : #'opcd field' }
 AcInstructionFormat >> opcdFieldName [
 	| opcdFields |
-	opcdFields :=  bitFields
+	opcdFields :=  bitfields
 		select: [ :f | f key = 'op' or: [ f key = 'opcd' or: [ f key = 'opcode' ] ] ].
 	opcdFields size = 1 ifFalse: [self error].
 	^opcdFields first key
-
 ]
 
 { #category : #accessing }
@@ -110,7 +104,7 @@ AcInstructionFormat >> printOn: aStream [
 		nextPutAll: 'Instruction format ';
 		nextPutAll: name;
 		nextPutAll: ' '.
-	bitFields printElementsOn: aStream
+	bitfields printElementsOn: aStream
 ]
 
 { #category : #'instruction encoding' }
@@ -118,11 +112,6 @@ AcInstructionFormat >> rangeOfField: fieldName [
 	| start |
 	start := self positionOf: fieldName.
 	^start to: start-(self widthOf: fieldName)+1 by: -1
-]
-
-{ #category : #accessing }
-AcInstructionFormat >> removeFirst [
-	self bitFields: self bitFields allButFirst 
 ]
 
 { #category : #accessing }
