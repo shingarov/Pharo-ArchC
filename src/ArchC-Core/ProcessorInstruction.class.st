@@ -53,15 +53,32 @@ ProcessorInstruction >> asByteArray [
 
 ]
 
-{ #category : #access }
+{ #category : #accessing }
 ProcessorInstruction >> binaryEncoding [
-	binaryEncoding isNil ifTrue: [ self initializeBinaryEncoding ].
+	binaryEncoding isNil ifTrue: [
+		"
+		Using `super binaryEncoding` is a temporary hack until
+		we make (partially) grounded instruction and instruction
+		declaration separate classes (which do not inherit from 
+		each other).
+
+		Here, `super binaryEncoding` will execute ProcessorInstructionDeclaration
+		encoding which returns a binary encoding with opcode (and perhaps some
+		other fields) concrete and the rest symbolic.
+
+		This hack will wanish soon.
+		"
+		binaryEncoding := super binaryEncoding
+	].
 	^binaryEncoding
 ]
 
 { #category : #private }
-ProcessorInstruction >> binaryEncoding: anInt [
-	binaryEncoding := anInt
+ProcessorInstruction >> binaryEncoding: aBitVector [
+	self assert: aBitVector isBitVector.
+	self assert: aBitVector length == self format width.
+	
+	binaryEncoding := aBitVector
 ]
 
 { #category : #solving }
@@ -128,11 +145,6 @@ ProcessorInstruction >> fieldValue: fieldName [
 	^(format isSigned: fieldName)
 		ifTrue: [ bitVector signedValue ]
 		ifFalse: [ bitVector value ]
-]
-
-{ #category : #private }
-ProcessorInstruction >> initializeBinaryEncoding [
-	binaryEncoding := self leastKnownBinary
 ]
 
 { #category : #inspecting }

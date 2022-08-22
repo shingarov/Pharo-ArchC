@@ -101,6 +101,32 @@ ProcessorInstructionTest >> testFullyUngrounded [
 	self assert: concreteCmp class equals: ProcessorInstruction.
 ]
 
+{ #category : #'tests - powerpc' }
+ProcessorInstructionTest >> testInEnvironment [
+	| pdl cmp env grounded |
+
+	pdl := AcProcessorDescriptions powerpc.
+	cmp := pdl instructionAt: #addi.
+	env := Dictionary new
+			at: #ra put: 27;
+			at: #d put: 16rFFFF;
+			yourself.
+
+	grounded := cmp inEnvironment: env.
+	"Since rt is still unknown, the instruction is symbolic."
+	self assert: grounded binaryEncoding isSymbolic.
+
+	env := Dictionary new
+			at: 'rt' put: 16;
+			yourself.
+	grounded := grounded inEnvironment: env.
+	"We took a parftially grounded instruction and specified
+	 (all) ungrounded fields. Resulting instruction shoul be
+	 fully grounded."
+	self assert: grounded binaryEncoding isSymbolic not.
+	self assert: grounded asByteArray = #[16r3A 16r1B 16rFF 16rFF]
+]
+
 { #category : #'tests - mips' }
 ProcessorInstructionTest >> testJrEncoding [
 	" jr r3
