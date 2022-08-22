@@ -80,9 +80,9 @@ ProcessorInstructionDeclaration >> assertInvariants [
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ProcessorInstructionDeclaration >> binaryEncoding [
-	^format binaryEncoding 
+	^format binaryEncoding inEnvironment: internalBindings
 ]
 
 { #category : #solving }
@@ -165,7 +165,7 @@ ProcessorInstructionDeclaration >> inEnvironment: env [
 	It is not necessary to define values for ALL operands; if some operands are
 	left unspecified, those bits in the emitted binary will be symbolic.
 	NB: unlike #decode: which returns a model, this method's answer is the most general."
-	^self copyWithBinary: (self leastKnownBinary inEnvironment: env)
+	^self copyWithBinary: (self binaryEncoding inEnvironment: env)
 ]
 
 { #category : #accessing }
@@ -205,11 +205,6 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 			].
 		]. 
 	].
-]
-
-{ #category : #private }
-ProcessorInstructionDeclaration >> leastKnownBinary [
-	^self format binaryEncoding inEnvironment: self internalBindings
 ]
 
 { #category : #accessing }
