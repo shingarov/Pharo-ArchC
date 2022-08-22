@@ -1,6 +1,6 @@
 Class {
 	#name : #SetAsmAssemblerTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Core-Tests'
 }
 

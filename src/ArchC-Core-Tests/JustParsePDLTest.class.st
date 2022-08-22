@@ -1,6 +1,6 @@
 Class {
 	#name : #JustParsePDLTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Core-Tests'
 }
 
