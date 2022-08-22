@@ -19,9 +19,10 @@ AcSymbolicDecodeTest >> lbz [
 AcSymbolicDecodeTest >> test88221234AlwaysFitsConcreteLBZ [
 	| aConcreteLBZ |
 	aConcreteLBZ := self lbz inEnvironment:
-		('d'  -> 16r1234),
-		('rt' -> 1),
-		('ra' -> 2).		
+		(Dictionary newFromPairs: 
+			#('d'   16r1234
+			  'rt'  1
+			  'ra'  2)). 
 	self assert: ( aConcreteLBZ alwaysFitsBinary: 16r88221234///32 )
 ]
 
@@ -29,9 +30,10 @@ AcSymbolicDecodeTest >> test88221234AlwaysFitsConcreteLBZ [
 AcSymbolicDecodeTest >> test88221234CanFitConcreteLBZ [
 	| aConcreteLBZ |
 	aConcreteLBZ := self lbz inEnvironment:
-		('d'  -> 16r1234),
-		('rt' -> 1),
-		('ra' -> 2).		
+		(Dictionary newFromPairs: 
+			#('d'  16r1234
+			  'rt' 1
+			  'ra' 2)).            
 	self assert: ( aConcreteLBZ canFitBinary: 16r88221234///32 )
 ]
 
@@ -58,9 +60,10 @@ AcSymbolicDecodeTest >> testXAlwaysFits [
 AcSymbolicDecodeTest >> testXAlwaysFitsConcreteLBZ [
 	| aConcreteLBZ |
 	aConcreteLBZ := self lbz inEnvironment:
-		('d'  -> 16r1234),
-		('rt' -> 1),
-		('ra' -> 2).		
+		(Dictionary newFromPairs: 
+			#('d'  16r1234
+			  'rt' 1
+			  'ra' 2)).
 	self deny: ( aConcreteLBZ alwaysFitsBinary: 'x'///32 )
 ]
 
@@ -77,8 +80,9 @@ AcSymbolicDecodeTest >> testXCanFit [
 AcSymbolicDecodeTest >> testXCanFitConcreteLBZ [
 	| aConcreteLBZ |
 	aConcreteLBZ := self lbz inEnvironment:
-		('d'  -> 16r1234),
-		('rt' -> 1),
-		('ra' -> 2).		
+		(Dictionary newFromPairs: 
+		   #('d'  16r1234
+			 'rt' 1
+			 'ra' 2)).            
 	self assert: ( aConcreteLBZ canFitBinary: 'x'///32 )
 ]
