@@ -28,6 +28,11 @@ AcDSLAssembler >> append: mnemonic operands: operands [
 	^ insn.
 ]
 
+{ #category : #accessing }
+AcDSLAssembler >> grounder: anInstructionGrounder [
+	self isa grounder: anInstructionGrounder
+]
+
 { #category : #initialization }
 AcDSLAssembler >> initialize [
 	"Invoked when a new instance is created."
@@ -35,6 +40,11 @@ AcDSLAssembler >> initialize [
 	memory := AcDSLCodeBuffer new
 
 	"  super initialize.   -- commented since inherited method does nothing"
+]
+
+{ #category : #accessing }
+AcDSLAssembler >> isa [
+	^ self class isa
 ]
 
 { #category : #accessing }

@@ -293,6 +293,11 @@ AcProcessorDescription >> grounder [
 ]
 
 { #category : #accessing }
+AcProcessorDescription >> grounder: anInstructionGrounder [
+	grounder := anInstructionGrounder.
+]
+
+{ #category : #accessing }
 AcProcessorDescription >> gtViewInstructionsOn: aView [
 	<gtView>
 	^ aView list
@@ -309,9 +314,8 @@ AcProcessorDescription >> hasConstantInstructionWidth [
 
 { #category : #initialization }
 AcProcessorDescription >> initialize [
-	"Invoked when a new instance is created."
+	super initialize.
 
-	"  please change as required (and remove this comment)"
 	"  memories := nil."
 	"  regbanks := nil."
 	"  regs := nil."
@@ -326,10 +330,7 @@ AcProcessorDescription >> initialize [
 	"  abi := nil."
 	instructionMnemonics := OrderedCollection new.
 	"  opcodeDecoder := nil."
-	"  grounder := nil."
-
-	"  super initialize.   -- commented since inherited method does nothing"
-
+	grounder := InstructionGrounder new
 ]
 
 { #category : #accessing }
