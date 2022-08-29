@@ -104,7 +104,7 @@ ProcessorInstructionDeclaration >> canFitBinary: aBV [
 ]
 
 { #category : #disassembly }
-ProcessorInstructionDeclaration >> decode: aBitVector [
+ProcessorInstructionDeclaration >> decodeBits: aBitVector [
 	"Answer a copy of the receiver concretized down to be
 	consistent with the binary encoding given by aBV.
 	Answer nil if this is impossible, -- e.g., if the opcode

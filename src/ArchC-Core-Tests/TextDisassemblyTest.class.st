@@ -13,7 +13,7 @@ TextDisassemblyTest class >> resources [
 { #category : #'tests - arm' }
 TextDisassemblyTest >> testArmLdrPCREL [
 	| instr |
-	instr := AcProcessorDescriptions armv5  decodeInt: (16rE59FC034 toBitVector: 32).
+	instr := AcProcessorDescriptions armv5 decodeBits: (16rE59FC034 toBitVector: 32).
 	self assert: (instr fieldValue: 'u') equals: 1.
 	self assert: (
 	#(   'ldr ip, [pc, #+0x34]'
