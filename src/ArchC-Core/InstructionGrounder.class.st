@@ -13,8 +13,13 @@ Class {
 }
 
 { #category : #API }
-InstructionGrounder >> ground: anInstructionDeclaration [
-	^anInstructionDeclaration as: self processorInstructionClass 
+InstructionGrounder >> ground: instruction using: encoding [
+	"Answer a new, (partially) grounded instruction using
+	 given encoding."
+
+	^ (instruction as: self processorInstructionClass)
+		binaryEncoding: encoding;
+		yourself
 ]
 
 { #category : #accessing }

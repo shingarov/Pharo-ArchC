@@ -103,16 +103,8 @@ ProcessorInstructionDeclaration >> canFitBinary: aBV [
 	^self inEmptyEnvironment canFitBinary: aBV
 ]
 
-{ #category : #private }
-ProcessorInstructionDeclaration >> copyWithBinary: aBinaryEncoding [
-	^(isa grounder ground: self)
-		binaryEncoding: aBinaryEncoding;
-		yourself 
-	
-]
-
 { #category : #disassembly }
-ProcessorInstructionDeclaration >> decode: aBV [
+ProcessorInstructionDeclaration >> decode: aBitVector [
 	"Answer a copy of the receiver concretized down to be
 	consistent with the binary encoding given by aBV.
 	Answer nil if this is impossible, -- e.g., if the opcode
@@ -125,9 +117,9 @@ ProcessorInstructionDeclaration >> decode: aBV [
 	not *necessarily* have to be the only possible scenario:
 	some operands could be known already, and aBV could
 	contain some unknown bits."
-	aBV isAST ifFalse: [^self decode: (aBV toBitVector: 32)].
-	(self alwaysFitsBinary: aBV) ifFalse: [ ^nil ].
-	^self copyWithBinary: aBV
+	aBitVector isAST ifFalse: [^self decode: (aBitVector toBitVector: self format width)].
+	(self alwaysFitsBinary: aBitVector) ifFalse: [ ^nil ].
+	^self isa grounder ground: self using: aBitVector
 ]
 
 { #category : #disassembly }
@@ -165,7 +157,7 @@ ProcessorInstructionDeclaration >> inEnvironment: env [
 	It is not necessary to define values for ALL operands; if some operands are
 	left unspecified, those bits in the emitted binary will be symbolic.
 	NB: unlike #decode: which returns a model, this method's answer is the most general."
-	^self copyWithBinary: (self binaryEncoding inEnvironment: env)
+	^self isa grounder ground: self using: (self binaryEncoding inEnvironment: env)
 ]
 
 { #category : #accessing }
