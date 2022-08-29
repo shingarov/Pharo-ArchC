@@ -63,7 +63,7 @@ ProcessorInstructionTest >> testCmpPartial [
 ProcessorInstructionTest >> testDecodeInt [
 	| ori ground |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
-	ground := ori decode: (16r60830001 toBitVector: 32). "ori 3,20,0x1"
+	ground := ori decodeBits: (16r60830001 toBitVector: 32). "ori 3,20,0x1"
 	self deny: ground binaryEncoding isSymbolic.
 	self assert: ori binaryEncoding isSymbolic. "check that #decode: did not destroy the original"
 	self assert: ground name equals: 'ori'.
@@ -75,20 +75,18 @@ ProcessorInstructionTest >> testDecodePartial [
 	| ori  partialBinary concrete |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
 	partialBinary := (16r6083 toBitVector: 16), ('UnsignedImmediate' toBitVector: 16). "ori 3,4,UnsignedImmediate"
-	concrete := ori decode: partialBinary.
+	concrete := ori decodeBits: partialBinary.
 	self assert: (concrete fieldValue: 'opcd') equals: 24.
 	self assert: (concrete field: 'ra') length equals: 5.
 	self assert: (concrete field: 'ra') value equals: 3.
 	self assert: (concrete fieldValue: 'rs') equals: 4.
-	
 ]
 
 { #category : #'tests - decoding' }
 ProcessorInstructionTest >> testDecodeUnsat [
 	| ori |
 	ori := AcProcessorDescriptions powerpc instructionAt: 'ori'.
-	self assert: (ori decode: 0) isNil "inconsistent with ori"
-
+	self assert: (ori decodeBits: (0 toBitVector: 32)) isNil "inconsistent with ori"
 ]
 
 { #category : #'tests - powerpc' }

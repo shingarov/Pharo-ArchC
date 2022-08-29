@@ -125,15 +125,21 @@ AcProcessorDescription >> decode: code [
 ]
 
 { #category : #disassembly }
-AcProcessorDescription >> decodeInt: anInteger [
+AcProcessorDescription >> decodeBits: aBitVector [ 
 	"Answer the most-descriptive ProcessorInstruction object encoded by anInteger.
-	Most-descriptive means the most-concretized form of writing."
+	 Most-descriptive means the most-concretized form of writing."
+	
 	| candidates |
-	candidates := opcodeDecoder instructionsWithOpcodeFitting: anInteger.
-	candidates := candidates collect: [ :instr | instr decode: anInteger].
-	candidates := candidates reject: [ :instr | instr isNil ].
-	candidates isEmpty ifTrue: [self error: 'Invalid instruction encoding'].
-	^(candidates asSortedCollection:  [ :a :b | a externalBindingBits < b externalBindingBits ]) first
+
+	candidates := opcodeDecoder instructionsWithOpcodeFitting: aBitVector.
+	candidates := candidates collect: [:instr | instr decodeBits: aBitVector ].
+	candidates := candidates reject: [:instr | instr isNil ].
+	candidates isEmpty ifTrue: [
+		self error: 'Invalid instruction encoding'
+	].
+	^ (candidates 
+		asSortedCollection: [:a :b | a externalBindingBits < b externalBindingBits ]) 
+			first
 ]
 
 { #category : #'constant width' }

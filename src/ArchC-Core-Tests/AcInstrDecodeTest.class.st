@@ -21,7 +21,7 @@ AcInstrDecodeTest >> testArmB [
 AcInstrDecodeTest >> testArmB_fromInstruction [
 	| b decoded |
 	b := AcProcessorDescriptions armv5 instructionAt: 'b'.
-	decoded := b decode: (16r0A03FC60 toBitVector: 32).
+	decoded := b decodeBits: (16r0A03FC60 toBitVector: 32).
 	
 	self assert: decoded name equals: 'b'
 ]
