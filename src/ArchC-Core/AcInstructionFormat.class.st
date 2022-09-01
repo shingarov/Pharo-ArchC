@@ -44,6 +44,25 @@ AcInstructionFormat >> bitFields [
 ]
 
 { #category : #queries }
+AcInstructionFormat >> bitRangeOfField: fieldName [ 
+	"Return the bit range of specific fields as interval <highest bit, lowest bit>"
+	
+	| lo |
+
+	lo := 0.
+	self bitFields reversed do: [:bitField | 
+		bitField name = fieldName ifTrue: [
+			| hi |
+
+			hi := lo + bitField bitWidth - 1.
+			^ hi to: lo by: -1
+		].
+		lo := lo + bitField bitWidth.
+	].
+	self error: 'No such bitfield: ' , fieldName
+]
+
+{ #category : #queries }
 AcInstructionFormat >> bitWidth [
 	"Answer the width of instructions of this format in bits."
 
@@ -82,7 +101,7 @@ AcInstructionFormat >> name [
 
 { #category : #'opcd field' }
 AcInstructionFormat >> opcdFieldInterval [
-	^self rangeOfField: self opcdFieldName
+	^self bitRangeOfField: self opcdFieldName
 ]
 
 { #category : #'opcd field' }
@@ -94,19 +113,6 @@ AcInstructionFormat >> opcdFieldName [
 	^opcdFields first key
 ]
 
-{ #category : #queries }
-AcInstructionFormat >> positionOf: fieldName [
-	" Answer the bit-number (where the LSB is 0) the MSB of the field.
-	  Assume the field exists, otherwise signal KeyNotFound."
-	| i |
-	i := -1.
-	self bitFields reversed do: [ :assoc |
-		i := i + assoc value abs.
-		assoc key = fieldName ifTrue: [ ^i ]
-	].
-	KeyNotFound signalFor: fieldName
-]
-
 { #category : #printing }
 AcInstructionFormat >> printOn: aStream [ 
 	aStream
@@ -114,11 +120,4 @@ AcInstructionFormat >> printOn: aStream [
 		nextPutAll: name;
 		nextPutAll: ' '.
 	bitfields printElementsOn: aStream
-]
-
-{ #category : #'instruction encoding' }
-AcInstructionFormat >> rangeOfField: fieldName [
-	| start |
-	start := self positionOf: fieldName.
-	^start to: start-(self bitWidthOf: fieldName)+1 by: -1
 ]

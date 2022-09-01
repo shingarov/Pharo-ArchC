@@ -228,21 +228,20 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 	"bf is still unknown!"
 	binary := (cmp inEnvironment: env) binaryEncoding.
 	
-	rangeBF := cmp rangeOf: 'bf'.
+	rangeBF := cmp format bitRangeOfField: 'bf'.
 	self assert: rangeBF first equals: 25.
 	self assert: rangeBF last  equals: 23.
 	bfBits := binary subrange: rangeBF.
 	self assert: bfBits isLeaf.
 	self assert: bfBits isSymbolic.
 	
-	rangeRA := cmp rangeOf: 'ra'.
+	rangeRA := cmp format bitRangeOfField: 'ra'.
 	self assert: rangeRA first equals: 20.
 	self assert: rangeRA last  equals: 16.
 	raBits := binary subrange: rangeRA.
 	self assert: raBits isLeaf.
 	self deny: raBits isSymbolic.
 	self assert: raBits equals: 27
-
 ]
 
 { #category : #'tests - powerpc' }

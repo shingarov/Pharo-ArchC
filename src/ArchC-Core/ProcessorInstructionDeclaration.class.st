@@ -266,15 +266,6 @@ ProcessorInstructionDeclaration >> printOn: aStream [
 ]
 
 { #category : #accessing }
-ProcessorInstructionDeclaration >> rangeOf: fieldName [
-	"Answer the interval of bit-positions of the requested field."
-	| start stop |
-	start := format positionOf: fieldName.
-	stop := start + 1 - (format bitWidthOf: fieldName).
-	^Interval from: start to: stop by: -1
-]
-
-{ #category : #accessing }
 ProcessorInstructionDeclaration >> syntax [
 	"Return a collection of assembly syntax forms (as `AcAsmSyntax` instances)."
 
