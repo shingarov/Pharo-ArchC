@@ -16,6 +16,11 @@ AcDSLCodeBuffer class >> new [
 
 ]
 
+{ #category : #accessing }
+AcDSLCodeBuffer >> address [
+	^ address
+]
+
 { #category : #adding }
 AcDSLCodeBuffer >> append: aProcessorInstruction [
 	^ instructions add: aProcessorInstruction
@@ -40,7 +45,7 @@ AcDSLCodeBuffer >> disassembleOn: aStream [
 		aStream nextPutAll:'    '.
 		aStream nextPutAll: insn disassemble.
 		aStream cr.
-		cursor := cursor + (insn width // 8)
+		cursor := cursor + (insn bitWidth // 8)
 	]
 ]
 

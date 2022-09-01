@@ -25,7 +25,7 @@ AcInstructionFormat class >> name: name bitfields: bitFields [
 
 { #category : #assertions }
 AcInstructionFormat >> assertInvariants [
-	self assert: (self width \\ 8) == 0
+	self assert: (self bitWidth \\ 8) == 0
 ]
 
 { #category : #accessing }
@@ -43,13 +43,30 @@ AcInstructionFormat >> bitFields [
 	^ bitfields
 ]
 
+{ #category : #queries }
+AcInstructionFormat >> bitWidth [
+	"Answer the width of instructions of this format in bits."
+
+	^ self bitFields sum: [ :bitfield | bitfield bitWidth ].
+]
+
+{ #category : #queries }
+AcInstructionFormat >> bitWidthOf: fieldName [
+	"Answer the width of the field in bits (always positive)."
+	
+	self bitFields do: [ :bitfield |
+		bitfield name = fieldName ifTrue: [ ^ bitfield bitWidth ]  
+	].
+	KeyNotFound signalFor: fieldName
+]
+
 { #category : #initialization }
 AcInstructionFormat >> initializeWithName: aString bitfields: aCollection [
 	name := aString.
 	bitfields := aCollection.
 ]
 
-{ #category : #accessing }
+{ #category : #queries }
 AcInstructionFormat >> isSigned: fieldName [
 	"Answer whether the field is signed."
 	self bitFields do: [ :assoc |
@@ -77,7 +94,7 @@ AcInstructionFormat >> opcdFieldName [
 	^opcdFields first key
 ]
 
-{ #category : #accessing }
+{ #category : #queries }
 AcInstructionFormat >> positionOf: fieldName [
 	" Answer the bit-number (where the LSB is 0) the MSB of the field.
 	  Assume the field exists, otherwise signal KeyNotFound."
@@ -103,22 +120,5 @@ AcInstructionFormat >> printOn: aStream [
 AcInstructionFormat >> rangeOfField: fieldName [
 	| start |
 	start := self positionOf: fieldName.
-	^start to: start-(self widthOf: fieldName)+1 by: -1
-]
-
-{ #category : #accessing }
-AcInstructionFormat >> width [
-	"Answer the width of instructions of this format in bits."
-
-	^ self bitFields sum: [ :bitfield | bitfield width ].
-]
-
-{ #category : #accessing }
-AcInstructionFormat >> widthOf: fieldName [
-	"Answer the width of the field in bits (always positive)."
-	
-	self bitFields do: [ :bitfield |
-		bitfield name = fieldName ifTrue: [ ^ bitfield width ]  
-	].
-	KeyNotFound signalFor: fieldName
+	^start to: start-(self bitWidthOf: fieldName)+1 by: -1
 ]

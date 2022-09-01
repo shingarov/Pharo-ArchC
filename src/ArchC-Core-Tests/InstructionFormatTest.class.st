@@ -75,8 +75,8 @@ InstructionFormatTest >> testFormatFieldPosition [
 InstructionFormatTest >> testFormatFieldWidth [
 	| d1 |
 	d1 := AcProcessorDescriptions powerpc instructionFormats at: 'D1'.
-	self assert: (d1 widthOf: 'opcd') equals: 6.
-	self assert: (d1 widthOf: 'd')    equals: 16. "not -16!"
+	self assert: (d1 bitWidthOf: 'opcd') equals: 6.
+	self assert: (d1 bitWidthOf: 'd')    equals: 16. "not -16!"
 ]
 
 { #category : #powerpc }

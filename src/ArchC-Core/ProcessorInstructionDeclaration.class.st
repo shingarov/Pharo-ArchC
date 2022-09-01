@@ -85,8 +85,16 @@ ProcessorInstructionDeclaration >> binaryEncoding [
 	^format binaryEncoding inEnvironment: internalBindings
 ]
 
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> bitWidth [
+	"Answer the width of instructions in bits."
+
+	^ self format bitWidth
+]
+
+
 { #category : #solving }
-ProcessorInstructionDeclaration >> canFitBinary: aBV [
+ProcessorInstructionDeclaration >> canFitBinary: aBitVector [
 	"Answer true if the argument, aBV, can possibly be the binary encoding
 	of the receiver.
 	
@@ -100,7 +108,7 @@ ProcessorInstructionDeclaration >> canFitBinary: aBV [
 	Care must be taken that client code does not try to intern names
 	used by instruction operands."
 	
-	^self inEmptyEnvironment canFitBinary: aBV
+	^self inEmptyEnvironment canFitBinary: aBitVector
 ]
 
 { #category : #disassembly }
@@ -262,7 +270,7 @@ ProcessorInstructionDeclaration >> rangeOf: fieldName [
 	"Answer the interval of bit-positions of the requested field."
 	| start stop |
 	start := format positionOf: fieldName.
-	stop := start + 1 - (format widthOf: fieldName).
+	stop := start + 1 - (format bitWidthOf: fieldName).
 	^Interval from: start to: stop by: -1
 ]
 
@@ -274,11 +282,4 @@ ProcessorInstructionDeclaration >> syntax [
 		^ #()
 	].
 	^ syntax
-]
-
-{ #category : #accessing }
-ProcessorInstructionDeclaration >> width [
-	"Answer the width of instructions in bits."
-
-	^ self format width
 ]
