@@ -13,7 +13,6 @@ Class {
 		'regbank',
 		'component',
 		'reg',
-		'processorName',
 		'wordsize',
 		'ctor',
 		'endian',
@@ -41,19 +40,8 @@ AcArchParser class >> parseGdbFeatures: fileName in: directory assumeEndian: aSy
 ]
 
 { #category : #API }
-AcArchParser class >> processor: processorName in: path [
-	| f s |
-	f := FileStream fileNamed:
-		path,
-		'/',
-		processorName,
-		'.ac'.
-	s := f contentsOfEntireFile.
-	f close.
-	s := AcCommentStripper strip: s.
-	^(self inWorkingDirectory: path)
-		processorName: processorName;
-		parse: s
+AcArchParser class >> processor: processorName in: directory [
+	^ self parseFile: processorName , '.ac' in: directory
 ]
 
 { #category : #grammar }
@@ -139,16 +127,6 @@ AcArchParser >> processorDescription [
 	component trim star,
 	'};' asParser trim
 	==> [ :x | x second -> x fifth  ]
-]
-
-{ #category : #grammar }
-AcArchParser >> processorName [
-	^processorName
-]
-
-{ #category : #grammar }
-AcArchParser >> processorName: aString [
-	processorName  := aString 
 ]
 
 { #category : #grammar }
