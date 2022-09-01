@@ -4,26 +4,6 @@ Class {
 	#category : #'ArchC-RISCV-Parsing'
 }
 
-{ #category : #parsing }
-AcRISCVOpcodeParser class >> parseFile: filename [
-	^ self parseFile: filename in: '/' 
-
-]
-
-{ #category : #parsing }
-AcRISCVOpcodeParser class >> parseFile: fileName in: path [
-	| f s |
-	f := FileStream fileNamed:
-		path,
-		'/',
-		fileName.
-	s := f contentsOfEntireFile.
-	f close.
-	^(self inWorkingDirectory: path)
-		parse: s
-
-]
-
 { #category : #'parsing - bitfields' }
 AcRISCVOpcodeParser >> aqrl [
 	^ 'aqrl' asParser trim
@@ -315,6 +295,11 @@ AcRISCVOpcodeParser >> start [
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv32i')
 	AcRISCVOpcodeParser parseFile: (AcProcessorDescriptions baseDirectory , 'riscv/riscv-opcodes/opcodes-rv64i')
 	"
+]
+
+{ #category : #parsing }
+AcRISCVOpcodeParser >> strip: aStringOrStream [
+	^ aStringOrStream readStream
 ]
 
 { #category : #'parsing - bitfields' }
