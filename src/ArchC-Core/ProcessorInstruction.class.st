@@ -74,7 +74,7 @@ ProcessorInstruction >> binaryEncoding [
 { #category : #private }
 ProcessorInstruction >> binaryEncoding: aBitVector [
 	self assert: aBitVector isBitVector.
-	self assert: aBitVector length == self format width.
+	self assert: aBitVector length == self format bitWidth.
 	
 	binaryEncoding := aBitVector
 ]

@@ -46,7 +46,7 @@ AsmOperandInstantiation >> decode: bitfields accordingTo: format [
 	self operands reverseDo: [ :bitfield |
 		| bitwidth |
 
-		bitwidth := format widthOf: bitfield.
+		bitwidth := format bitWidthOf: bitfield.
 		value := value , ((bitfields at: bitfield) toBitVector: bitwidth).
 	].
 	^ value simplify
@@ -60,7 +60,7 @@ AsmOperandInstantiation >> encodeComplexValue: value accordingTo: format [
 	 operand value into a bit-vector of given length"
 	bitlen := operands 
 				inject: 0
-				into: [:length :field | length + (format widthOf: field) ].
+				into: [:length :field | length + (format bitWidthOf: field) ].
 	bitvec := value toBitVector: bitlen.
 	 "Then, work from lowest bit to highest bit, extracting
 	 portions according to the format"
@@ -69,13 +69,12 @@ AsmOperandInstantiation >> encodeComplexValue: value accordingTo: format [
 	operands do: [:field | 
 		| fieldWidth  fieldValue |
 
-		fieldWidth := format widthOf: field.
+		fieldWidth := format bitWidthOf: field.
 		fieldValue := bitvec copyFrom: bitindex + fieldWidth - 1 to: bitindex.
 		bitfields at: field put: fieldValue.
 		bitindex := bitindex + fieldWidth.
 	].
 	^ bitfields
-
 ]
 
 { #category : #encoding }
@@ -94,10 +93,10 @@ AsmOperandInstantiation >> encodeValue: value accoringTo: format [
 ]
 
 { #category : #rewriting }
-AsmOperandInstantiation >> inEnvironment: aDictionary format: f [
+AsmOperandInstantiation >> inEnvironment: aDictionary format: anAcInstructionFormat [
 	^self operands collect: [ :subfield |
 		| width v |
-		width := f widthOf: subfield.
+		width := anAcInstructionFormat bitWidthOf: subfield.
 		v := aDictionary at: subfield.
 		v toBitVector: width ]
 ]
@@ -140,6 +139,6 @@ AsmOperandInstantiation >> printRestOfOperandsOn: aStream [
 { #category : #private }
 AsmOperandInstantiation >> widthAccordingTo: format [
 	^self operands inject: 0 into: [ :soFar :currentField |
-		soFar + (format widthOf: currentField)
+		soFar + (format bitWidthOf: currentField)
 	]
 ]

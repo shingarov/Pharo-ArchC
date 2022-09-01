@@ -14,6 +14,12 @@ AcInstructionBitfield class >> name:nameArg width:widthArg signed:signedArg [
 	^ self new name:nameArg width:widthArg signed:signedArg
 ]
 
+{ #category : #accessing }
+AcInstructionBitfield >> bitWidth [
+	"Return the width of this field in bits"
+	^ width
+]
+
 { #category : #testing }
 AcInstructionBitfield >> isFixedValue [
 	"Return true, if the value of this field is fixed,
@@ -54,9 +60,4 @@ AcInstructionBitfield >> printOn:aStream [
 { #category : #'accessing - compatibility' }
 AcInstructionBitfield >> value [
 	^ signed ifTrue: [ width negated ] ifFalse: [ width ]
-]
-
-{ #category : #accessing }
-AcInstructionBitfield >> width [
-	^ width
 ]
