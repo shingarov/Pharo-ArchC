@@ -39,14 +39,6 @@ AcInstructionFormat >> binaryEncoding [
 ]
 
 { #category : #accessing }
-AcInstructionFormat >> bitFieldNames [
-	"Answer a sequenceable collection of bit-field names (Strings), in MSB to LSB order.
-	 This includes constants (if any)."
-	^ bitfields collect: [ :anAssociation | "each Association is FieldNameString -> width"
-		anAssociation key ] 
-]
-
-{ #category : #accessing }
 AcInstructionFormat >> bitFields [
 	^ bitfields
 ]

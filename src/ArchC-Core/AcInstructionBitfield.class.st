@@ -14,6 +14,16 @@ AcInstructionBitfield class >> name:nameArg width:widthArg signed:signedArg [
 	^ self new name:nameArg width:widthArg signed:signedArg
 ]
 
+{ #category : #testing }
+AcInstructionBitfield >> isFixedValue [
+	"Return true, if the value of this field is fixed,
+	 that is, it has the same value for all instructions.
+
+	 Q: which ISAs define formats with fixed-value bitfields?
+	"
+	^ name isInteger
+]
+
 { #category : #'accessing - compatibility' }
 AcInstructionBitfield >> key [
 	^ name
