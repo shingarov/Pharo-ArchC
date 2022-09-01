@@ -28,16 +28,6 @@ ProcessorInstruction >> allBindingValues [
 	^Dictionary newFromAssociations: allBindings
 ]
 
-{ #category : #converting }
-ProcessorInstruction >> asByteArray [
-	"Return bytes encoding this instruction. The instruction
-	 must be fully grounded (that is: not symbolic) otherwise 
-	 an error is thrown.
-	"
-	^ ByteArray streamContents: [ :s | self emitOn: s ]
-
-]
-
 { #category : #accessing }
 ProcessorInstruction >> binaryEncoding [
 	binaryEncoding isNil ifTrue: [
@@ -91,30 +81,29 @@ ProcessorInstruction >> disassemble [
 	self error: 'Failed to disassemble'
 ]
 
-{ #category : #emitting }
+{ #category : #'encoding / decoding' }
 ProcessorInstruction >> emit32 [
 	"Just making mischief.
 	Some not-so-nice ISAs do not allow this (not that I care)."
-	format binaryEncoding length = 32 ifFalse: [ self error: 'Instruction size not 32' ].
+	self assert: self bitWidth == 32.
 	^self binaryEncoding value
 ]
 
-{ #category : #emitting }
+{ #category : #'encoding / decoding' }
 ProcessorInstruction >> emitOn: aStream [
 	"Emit (encode) instruction on given (binary) stream. The instruction
 	 must be fully grounded (that is: not symbolic) otherwise an error is
 	 thrown.
 	"
-	self binaryEncoding toByteArrayEndian: isa endian on: aStream
+	self binaryEncoding toByteArrayEndian: self isa endian on: aStream
 ]
 
-{ #category : #disassembly }
+{ #category : #accessing }
 ProcessorInstruction >> externalBindingValues [
 	^Dictionary newFromAssociations: (self externalBindings collect: [ :ass | ass key -> (self fieldValue: ass key) ])
-
 ]
 
-{ #category : #disassembly }
+{ #category : #accessing }
 ProcessorInstruction >> externalBindings [
 	"Answer ..."
 	^format bitFields select: [ :ass |
@@ -149,6 +138,9 @@ ProcessorInstruction >> inspectorExtraAttributes [
 
 ]
 
+{ #category : #testing }
+ProcessorInstruction >> isProcessorInstruction [
+	^ true
 ]
 
 { #category : #printing }

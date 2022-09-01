@@ -6,7 +6,7 @@ However, even when an instruction is instantiated as ""fully ungrounded"", it is
 "
 Class {
 	#name : #ProcessorInstructionDeclaration,
-	#superclass : #Object,
+	#superclass : #AcInstruction,
 	#instVars : [
 		'name',
 		'format',
@@ -148,7 +148,7 @@ ProcessorInstructionDeclaration >> format: anObject [
 	format := anObject
 ]
 
-{ #category : #emitting }
+{ #category : #converting }
 ProcessorInstructionDeclaration >> inEnvironment: env [
 	^self isa grounder ground: self using: (self binaryEncoding inEnvironment: env)
 ]
