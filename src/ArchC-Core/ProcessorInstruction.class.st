@@ -22,12 +22,10 @@ ProcessorInstruction >> = another [
 { #category : #access }
 ProcessorInstruction >> allBindingValues [
 	| allBindings |
-	allBindings := format bitFieldNames
-		reject: [ :fieldName | fieldName isInteger ]
-		thenCollect: [ :fieldName | fieldName -> (self fieldValue: fieldName) ].
-	^Dictionary newFromAssociations: allBindings 
-
-
+	allBindings := format bitFields
+		reject: [ :bitField | bitField isFixedValue ]
+		thenCollect: [ :bitField | bitField name -> (self fieldValue: bitField name) ].
+	^Dictionary newFromAssociations: allBindings
 ]
 
 { #category : #solving }
