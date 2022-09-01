@@ -47,13 +47,12 @@ AcCommonParser class >> newline [
 { #category : #API }
 AcCommonParser class >> parseFile: fileName in: path [
 	| f s |
-	f := FileStream fileNamed:
-		path,
-		'/',
-		fileName.
-	s := f contentsOfEntireFile.
-	f close.
-	s := AcCommentStripper strip: s.
+	[ 
+		f := FileStream fileNamed: path, '/', fileName.
+		s := f contentsOfEntireFile.
+	] ensure: [ 
+		f close.
+	].
 	^(self inWorkingDirectory: path)
 		parse: s
 ]
@@ -125,6 +124,11 @@ AcCommonParser >> number [
 
 ]
 
+{ #category : #context }
+AcCommonParser >> parse: anObject withContext: aPPContext [
+	^ super parse: (self strip: anObject) withContext: aPPContext
+]
+
 { #category : #grammar }
 AcCommonParser >> positiveNumber [
 	^hexNumber / decimalNumber
@@ -155,4 +159,12 @@ AcCommonParser >> str [
 	inside := end not, ( expression / any ).
 	expression setParser: begin, inside star flatten, end flatten.
 	^expression ==> [ :x | x second ]
+]
+
+{ #category : #parsing }
+AcCommonParser >> strip: aStringOrStream [
+	"Strip comments from given string or stream
+	 and return a read stream (with comments stripped)"
+
+	^ (AcCommentStripper strip: aStringOrStream) readStream
 ]
