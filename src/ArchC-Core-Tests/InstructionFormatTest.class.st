@@ -67,8 +67,8 @@ InstructionFormatTest >> testFormatEmission [
 InstructionFormatTest >> testFormatFieldPosition [
 	| d1 |
 	d1 := AcProcessorDescriptions powerpc instructionFormats at: 'D1'.
-	self assert: (d1 positionOf: 'opcd') equals: 31.
-	self assert: (d1 positionOf: 'd')    equals: 15
+	self assert: (d1 bitRangeOfField: 'opcd') equals: (31 to: 26 by: -1).
+	self assert: (d1 bitRangeOfField: 'd')    equals: (15 to: 0 by: -1)
 ]
 
 { #category : #powerpc }

@@ -131,7 +131,7 @@ ProcessorInstruction >> externalBindings [
 { #category : #access }
 ProcessorInstruction >> field: fieldName [
 	"Answer the value of the requested field, as a bit vector."
-	^self binaryEncoding subrange: (self rangeOf: fieldName)
+	^self binaryEncoding subrange: (self format bitRangeOfField: fieldName)
 ]
 
 { #category : #access }
