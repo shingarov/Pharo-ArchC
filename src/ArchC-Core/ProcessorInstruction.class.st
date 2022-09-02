@@ -28,27 +28,6 @@ ProcessorInstruction >> allBindingValues [
 	^Dictionary newFromAssociations: allBindings
 ]
 
-{ #category : #queries }
-ProcessorInstruction >> alwaysFitsEncoding: aBitVector [ 
-	| encodingIsCorrect  myUnknowns  solver  answer |
-
-	"Short-circuit the check of instruction bit-widths do not
-	 match - then it cannot possibly match."
-	self format bitWidth ~~ aBitVector length ifTrue: [
-		^ false
-	].
-	encodingIsCorrect := self binaryEncoding eq: aBitVector.
-	myUnknowns := self binaryEncoding variables asArray.
-	myUnknowns notEmpty ifTrue: [
-		encodingIsCorrect := encodingIsCorrect exists: myUnknowns
-	].
-	solver := Z3Solver new.
-	[
-		answer := solver isValid: encodingIsCorrect
-	] ensure: [ solver del. ].
-	^ answer
-]
-
 { #category : #converting }
 ProcessorInstruction >> asByteArray [
 	"Return bytes encoding this instruction. The instruction
@@ -170,16 +149,6 @@ ProcessorInstruction >> inspectorExtraAttributes [
 
 ]
 
-{ #category : #queries }
-ProcessorInstruction >> possiblyFitsEncoding: aBitVector [ 
-	| solver  answer |
-
-	solver := Z3Solver new.
-	[
-		solver assert: (self binaryEncoding eq: aBitVector).
-		answer := solver check.
-	] ensure: [ solver del. ].
-	^ answer
 ]
 
 { #category : #printing }

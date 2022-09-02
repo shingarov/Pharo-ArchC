@@ -40,7 +40,23 @@ ProcessorInstructionDeclaration >> alwaysFitsEncoding: aBitVector [
 	 Care must be taken that client code does not try to intern names
 	 used by instruction operands."
 	
-	^ self inEmptyEnvironment alwaysFitsEncoding: aBitVector
+	| encodingIsCorrect  myUnknowns  solver  answer |
+
+	"Short-circuit the check of instruction bit-widths do not
+	 match - then it cannot possibly match."
+	self format bitWidth ~~ aBitVector length ifTrue: [
+		^ false
+	].
+	encodingIsCorrect := self binaryEncoding eq: aBitVector.
+	myUnknowns := self binaryEncoding variables asArray.
+	myUnknowns notEmpty ifTrue: [
+		encodingIsCorrect := encodingIsCorrect exists: myUnknowns
+	].
+	solver := Z3Solver new.
+	[
+		answer := solver isValid: encodingIsCorrect
+	] ensure: [ solver del. ].
+	^ answer
 ]
 
 { #category : #converting }
@@ -133,16 +149,7 @@ ProcessorInstructionDeclaration >> format: anObject [
 ]
 
 { #category : #emitting }
-ProcessorInstructionDeclaration >> inEmptyEnvironment [
-	^self inEnvironment: Dictionary new
-]
-
-{ #category : #emitting }
 ProcessorInstructionDeclaration >> inEnvironment: env [
-	"Answer a ProcessorInstruction where the operands are bound according to env.
-	It is not necessary to define values for ALL operands; if some operands are
-	left unspecified, those bits in the emitted binary will be symbolic.
-	NB: unlike #decode: which returns a model, this method's answer is the most general."
 	^self isa grounder ground: self using: (self binaryEncoding inEnvironment: env)
 ]
 
@@ -246,7 +253,14 @@ ProcessorInstructionDeclaration >> possiblyFitsEncoding: aBitVector [
 	 Care must be taken that client code does not try to intern names
 	 used by instruction operands."
 	
-	^ self inEmptyEnvironment possiblyFitsEncoding: aBitVector
+	| solver  answer |
+
+	solver := Z3Solver new.
+	[
+		solver assert: (self binaryEncoding eq: aBitVector).
+		answer := solver check.
+	] ensure: [ solver del. ].
+	^ answer
 ]
 
 { #category : #printing }
