@@ -71,13 +71,6 @@ ProcessorInstruction >> binaryEncoding [
 	^binaryEncoding
 ]
 
-{ #category : #private }
-ProcessorInstruction >> binaryEncoding: aBitVector [
-	self assert: aBitVector isBitVector.
-	self assert: aBitVector length == self format bitWidth.
-	
-	binaryEncoding := aBitVector
-]
 
 { #category : #solving }
 ProcessorInstruction >> canFitBinary: aBV [
@@ -186,4 +179,11 @@ ProcessorInstruction >> printOn: aStream [
 	aStream nextPutAll: (self name); nextPutAll: ': '.
 	aStream nextPutAll: self disassemble.
 
+]
+
+{ #category : #initialization }
+ProcessorInstruction >> setBinaryEncoding: aBitVector [ 
+	self assert: aBitVector isBitVector.
+	self assert: aBitVector length == self format bitWidth.
+	binaryEncoding := aBitVector
 ]

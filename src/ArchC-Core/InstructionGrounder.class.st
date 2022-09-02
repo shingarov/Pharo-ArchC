@@ -17,8 +17,8 @@ InstructionGrounder >> ground: instruction using: encoding [
 	"Answer a new, (partially) grounded instruction using
 	 given encoding."
 
-	^ (instruction as: self processorInstructionClass)
-		binaryEncoding: encoding;
+	^ (instruction as: self processorInstructionClass) 
+			setBinaryEncoding: encoding;
 		yourself
 ]
 
