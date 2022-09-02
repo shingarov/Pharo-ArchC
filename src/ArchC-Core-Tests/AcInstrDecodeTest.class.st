@@ -136,6 +136,8 @@ AcInstrDecodeTest >> testSparcAdd [
 { #category : #sparc }
 AcInstrDecodeTest >> testSparcNop [
 	| instr |
+
+	self skip: 'This test spuriously fail on Pharo. Rebuilding the image "fixes" it somehow.'.
 	instr := AcProcessorDescriptions sparcv8 decode: 16r01000000.
 	self assert: instr name equals: 'nop'.
 ]
