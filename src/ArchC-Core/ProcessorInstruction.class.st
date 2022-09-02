@@ -28,17 +28,25 @@ ProcessorInstruction >> allBindingValues [
 	^Dictionary newFromAssociations: allBindings
 ]
 
-{ #category : #solving }
-ProcessorInstruction >> alwaysFitsBinary: aBV [
-	| encodingIsCorrect myUnknowns solver answer |
-	encodingIsCorrect := self binaryEncoding eq: aBV.
+{ #category : #queries }
+ProcessorInstruction >> alwaysFitsEncoding: aBitVector [ 
+	| encodingIsCorrect  myUnknowns  solver  answer |
+
+	"Short-circuit the check of instruction bit-widths do not
+	 match - then it cannot possibly match."
+	self format bitWidth ~~ aBitVector length ifTrue: [
+		^ false
+	].
+	encodingIsCorrect := self binaryEncoding eq: aBitVector.
 	myUnknowns := self binaryEncoding variables asArray.
-	myUnknowns isEmpty ifFalse: [encodingIsCorrect := encodingIsCorrect exists: myUnknowns].
+	myUnknowns notEmpty ifTrue: [
+		encodingIsCorrect := encodingIsCorrect exists: myUnknowns
+	].
 	solver := Z3Solver new.
-	answer := [solver proveValid: encodingIsCorrect. true]
-		on: NotValid do: [false].
-	solver del.
-	^answer
+	[
+		answer := solver isValid: encodingIsCorrect
+	] ensure: [ solver del. ].
+	^ answer
 ]
 
 { #category : #converting }
@@ -72,15 +80,6 @@ ProcessorInstruction >> binaryEncoding [
 ]
 
 
-{ #category : #solving }
-ProcessorInstruction >> canFitBinary: aBV [
-	| solver answer |
-	solver := Z3Solver new.
-	solver assert: (self binaryEncoding eq: aBV).
-	answer := solver check.
-	solver del.
-	^answer
-]
 
 { #category : #disassembly }
 ProcessorInstruction >> disassemble [
@@ -147,6 +146,18 @@ ProcessorInstruction >> inspectorExtraAttributes [
 	attrs at: '-encoding' put: (String streamContents: [:s | self printEncodingOn: s]).
 	^attrs
 
+]
+
+{ #category : #queries }
+ProcessorInstruction >> possiblyFitsEncoding: aBitVector [ 
+	| solver  answer |
+
+	solver := Z3Solver new.
+	[
+		solver assert: (self binaryEncoding eq: aBitVector).
+		answer := solver check.
+	] ensure: [ solver del. ].
+	^ answer
 ]
 
 { #category : #printing }

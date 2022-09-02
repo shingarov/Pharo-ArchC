@@ -26,22 +26,21 @@ ProcessorInstructionDeclaration >> addSyntax: aMnemonicSpec [
 	].
 ]
 
-{ #category : #solving }
-ProcessorInstructionDeclaration >> alwaysFitsBinary: aBV [
-	"Answer true if the argument, aBV, can possibly be the binary encoding
-	of the receiver.
+{ #category : #queries }
+ProcessorInstructionDeclaration >> alwaysFitsEncoding: aBitVector [
+	"Answer true if the argument, `aBitVector`, is always a valid encoding of
+	 receiver.
+
+	 The meaning of this, is straightforward if `aBitVector` is concrete.
+
+	 If `aBitVector` is symbolic, answer true unless `aBitVector` is inconsistent with
+	 the receiver's encoding schema.  In other words, answer true if every interpretation
+	 of variables in `aBitVector` makes a valid encodinf of the the receiver.
+
+	 Care must be taken that client code does not try to intern names
+	 used by instruction operands."
 	
-	The meaning of this, is straightforward if aBV is concrete.
-	
-	If aBV is symbolic, answer true unless aBV is inconsistent with
-	the receiver's encoding schema.  In other words, answer true if there
-	exists an interpretation of aBV's variables that makes aBV a correct
-	encoding for the receiver.
-	
-	Care must be taken that client code does not try to intern names
-	used by instruction operands."
-	
-	^self inEmptyEnvironment alwaysFitsBinary: aBV
+	^ self inEmptyEnvironment alwaysFitsEncoding: aBitVector
 ]
 
 { #category : #converting }
@@ -93,40 +92,9 @@ ProcessorInstructionDeclaration >> bitWidth [
 ]
 
 
-{ #category : #solving }
-ProcessorInstructionDeclaration >> canFitBinary: aBitVector [
-	"Answer true if the argument, aBV, can possibly be the binary encoding
-	of the receiver.
-	
-	The meaning of this, is straightforward if aBV is concrete.
-	
-	If aBV is symbolic, answer true unless aBV is inconsistent with
-	the receiver's encoding schema.  In other words, answer true if there
-	exists an interpretation of aBV's variables that makes aBV a correct
-	encoding for the receiver.
-	
-	Care must be taken that client code does not try to intern names
-	used by instruction operands."
-	
-	^self inEmptyEnvironment canFitBinary: aBitVector
-]
-
-{ #category : #disassembly }
+{ #category : #'encoding / decoding' }
 ProcessorInstructionDeclaration >> decodeBits: aBitVector [
-	"Answer a copy of the receiver concretized down to be
-	consistent with the binary encoding given by aBV.
-	Answer nil if this is impossible, -- e.g., if the opcode
-	contained in aBV is different from the receiver's opcode.
-	
-	The most straightforward scenario is when the receiver
-	is an instruction declaration (i.e. none of the operands
-	are known) and the argument is concrete (non-symbolic),
-	resulting in a fully-grounded instruction; but this does
-	not *necessarily* have to be the only possible scenario:
-	some operands could be known already, and aBV could
-	contain some unknown bits."
-	aBitVector isAST ifFalse: [^self decode: (aBitVector toBitVector: self format width)].
-	(self alwaysFitsBinary: aBitVector) ifFalse: [ ^nil ].
+	(self alwaysFitsEncoding: aBitVector) ifFalse: [ ^nil ].
 	^self isa grounder ground: self using: aBitVector
 ]
 
@@ -250,6 +218,24 @@ ProcessorInstructionDeclaration >> nameForInspector [
 { #category : #'as yet unclassified' }
 ProcessorInstructionDeclaration >> opcode [
 	^internalBindings at: isa opcdFieldName 
+]
+
+{ #category : #queries }
+ProcessorInstructionDeclaration >> possiblyFitsEncoding: aBitVector [ 
+	"Answer true if the argument, `aBitVector`, can possibly be valid encoding
+	 of the receiver.
+
+	 The meaning of this, is straightforward if `aBitVector` is concrete.
+
+	 If `aBitVector` is symbolic, answer true unless `aBitVector` is inconsistent with
+	 the receiver's encoding schema.  In other words, answer true if there exists (at least one) 
+	 interpretation of `aBitVector`'s variables that makes `aBitVector` a correct encoding 
+	 for the receiver.
+
+	 Care must be taken that client code does not try to intern names
+	 used by instruction operands."
+	
+	^ self inEmptyEnvironment possiblyFitsEncoding: aBitVector
 ]
 
 { #category : #printing }

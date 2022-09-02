@@ -23,7 +23,7 @@ AcSymbolicDecodeTest >> test88221234AlwaysFitsConcreteLBZ [
 			#('d'   16r1234
 			  'rt'  1
 			  'ra'  2)). 
-	self assert: ( aConcreteLBZ alwaysFitsBinary: 16r88221234///32 )
+	self assert: (aConcreteLBZ alwaysFitsEncoding: 16r88221234 /// 32)
 ]
 
 { #category : #'tests - concrete instructions' }
@@ -34,18 +34,18 @@ AcSymbolicDecodeTest >> test88221234CanFitConcreteLBZ [
 			#('d'  16r1234
 			  'rt' 1
 			  'ra' 2)).            
-	self assert: ( aConcreteLBZ canFitBinary: 16r88221234///32 )
+	self assert: (aConcreteLBZ possiblyFitsEncoding: 16r88221234 /// 32)
 ]
 
 { #category : #tests }
 AcSymbolicDecodeTest >> testAnyOpcode34FitsLBZ [
 	"Prove that anything starting with opcode=34, fits."
-	self assert: ( self lbz alwaysFitsBinary: 34///6, ('x'///(32-6)) )
+	self assert: (self lbz alwaysFitsEncoding: 34 /// 6 , ('x' /// (32 - 6)))
 ]
 
 { #category : #tests }
 AcSymbolicDecodeTest >> testFFFFFFFFNeverFits [
-	self deny: ( self lbz canFitBinary: 16rFFFFFFFF///32 )
+	self deny: (self lbz possiblyFitsEncoding: 16rFFFFFFFF /// 32)
 ]
 
 { #category : #tests }
@@ -53,7 +53,7 @@ AcSymbolicDecodeTest >> testXAlwaysFits [
 	"Disprove that the judgement
 		'x is the encoding of lbz'
 	is valid.	"
-	self deny: ( self lbz alwaysFitsBinary: 'x'///32 )
+	self deny: (self lbz alwaysFitsEncoding: 'x' /// 32)
 ]
 
 { #category : #'tests - concrete instructions' }
@@ -64,7 +64,7 @@ AcSymbolicDecodeTest >> testXAlwaysFitsConcreteLBZ [
 			#('d'  16r1234
 			  'rt' 1
 			  'ra' 2)).
-	self deny: ( aConcreteLBZ alwaysFitsBinary: 'x'///32 )
+	self deny: (aConcreteLBZ alwaysFitsEncoding: 'x' /// 32)
 ]
 
 { #category : #tests }
@@ -73,7 +73,7 @@ AcSymbolicDecodeTest >> testXCanFit [
 		'x is the encoding of lbz'
 	is not inconsistent
 	(i.e., there are some x which are indeed encodings of lbz.	"
-	self assert: ( self lbz canFitBinary: 'x'///32 )
+	self assert: (self lbz possiblyFitsEncoding: 'x' /// 32)
 ]
 
 { #category : #'tests - concrete instructions' }
@@ -84,5 +84,5 @@ AcSymbolicDecodeTest >> testXCanFitConcreteLBZ [
 		   #('d'  16r1234
 			 'rt' 1
 			 'ra' 2)).            
-	self assert: ( aConcreteLBZ canFitBinary: 'x'///32 )
+	self assert: (aConcreteLBZ possiblyFitsEncoding: 'x' /// 32)
 ]
