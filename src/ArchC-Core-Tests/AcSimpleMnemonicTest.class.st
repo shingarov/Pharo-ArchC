@@ -69,7 +69,7 @@ AcSimpleMnemonicTest >> testDisassembleImm [
 	result := spec disassembleEnv: (Dictionary new
 		at: 'd' put: 16r123;
 		yourself).
-	self assert: result = ('abc 0x123' -> 0)
+	self assert: result = 'abc 0x123'
 ]
 
 { #category : #tests }
@@ -101,5 +101,5 @@ AcSimpleMnemonicTest >> testTrivialDisassembly [
 	mnem := '"Literal string"'.
 	spec := self forPowerPC parse: mnem.
 	result := spec disassembleEnv: Dictionary new.
-	self assert: result = ('Literal string' -> 0)
+	self assert: result = 'Literal string'
 ]

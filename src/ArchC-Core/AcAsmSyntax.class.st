@@ -79,11 +79,10 @@ AcAsmSyntax >> disassembleEnv: aDictionary [
 	(self constraintsSatisfiedBy: aDictionary) ifFalse: [ ^nil ].
 	operandsToDisassemble := operands asOrderedCollection copy.
 	stream := WriteStream on: String new.
-	^stream contents -> constraints size
-
 	(self format disassembleTo: stream operands: operandsToDisassemble inEnvironment: aDictionary) ifFalse: [ 
 		^ nil
 	].
+	^stream contents
 ]
 
 { #category : #accessing }
@@ -117,6 +116,19 @@ AcAsmSyntax >> instruction: i [
 		format instruction: instruction
 	].  
 
+]
+
+{ #category : #testing }
+AcAsmSyntax >> isMoreOrEquallySpecificThan: another [ 
+	self format operands size < another format operands size ifTrue: [
+		^ true
+	].
+	self format operands size = another format operands size ifTrue: [
+		self constraints size >= another constraints size ifTrue: [
+			^ true
+		].
+	].
+	^ false
 ]
 
 { #category : #accessing }

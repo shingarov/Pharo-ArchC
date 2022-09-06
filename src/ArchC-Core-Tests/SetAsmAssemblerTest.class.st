@@ -88,7 +88,7 @@ SetAsmAssemblerTest >> testTrapPPC [
 SetAsmAssemblerTest >> testTwlgtPPC [
 	| tw trapSetAsm thisParser result |
 	tw := AcProcessorDescriptions powerpc instructionAt: 'tw'.
-	self assert: tw syntax size equals: 2.
+	self assert: tw syntax size equals: 3.
 	trapSetAsm := tw syntax detect: [ :m | m source beginsWith: '"tw' ].
 	thisParser := trapSetAsm assembler.
 	result := thisParser parse: 'twlgt 1, 2'.

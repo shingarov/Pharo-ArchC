@@ -269,8 +269,8 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	to the verbatim textual definition of the instruction mnemonic
 	(which can be more than one per instruction)"
 	AcSetAsmParser processAssociations: associations in: self.
-	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics 
-
+	instructions do: [:instruction | instruction syntax sort: [ :a :b | a isMoreOrEquallySpecificThan: b  ] ].
+	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics
 ]
 
 { #category : #'collaboration with parser' }
