@@ -16,8 +16,8 @@ AcAsmMap class >> name: aString entries: aCollection [
 ]
 
 { #category : #API }
-AcAsmMap >> backLookup: int [
-	^backMap at: int 
+AcAsmMap >> backLookup: int ifAbsent: block [
+	^backMap at: int ifAbsent: block
 ]
 
 { #category : #accessing }

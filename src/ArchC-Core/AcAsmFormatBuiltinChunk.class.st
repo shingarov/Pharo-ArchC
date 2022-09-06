@@ -41,13 +41,15 @@ AcAsmFormatBuiltinChunk >> decImmLiteral [
 AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [ 
 	| op |
 
+	ops isEmpty ifTrue: [ ^ false ].
 	op := ops removeFirst.
 	self modifier 
 		disassemble: op
 		to: aWriteStream
 		inEnvironment: e
 		format: instruction format
-		chunk: self
+		chunk: self.
+	^ true
 ]
 
 { #category : #'parsing - private' }

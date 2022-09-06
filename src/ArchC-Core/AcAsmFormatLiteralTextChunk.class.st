@@ -23,8 +23,8 @@ AcAsmFormatLiteralTextChunk >> assembler [
 
 { #category : #'API - disassembly' }
 AcAsmFormatLiteralTextChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
-	aWriteStream nextPutAll: text
-
+	aWriteStream nextPutAll: text.
+	^ true
 ]
 
 { #category : #testing }

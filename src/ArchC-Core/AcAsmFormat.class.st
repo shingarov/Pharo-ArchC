@@ -20,12 +20,16 @@ AcAsmFormat >> assembler [
 
 { #category : #'API - disassembly' }
 AcAsmFormat >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
-	mnemonic disassembleTo: aWriteStream operands: ops inEnvironment: e.
+	(mnemonic disassembleTo: aWriteStream operands: ops inEnvironment: e) ifFalse: [ 
+		^ false
+	].        
 	operands notEmpty ifTrue: [
 		aWriteStream space.
-		operands disassembleTo: aWriteStream operands: ops inEnvironment: e.
-	]
-
+		(operands disassembleTo: aWriteStream operands: ops inEnvironment: e) ifFalse: [ 
+			^ false
+		].
+	].
+	^ true
 ]
 
 { #category : #accessing }
