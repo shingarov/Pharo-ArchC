@@ -28,8 +28,10 @@ AcAsmFormatMnemonicChunk >> assembler [
 
 { #category : #'API - disassembly' }
 AcAsmFormatMnemonicChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
-	subchunks do:[:each | each disassembleTo: aWriteStream operands: ops inEnvironment: e ]
-
+	subchunks do:[:subchunk | 
+		(subchunk disassembleTo: aWriteStream operands: ops inEnvironment: e) ifFalse:[ ^ false ] 
+	].
+	^ true
 ]
 
 { #category : #accessing }

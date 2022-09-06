@@ -48,6 +48,8 @@ AcAsmFormatMapChunk >> assembler [
 { #category : #'API - disassembly' }
 AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: aDictionary [
 	| op value |
+
+	ops isEmpty ifTrue: [ ^ false ].
 	op := ops removeFirst operand.
 	value := aDictionary at: op.
 	(value isAST and:[value isSymbolic]) ifTrue: [
@@ -58,9 +60,10 @@ AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: 
 	] ifFalse: [ 
 		| name |
 
-		name := (self map backLookup: value) name.
+		name := (self map backLookup: value ifAbsent:[^ false]) name.
 		aWriteStream nextPutAll: name
 	].
+	^ true
 ]
 
 { #category : #accessing }

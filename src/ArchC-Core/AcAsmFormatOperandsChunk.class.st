@@ -28,9 +28,9 @@ AcAsmFormatOperandsChunk >> assembler [
 { #category : #'API - disassembly' }
 AcAsmFormatOperandsChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	subchunks 
-		do: [:each | each disassembleTo: aWriteStream operands: ops inEnvironment: e ]
-		separatedBy: [aWriteStream nextPut: $,]
-
+		do: [:each | (each disassembleTo: aWriteStream operands: ops inEnvironment: e) ifFalse:[ ^ false ] ]
+		separatedBy: [aWriteStream nextPut: $,].
+	^ true
 ]
 
 { #category : #'printing & storing' }

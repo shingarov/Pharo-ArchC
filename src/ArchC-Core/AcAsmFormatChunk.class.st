@@ -90,7 +90,15 @@ AcAsmFormatChunk >> assembler [
 
 { #category : #'API - disassembly' }
 AcAsmFormatChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
-	self subclassResponsibility 
+	"Disassemble a chunk onto a stream according to given environment.
+	 Returns
+	  - `true` if chunk was successfully disassembled
+	  - `false` otherwise.
+
+	 Note, that some text may have been written to stream EVEN IF dissasembly
+	 fails (and this method returned `false`)!
+	"
+	^ self subclassResponsibility
 ]
 
 { #category : #'API - disassembly' }

@@ -75,13 +75,15 @@ AcAsmSyntax >> disassembleEnv: aDictionary [
 	 the most sepecific mnemonic form.
 	OPERAND VALUES IN aDictionary MUST BE CONCRETE."
 	
-	| stream theseOperands |
+	| stream operandsToDisassemble |
 	(self constraintsSatisfiedBy: aDictionary) ifFalse: [ ^nil ].
-	theseOperands := operands asOrderedCollection copy.
+	operandsToDisassemble := operands asOrderedCollection copy.
 	stream := WriteStream on: String new.
-	self format disassembleTo: stream operands: theseOperands inEnvironment: aDictionary.
 	^stream contents -> constraints size
 
+	(self format disassembleTo: stream operands: operandsToDisassemble inEnvironment: aDictionary) ifFalse: [ 
+		^ nil
+	].
 ]
 
 { #category : #accessing }
