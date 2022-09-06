@@ -34,7 +34,7 @@ AcAsmFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues
 	].
 	env := Dictionary newFromKeys: k andValues: v.
 	s := parseResult disassembleEnv: env.
-	self assert: s key equals: e
+	self assert: s equals: e
 ]
 
 { #category : #arm }
@@ -55,9 +55,7 @@ AcAsmFormatTest >> testBasic [
 	"parserResult is an AcSetAsm"
 	
 	ass := parseResult disassembleEnv: Dictionary new.
-	"disassembly->weight"
-	self assert: ass key equals: 'Simple'.
-	self assert: ass value equals: 0
+	self assert: ass equals: 'Simple'.
 ]
 
 { #category : #generic }
@@ -83,9 +81,7 @@ AcAsmFormatTest >> testEscapePercent [
 	format := self forPowerPC parse: formatString.
 	env := Dictionary new.
 	x := format disassembleEnv: env.
-	self assert: x key equals: 'a%b'.
-	self assert: x value equals: 0
-
+	self assert: x equals: 'a%b'.
 ]
 
 { #category : #sparc }

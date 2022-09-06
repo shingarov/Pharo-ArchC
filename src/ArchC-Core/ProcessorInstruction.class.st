@@ -79,15 +79,37 @@ ProcessorInstruction >> binaryEncoding [
 	^binaryEncoding
 ]
 
-
-
 { #category : #disassembly }
 ProcessorInstruction >> disassemble [
-	| variants |
-	variants := self syntax collect: [ :each | each disassembleEnv: self allBindingValues ].
-	variants := variants reject: [ :v | v isNil ].
-	variants := variants sorted: [ :a :b | a value > b value ].
-	^variants first key
+	"Disassemble the receiver. If the receiver can be disassembled to (or assembled from)
+	 using different (extended) mnemonics, use the most specific. 
+
+	 For example, on PowerPC an unconditional trap instruction can be written as
+	 `trap` or `tw 31, 0, 0`. In this case, this method will return `trap` as it
+	 is most specific.
+
+	 Similarly, for RISC-V, return from subroutine can be written either as
+	 `jalr zero, ra, 0` or as `ret`. Again, `ret` wil be returned in this case.
+
+	 By 'most specific' we mean the mnemonic that uses least operands.
+	"
+	| bindings |
+
+	bindings := self allBindingValues.
+	self syntax do: [:each |
+		| disassembly |
+
+		disassembly := each disassembleEnv: bindings.
+		disassembly notNil ifTrue: [ 
+			"Please note, that formats are kept sorted by number
+			 of operands so if disassembles, we know it is the
+			 most specific one. See 
+					ProcessorInstructionDeclaration >> #isa:
+					AcProcessorDescription >> #fillMnemonicsFrom:"
+			^ disassembly 
+		]
+	].
+	self error: 'Failed to disassemble'
 ]
 
 { #category : #emitting }

@@ -100,7 +100,7 @@ AcMnemonicTest >> testArmAddPC [
 
 { #category : #'tests - simple' }
 AcMnemonicTest >> testOneBinding [
-	| mnem spec env s numBoundOperands |
+	| mnem spec env s |
 	mnem := '"mov %reg, %reg", rt, rd, c=3'.
 	spec := self forPowerPC parse: mnem.
 	env := Dictionary new 
@@ -109,9 +109,7 @@ AcMnemonicTest >> testOneBinding [
 		at: 'c' put: 3;
 		yourself.
 	s := spec disassembleEnv: env.
-	numBoundOperands := s value.
-	self assert: s key = 'mov 5, 7'.
-	self assert: numBoundOperands = 1
+	self assert: s = 'mov 5, 7'.
 ]
 
 { #category : #'tests - simple' }
@@ -135,7 +133,7 @@ AcMnemonicTest >> testOneReg [
 		at: 'r' put: 5;
 		yourself.
 	s := spec disassembleEnv: env.
-	self assert: s key = 'R 5'
+	self assert: s = 'R 5'
 ]
 
 { #category : #'tests - instructions - PowerPC' }

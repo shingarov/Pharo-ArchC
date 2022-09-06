@@ -77,6 +77,17 @@ ProcessorInstructionDeclaration >> assertInvariants [
 			 description: 'Instruction format '' , format name , '' has not bitfield '' , bitField , ''!'.
 	].
 
+	"ProcessorInstruction >> #disassemble requires syntax formats to be sorted
+	 by increaring number of operands (in assembly language, that is, a comma-separated 
+	 list of operands following mnemonic). Check that.
+
+	 Note, that some instruction may have no syntax defined, hence the nil-check.
+	"
+	syntax notNil ifTrue: [
+		1 to: syntax size - 1 do: [:i | 
+			self assert: ((syntax at: i) isMoreOrEquallySpecificThan: (syntax at: i + 1))
+		].
+	].
 ]
 
 { #category : #accessing }
@@ -90,7 +101,6 @@ ProcessorInstructionDeclaration >> bitWidth [
 
 	^ self format bitWidth
 ]
-
 
 { #category : #'encoding / decoding' }
 ProcessorInstructionDeclaration >> decodeBits: aBitVector [
@@ -171,7 +181,8 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 				syntax at: index put: mnemonicSpec.
 				isa addSyntax: mnemonicSpec assembler                  
 			].
-		]. 
+		].
+		syntax sort: [ :a :b | a isMoreOrEquallySpecificThan: b  ]
 	].
 ]
 

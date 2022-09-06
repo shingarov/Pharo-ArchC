@@ -195,6 +195,25 @@ AcAssemblerTest >> testSC1 [
 { #category : #powerpc }
 AcAssemblerTest >> testTRAP [
 	| result |
+
 	result := AcProcessorDescriptions powerpc assembler parse: 'trap'. "XO1 type"
-	self assert: result binaryEncoding equals: 16r7FE00008 
+	self assert: result binaryEncoding equals: 16r7FE00008.
+	self assert: result disassemble equals: 'trap'.
+
+	result := AcProcessorDescriptions powerpc assembler parse: 'tw 31,0,0'. 
+	self assert: result binaryEncoding equals: 16r7FE00008.                       
+	self assert: result disassemble equals: 'trap'.
+
+	result := AcProcessorDescriptions powerpc assembler parse: 'tweq 0,1'. 
+	self assert: result binaryEncoding equals: 16r7c800808.                       
+	self assert: result disassemble equals: 'tweq 0, 1'.    
+
+	result := AcProcessorDescriptions powerpc assembler parse: 'tw 4,0,1'. 
+	self assert: result binaryEncoding equals: 16r7c800808.                       
+	self assert: result disassemble equals: 'tweq 0, 1'.    
+
+	"trap never"
+	result := AcProcessorDescriptions powerpc assembler parse: 'twi 0,0,0x48'.
+	self assert: result binaryEncoding equals: 16r0c000048.
+	self assert: result disassemble equals: 'twi 0x0, 0, 0x48'
 ]
