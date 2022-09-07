@@ -4,8 +4,27 @@ Class {
 	#instVars : [
 		'memory'
 	],
+	#classInstVars : [
+		'generated'
+	],
 	#category : #'ArchC-DSL'
 }
+
+{ #category : #private }
+AcDSLAssembler class >> generated [
+	"Return `true` if DSL methods for assembling instructions
+	 have been generated (and therefore the class is ready to
+	 be used). If not, return `false`"
+
+	"The comparison to true is important since instvars defaults
+	 to nil!"
+	^ generated == true
+]
+
+{ #category : #private }
+AcDSLAssembler class >> generated: aBoolean [
+	generated := aBoolean
+]
 
 { #category : #accessing }
 AcDSLAssembler class >> isa [
@@ -35,11 +54,25 @@ AcDSLAssembler >> grounder: anInstructionGrounder [
 
 { #category : #initialization }
 AcDSLAssembler >> initialize [
-	"Invoked when a new instance is created."
+	super initialize.
 
+	"Lazy-generate DSL methods here upon first instantiation.
+	 This solves three problems: 
+	   (i) spares users to think of it and doing it manually
+	   (ii) avoids generating assemblers which will never be used.
+	   (iii) makes it debuggable if there's an error since this will
+		 be called once all the code is loaded (as opposed to 'at some
+		 undefined time during package loading').
+	"
+	self class generated ifFalse: [ 
+		AcDSLAssemblerGenerator generate: self class.
+	].
 	memory := AcDSLCodeBuffer new
+]
 
-	"  super initialize.   -- commented since inherited method does nothing"
+{ #category : #accessing }
+AcDSLAssembler >> isa [
+	^ self class isa
 ]
 
 { #category : #emitting }
@@ -49,11 +82,6 @@ AcDSLAssembler >> label: anObject [
 	insn := AcLabel symbol: anObject.
 	memory append: insn.
 	^ insn
-]
-
-{ #category : #accessing }
-AcDSLAssembler >> isa [
-	^ self class isa
 ]
 
 { #category : #accessing }

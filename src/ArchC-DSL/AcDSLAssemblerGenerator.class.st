@@ -19,6 +19,7 @@ AcDSLAssemblerGenerator >> generate [
 
 	isa := assemblerClass isa.
 	isa instructions do: [:each | self generateForInstruction: each ].
+	assemblerClass generated: true.
 ]
 
 { #category : #utilities }
