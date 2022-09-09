@@ -98,6 +98,16 @@ AcProcessorDescription >> assemble: aStringOrArray"of Strings" on: aStream [
 
 ]
 
+{ #category : #'as yet unclassified' }
+AcProcessorDescription >> assembleLines: source [
+	^(source lines reject: [ :aLine |
+		aLine isEmpty or: [
+			(aLine beginsWith: '#') or:
+				[ aLine allSatisfy: #isSeparator ] ] ]) collect: [ :aRealLine |
+		(self assemble: aRealLine) emit32
+	]
+]
+
 { #category : #assembly }
 AcProcessorDescription >> assembler [
 	^instructionMnemonics 
