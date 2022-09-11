@@ -178,6 +178,11 @@ AcProcessorDescription >> endian [
 	^ endian
 ]
 
+{ #category : #'as yet unclassified' }
+AcProcessorDescription >> endian: anEndian [
+	endian := anEndian
+]
+
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillDecodersFrom: aCollectionOfAssociations [
 	| decoderAssociations |
