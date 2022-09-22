@@ -29,6 +29,11 @@ AcAsmFormatChunk class >> builtin: aString modifier: anAcAsmOperandModifier [
 
 ]
 
+{ #category : #accessing }
+AcAsmFormatChunk class >> builtins [
+	^ #('%imm' '%exp' '%addr')
+]
+
 { #category : #'instance creation' }
 AcAsmFormatChunk class >> map: aString [
 	^ AcAsmFormatMapChunk new name: aString
