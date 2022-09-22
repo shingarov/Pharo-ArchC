@@ -49,7 +49,12 @@ AcInstructionBitfield >> name:nameArg width:widthArg signed:signedArg [
 
 { #category : #'printing & storing' }
 AcInstructionBitfield >> printOn:aStream [
-	aStream nextPutAll: name.
+	name isString ifTrue: [
+		aStream nextPutAll: name.
+	] ifFalse: [ 
+		self assert: name isInteger.
+		name printOn: aStream.
+	].
 	aStream nextPut: $:.
 	width printOn: aStream.
 	signed ifTrue: [
