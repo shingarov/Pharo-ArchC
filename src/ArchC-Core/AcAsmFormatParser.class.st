@@ -52,7 +52,11 @@ AcAsmFormatParser class >> maps: m [
 
 { #category : #grammar }
 AcAsmFormatParser >> builtin [
-	^ ('%imm' asParser / '%exp' asParser / '%addr' asParser) , modifier optional
+	| builtins |
+
+	builtins := (AcAsmFormatBuiltinChunk builtins collect: [:e | e asParser ]) asChoiceParser.
+
+	^ builtins , modifier optional
 		==> [:nodes | 
 			| builtinName  modifierClass |
 
@@ -60,7 +64,6 @@ AcAsmFormatParser >> builtin [
 			modifierClass := nodes second ifNil: [ NoOperandModifier ].
 			AcAsmFormatChunk builtin: builtinName modifier: modifierClass
 		]
-
 ]
 
 { #category : #grammar }

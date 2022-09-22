@@ -14,18 +14,6 @@ Class {
 	#category : #'ArchC-Core-Core'
 }
 
-{ #category : #'instance creation' }
-AcAsmFormatBuiltinChunk class >> type: aNameSuchAsImm modifier: aClass [
-	(((aNameSuchAsImm = '%imm')
-		or: [aNameSuchAsImm = '%exp'])
-		or: [aNameSuchAsImm = '%addr'])
-	ifFalse: [ self error: 'Cant happen' ].
-	^super new
-		type: aNameSuchAsImm;
-		modifier: aClass;
-		yourself
-]
-
 { #category : #'API - assembly' }
 AcAsmFormatBuiltinChunk >> assembler [
 	^self immLiteral / self immExpression ==> [ :x | { modifier new x: x; yourself } ]
@@ -102,7 +90,7 @@ AcAsmFormatBuiltinChunk >> type [
 
 { #category : #accessing }
 AcAsmFormatBuiltinChunk >> type: aString [
-	self assert: (#('%imm' '%exp' '%addr') includes: aString).
+	self assert: (self class builtins includes: aString).
 	type := aString
 ]
 
