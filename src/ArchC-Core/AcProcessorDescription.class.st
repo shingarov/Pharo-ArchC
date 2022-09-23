@@ -141,7 +141,7 @@ AcProcessorDescription >> decodeBits: aBitVector [
 	
 	| candidates |
 
-	candidates := opcodeDecoder instructionsWithOpcodeFitting: aBitVector.
+	candidates := opcodeDecoder preDecodeBits: aBitVector.
 	candidates := candidates collect: [:instr | instr decodeBits: aBitVector ].
 	candidates := candidates reject: [:instr | instr isNil ].
 	candidates isEmpty ifTrue: [ IllegalInstruction signalWith: aBitVector ].
@@ -212,16 +212,18 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 ]
 
 { #category : #'collaboration with parser' }
-AcProcessorDescription >> fillISAFrom: aCollectionOfAssociations [
+AcProcessorDescription >> fillISAFrom: aCollectionOfAssociations [ 
 	self
 		fillInstructionFormatsFrom: aCollectionOfAssociations;
 		fillMapsFrom: aCollectionOfAssociations; "important that this is done before fillMnemonics"
 		fillInstructionsFrom: aCollectionOfAssociations;
 		fillDecodersFrom: aCollectionOfAssociations;
 		fillMnemonicsFrom: aCollectionOfAssociations.
-	opcodeDecoder := OpcodeDecoder for: self
-
-
+	self hasOpcodeField ifTrue: [
+		opcodeDecoder := AcOpcodeDecoder for: self
+	] ifFalse: [
+		opcodeDecoder := AcInstructionDecoder for: self
+	].
 ]
 
 { #category : #'collaboration with parser' }
