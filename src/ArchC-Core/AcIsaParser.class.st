@@ -296,7 +296,6 @@ AcIsaParser >> instr [
 			instr format: format.
 			'ac_instr' -> instr
 		] ]
-
 ]
 
 { #category : #grammar }
