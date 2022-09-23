@@ -79,6 +79,11 @@ AcInstructionFormat >> bitWidthOf: fieldName [
 	KeyNotFound signalFor: fieldName
 ]
 
+{ #category : #queries }
+AcInstructionFormat >> hasField: fieldName [
+	^ self bitFields contains: [ :bitfield | bitfield name = fieldName ]
+]
+
 { #category : #initialization }
 AcInstructionFormat >> initializeWithName: aString bitfields: aCollection [
 	name := aString.
