@@ -331,6 +331,22 @@ AcProcessorDescription >> hasConstantInstructionWidth [
 	^true "BOGUS"
 ]
 
+{ #category : #queries }
+AcProcessorDescription >> hasOpcodeField [
+	"Return true, if this ISA (model) has a single opcode field.
+	 Return false otherwise.
+
+	 Most ISA (models) do, but some don't (like AArch64).
+	"
+	| opcdFieldName |
+
+	opcdFieldName := instructionFormats values anyOne opcdFieldName.
+	instructionFormats do: [:format | 
+		(format hasField: opcdFieldName) ifFalse: [ ^ false ].
+	].
+	^ true.
+]
+
 { #category : #initialization }
 AcProcessorDescription >> initialize [
 	super initialize.
@@ -376,19 +392,18 @@ AcProcessorDescription >> maps [
 { #category : #'opcd field' }
 AcProcessorDescription >> opcdFieldInterval [
 	opcodeFieldInterval isNil ifTrue: [ 
-		opcodeFieldInterval := instructionFormats values anyOne opcdFieldInterval         
+		opcodeFieldInterval := instructionFormats values anyOne bitRangeOfField: self opcdFieldName  
 	].
 	^ opcodeFieldInterval
-
 ]
 
 { #category : #'opcd field' }
 AcProcessorDescription >> opcdFieldName [
-	opcodeFieldName isNil ifTrue: [ 
-		opcodeFieldName := instructionFormats values anyOne opcdFieldName         
+	opcodeFieldName isNil ifTrue: [
+		self assert: self hasOpcodeField.
+		opcodeFieldName := instructionFormats values anyOne opcdFieldName.
 	].
 	^ opcodeFieldName
-
 ]
 
 { #category : #private }
