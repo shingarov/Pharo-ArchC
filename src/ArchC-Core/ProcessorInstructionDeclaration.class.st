@@ -14,8 +14,23 @@ Class {
 		'syntax',
 		'isa'
 	],
+	#classVars : [
+		'EmptyBindings'
+	],
 	#category : #'ArchC-Core-Core'
 }
+
+{ #category : #initialization }
+ProcessorInstructionDeclaration class >> initialize [
+	EmptyBindings := Dictionary new
+]
+
+{ #category : #'instance creation' }
+ProcessorInstructionDeclaration class >> new [
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+]
 
 { #category : #'parser access for construction' }
 ProcessorInstructionDeclaration >> addSyntax: aMnemonicSpec [ 
@@ -83,8 +98,6 @@ ProcessorInstructionDeclaration >> assertInvariants [
 	self assert: name notNil.
 	self assert: isa notNil.
 	self assert: self format notNil.
-	self assert: internalBindings isEmptyOrNil not
-		 description: 'At least opcode must be specified'.
 	self assert: (isa instructionFormats includes: self format).
 	self assert: (isa instructions includes: self).
 
@@ -153,15 +166,22 @@ ProcessorInstructionDeclaration >> inEnvironment: env [
 	^self isa grounder ground: self using: (self binaryEncoding inEnvironment: env)
 ]
 
+{ #category : #initialization }
+ProcessorInstructionDeclaration >> initialize [
+	super initialize.
+	internalBindings := EmptyBindings
+]
+
 { #category : #accessing }
 ProcessorInstructionDeclaration >> internalBindings [
 	^ internalBindings
 ]
 
 { #category : #'parser access for construction' }
-ProcessorInstructionDeclaration >> internalBindings: aDictionary [
-	internalBindings := aDictionary
-
+ProcessorInstructionDeclaration >> internalBindings: dictionaryOrNil [
+	dictionaryOrNil notNil ifTrue: [ 
+		internalBindings := dictionaryOrNil
+	].
 ]
 
 { #category : #accessing }
