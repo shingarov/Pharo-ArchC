@@ -19,12 +19,6 @@ AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: val
 	self assert: result allBindingValues equals: expected 
 ]
 
-{ #category : #running }
-AcAssemblerTest >> resetZ3Context [
-	Z3Context createGlobalContext.
-	AcProcessorDescriptions reset.
-]
-
 { #category : #powerpc }
 AcAssemblerTest >> testADD [
 	self
