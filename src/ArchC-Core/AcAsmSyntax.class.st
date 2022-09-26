@@ -13,12 +13,24 @@ Class {
 
 { #category : #'instance creation' }
 AcAsmSyntax class >> format: aMnemonicFormat operandsAndConstraints: anArray [
+	| operands constraints |
+
+	operands := OrderedCollection new.
+	constraints := Dictionary new.
+	"Generally speaking, anArray will contain a mixture of operand names (Strings)
+	 and constraints which are operands pre-bound to values and therefore Associations."
+	anArray do: [:each | 
+		(each isKindOf: Association) ifTrue: [ 
+			constraints add: each
+		] ifFalse: [ 
+			operands add: each
+		].
+	].
+
 	^self new
-		format: aMnemonicFormat ;
-		"Generally speaking, anArray will contain a mixture of operand names (Strings)
-		and constraints which are operands pre-bound to values and therefore Associations."
-		operands: (anArray select: [ :op | op isKindOf: AsmOperandInstantiation ]);
-		constraints: (Dictionary newFromAssociations: (anArray reject: [ :op | op isKindOf: AsmOperandInstantiation ]));
+		format: aMnemonicFormat;
+		operands: operands;
+		constraints: constraints;
 		yourself
 ]
 

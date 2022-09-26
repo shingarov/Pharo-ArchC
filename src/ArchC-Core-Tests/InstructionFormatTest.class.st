@@ -162,6 +162,6 @@ InstructionFormatTest >> testPpcBLA [
 	| pdl bla instance |
 	pdl := AcProcessorDescriptions powerpc.
 	bla := pdl instructionAt: #bla.
-	instance := bla inEnvironment: (Dictionary newFromAssociations: {'li'->0}).
+	instance := bla inEnvironment: (Dictionary newFromPairs: #( 'li'  0 )).
 	self assert: instance binaryEncoding value equals: 2r01001000000000000000000000000011   "16r48000003"
 ]

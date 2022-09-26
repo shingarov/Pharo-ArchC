@@ -261,11 +261,15 @@ AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillMapsFrom: aCollectionOfAssociations [
-	| mapAssociations m |
-	mapAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'ac_map'].
-	m := mapAssociations collect: [ :ass | ass value name2self ].
-	maps := Dictionary newFromAssociations: m
+	maps := Dictionary new.
+	aCollectionOfAssociations do: [ :assoc |
+		assoc key = 'ac_map' ifTrue:[
+			| map |
+
+			map := assoc value.
+			maps at: map name put: map
+		].
+	].
 ]
 
 { #category : #'collaboration with parser' }

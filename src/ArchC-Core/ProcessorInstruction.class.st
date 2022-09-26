@@ -22,10 +22,14 @@ ProcessorInstruction >> = another [
 { #category : #access }
 ProcessorInstruction >> allBindingValues [
 	| allBindings |
-	allBindings := format bitFields
-		reject: [ :bitField | bitField isFixedValue ]
-		thenCollect: [ :bitField | bitField name -> (self fieldValue: bitField name) ].
-	^Dictionary newFromAssociations: allBindings
+
+	allBindings := Dictionary new.
+	format bitFields do: [:bitField | 
+		bitField isFixedValue ifFalse: [ 
+			allBindings at: bitField name put: (self fieldValue: bitField name)
+		].
+	].
+	^ allBindings
 ]
 
 { #category : #accessing }
@@ -100,7 +104,13 @@ ProcessorInstruction >> emitOn: aStream [
 
 { #category : #accessing }
 ProcessorInstruction >> externalBindingValues [
-	^Dictionary newFromAssociations: (self externalBindings collect: [ :ass | ass key -> (self fieldValue: ass key) ])
+	| externalBindingValues |
+
+	externalBindingValues := Dictionary new.
+	self externalBindings keysDo: [:bitFieldName | 
+		externalBindingValues at: bitFieldName put: (self fieldValue: bitFieldName)
+	].
+	^ externalBindingValues
 ]
 
 { #category : #accessing }

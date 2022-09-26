@@ -21,8 +21,13 @@ AcDefinesParser >> defineDirective [
 { #category : #'as yet unclassified' }
 AcDefinesParser >> defineDirectives [
 	^defineDirective star
-	==> [ :x | Dictionary newFromAssociations: x ]
+	==> [ :x | 
+		| defines | 
 
+		defines := Dictionary new.
+		x do: [ :e | defines add: e ].
+		defines
+		]
 ]
 
 { #category : #'as yet unclassified' }
