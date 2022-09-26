@@ -15,9 +15,6 @@ ManifestArchCCoreTests class >> mandatoryPreRequisites [
 	 Please take a look at the #referencedPreRequisites method as well."
 
 	^ #(
-		#'ArchC-Core'    "AcCommonParser - superclass of MatchedParenTestParser"
-		#'MachineArithmetic-Tests'    "TestCaseWithZ3Context - superclass of InstructionFormatTest"
-		#'stx:goodies/petitparser'    "PPCompositeParser - superclass of MatchedParenTestParser"
 		#'stx:goodies/sunit'    "TestAsserter - superclass of AcAsmFormatTest"
 		#'stx:libbasic'    "Object - superclass of AcAsmFormatTest"
 		#'stx:libcompat'    "PackageManifest - superclass of ManifestArchCCoreTests"
@@ -37,6 +34,7 @@ ManifestArchCCoreTests class >> referencedPreRequisites [
 	 Please also take a look at the #mandatoryPreRequisites method"
 
 	^ #(
-		#MachineArithmetic    "Z3Context - referenced by AcAssemblerTest>>resetZ3Context"
+		#'ArchC-Core'    "AcAsmFormatParser - referenced by AcAsmFormatTest>>testADD3"
+		#'stx:goodies/petitparser'    "PPFailure - referenced by AcSimpleMnemonicTest>>testImmIsSignless"
 	)
 ]
