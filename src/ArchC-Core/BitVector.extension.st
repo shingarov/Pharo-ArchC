@@ -16,7 +16,8 @@ BitVector >> toByteArrayEndian: endian on: binaryStream [
 	self assert: (self length \\ 8) == 0.
 	self assert: (self length // 8) isPowerOfTwo.
 	self isSymbolic ifTrue: [
-		MustBeConcrete signal
+		self error: 'Must be concrete!'.
+		^ self
 	].
 	endian 
 		ifBig: [
