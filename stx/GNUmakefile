@@ -5,6 +5,12 @@ include GNUmakefile.local
 ifndef ARCHC_PDL_DIR
 ARCHC_PDL_DIR=../pdl
 
+# Metacello group to load. Technically we're not using
+# Metacello in St/X but we use the same variable in StX
+# makefile as in Pharo makefile to allow testing against
+# MachineArithmetic and BitVector packages
+GROUP ?= default
+
 ../pdl:
 	(cd .. && ./get-pdls.sh)
 endif
@@ -21,6 +27,16 @@ all: build
 
 include ../stx.gmk
 
+ifeq ($(GROUP),default)
+bitvector_impl=BaselineOfMachineArithmetic
+else
+ ifeq ($(GROUP),alternative-bitvector)
+  bitvector_impl=BaselineOfBitVector
+ else
+  $(error Invalid GROUP value (must be either 'default' or 'alternative-bitvector'))
+ endif
+endif
+
 build: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
 	@echo "To run Smalltalk/X with $(PROJECT) loaded, run:"
 	@echo ""
@@ -36,12 +52,14 @@ run: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
 		--package-path .. \
 		--package-path $(MACHINEARITHMETIC_DIR) \
+		--load $(bitvector_impl) \
 		--load BaselineOf$(PROJECT)
 
 test: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
 		--package-path .. \
 		--package-path $(MACHINEARITHMETIC_DIR) \
+		--load $(bitvector_impl) \
 		--load BaselineOf$(PROJECT) \
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
 			-p BitVector-Tests \

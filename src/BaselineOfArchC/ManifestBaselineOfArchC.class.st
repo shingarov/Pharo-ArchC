@@ -17,7 +17,6 @@ ManifestBaselineOfArchC class >> mandatoryPreRequisites [
 	^ #(
 		#'stx:libbasic'    "Object - superclass of BaselineOfArchC"
 		#'stx:libcompat'    "BaselineOf - superclass of BaselineOfArchC"
-		#'BaselineOfMachineArithmetic' "MachineArithmetic"
 	)
 ]
 
