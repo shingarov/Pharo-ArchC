@@ -24,10 +24,13 @@ jobs:
     name: "${{matrix.dialect}}, ${{matrix.os}}"
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.group }} == 'alternative-bitvector'
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
         dialect: [ pharo, stx ]
+        group: [ default, alternative-bitvector ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,9 +45,9 @@ jobs:
 
       - name: Build
         run: |
-          make -C ${{matrix.dialect}}
+          make GROUP=${{matrix.group}} -C ${{matrix.dialect}}
 
       - name: Test
         run: |
           export ARCHC_PDL_DIR=$(pwd)/pdl/
-          make -C ${{matrix.dialect}} test
+          make GROUP=${{matrix.group}} -C ${{matrix.dialect}} test
