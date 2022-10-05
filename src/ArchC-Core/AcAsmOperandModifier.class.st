@@ -32,7 +32,7 @@ AcAsmOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStre
 			aWriteStream nextPutAll: variables anyOne.
 		] ifFalse: [ 
 			"Function of multiple variables, print the whole AST"
-			aWriteStream nextPutAll: value astToString.
+			aWriteStream nextPutAll: value printString.
 		].
 		aWriteStream nextPut: $} 
 	] ifFalse: [
