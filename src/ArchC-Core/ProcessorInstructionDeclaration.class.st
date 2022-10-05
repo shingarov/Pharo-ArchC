@@ -116,6 +116,76 @@ ProcessorInstructionDeclaration >> binaryEncoding [
 ]
 
 { #category : #accessing }
+ProcessorInstructionDeclaration >> binaryEncodingMask [
+	"Return bit mask (as BitVector) that masks-out all
+	 bits encoding operands.
+
+	 This is used together with bit match to test whether 
+	 given bitvector encodes this instruction.
+
+	 See `#binaryEncodingMatch` and `#decodeBits:`.
+	"
+	| slices |
+
+	slices := Array new: format bitFields size.
+	format bitFields withIndexDo: [:bitField :bitFieldIndex | 
+		| slice |
+
+		bitField isFixedValue ifTrue: [ 
+			slice := -1 toBitVector: bitField bitWidth.
+		] ifFalse: [ 
+			(internalBindings includesKey: bitField name) ifTrue: [ 
+				slice := -1 toBitVector: bitField bitWidth
+			] ifFalse: [ 
+				slice := 0 toBitVector: bitField bitWidth
+			].
+		].
+		slices at: bitFieldIndex put: slice.
+	].
+	^ (BitVector concatAll: slices) simplify
+
+	"
+	(AcProcessorDescriptions riscv64 instructionAt: 'addi') binaryEncodingMatch
+	(AcProcessorDescriptions riscv64 instructionAt: 'addi') binaryEncodingMask
+	"
+]
+
+{ #category : #accessing }
+ProcessorInstructionDeclaration >> binaryEncodingMatch [
+	"Return match pattern (as BitVector) where all the
+	 bits encoding operands are zero.
+
+	 This is used together with bit mask to test whether 
+	 given bitvector encodes this instruction.
+
+	 See `#binaryEncodingMask` and `#decodeBits:`.
+	"
+	| slices |
+
+	slices := Array new: format bitFields size.
+	format bitFields withIndexDo: [:bitField :bitFieldIndex | 
+		| slice |
+
+		bitField isFixedValue ifTrue: [ 
+			slice := bitField key toBitVector: bitField bitWidth.
+		] ifFalse: [ 
+			(internalBindings includesKey: bitField name) ifTrue: [ 
+				slice := (internalBindings at: bitField name) toBitVector: bitField bitWidth
+			] ifFalse: [ 
+				slice := 0 toBitVector: bitField bitWidth
+			].
+		].
+		slices at: bitFieldIndex put: slice.
+	].
+	^ (BitVector concatAll: slices) simplify
+
+	"
+	(AcProcessorDescriptions riscv64 instructionAt: 'slli') binaryEncodingMatch
+	(AcProcessorDescriptions riscv64 instructionAt: 'slli') binaryEncodingMask
+	"
+]
+
+{ #category : #accessing }
 ProcessorInstructionDeclaration >> bitWidth [
 	"Answer the width of instructions in bits."
 
@@ -124,7 +194,12 @@ ProcessorInstructionDeclaration >> bitWidth [
 
 { #category : #'encoding / decoding' }
 ProcessorInstructionDeclaration >> decodeBits: aBitVector [
-	(self alwaysFitsEncoding: aBitVector) ifFalse: [ ^nil ].
+	| mask match |
+
+	 mask := self binaryEncodingMask.
+	 match := self binaryEncodingMatch.
+
+	(aBitVector bitAnd: mask) = match ifFalse: [ ^nil ].
 	^self isa grounder ground: self using: aBitVector
 ]
 
