@@ -1,11 +1,24 @@
 Class {
-	#name : #ManifestBaselineOfArchC,
+	#name : #ManifestBaselineOfBitVector,
 	#superclass : #PackageManifest,
-	#category : #'BaselineOfArchC-Manifest'
+	#category : #'BaselineOfBitVector-Manifest'
 }
 
 { #category : #'stx - description' }
-ManifestBaselineOfArchC class >> mandatoryPreRequisites [
+ManifestBaselineOfBitVector class >> includedInPreRequisites [
+	"list packages which are to be implicitely included in the prerequisites list,
+	 even if not found by the automatic search.
+	 Redefine this, if classes from other packages are referred to via reflection
+	 or by constructing names dynamically (i.e. the search cannot find it)"
+
+	^ #(
+		'BitVector'
+		'BitVector-Tests'
+	)
+]
+
+{ #category : #'stx - description' }
+ManifestBaselineOfBitVector class >> mandatoryPreRequisites [
 	"list packages which are mandatory as a prerequisite.
 	 This are packages containing superclasses of my classes and classes which
 	 are extended by myself.
@@ -13,16 +26,13 @@ ManifestBaselineOfArchC class >> mandatoryPreRequisites [
 	 This method is generated automatically,
 	 by searching along the inheritance chain of all of my classes.
 	 Please take a look at the #referencedPreRequisites method as well."
-
-	^ #(
-		#'stx:libbasic'    "Object - superclass of BaselineOfArchC"
-		#'stx:libcompat'    "BaselineOf - superclass of BaselineOfArchC"
-		#'BaselineOfMachineArithmetic' "MachineArithmetic"
-	)
+	
+	^ "Object - superclass of BaselineOfBitVector" "BaselineOf - superclass of BaselineOfBitVector" #( #'stx:libbasic'
+	 #'stx:libcompat' )
 ]
 
 { #category : #'stx - description' }
-ManifestBaselineOfArchC class >> referencedPreRequisites [
+ManifestBaselineOfBitVector class >> referencedPreRequisites [
 	"list packages which are a prerequisite, because they contain
 	 classes which are referenced by my classes.
 	 These packages are NOT needed as a prerequisite for compiling or loading,
@@ -34,11 +44,5 @@ ManifestBaselineOfArchC class >> referencedPreRequisites [
 	 Please also take a look at the #mandatoryPreRequisites method"
 
 	^ #(
-		#'ArchC-Core'
-		#'ArchC-RISCV'
-		#'ArchC-DSL'
-		#'ArchC-Core-Tests'
-		#'ArchC-RISCV-Tests'
-		#'BitVector-Tests'
 	)
 ]

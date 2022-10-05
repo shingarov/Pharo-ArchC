@@ -44,6 +44,7 @@ test: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
 		--package-path $(MACHINEARITHMETIC_DIR) \
 		--load BaselineOf$(PROJECT) \
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
+			-p BitVector-Tests \
 			-p ArchC-Core-Tests \
 			-p ArchC-RISCV-Tests
 

@@ -35,7 +35,10 @@ endif
 
 test: $(PROJECT).image $(PHARO_VM)
 	#$(PHARO_VM_HEADLESS) $< test --fail-on-failure "$(PROJECT).*Tests.*"
-	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM_HEADLESS) $< test --fail-on-failure "ArchC-Core-Tests" "ArchC-RISCV-Tests"
+	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM_HEADLESS) $< test --fail-on-failure \
+		"BitVector-Tests" \
+		"ArchC-Core-Tests" \
+		"ArchC-RISCV-Tests"
 
 clean:
 	rm -f $(PROJECT).image $(PROJECT).changes *Test.xml *.fuel
