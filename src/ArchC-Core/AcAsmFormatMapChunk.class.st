@@ -51,7 +51,7 @@ AcAsmFormatMapChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: 
 	ops isEmpty ifTrue: [ ^ false ].
 	op := ops removeFirst operand.
 	value := aDictionary at: op.
-	(value isAST and:[value isSymbolic]) ifTrue: [
+	(value isBitVector and:[value isSymbolic]) ifTrue: [
 		| symbol |
 
 		symbol := value sym.
