@@ -18,6 +18,11 @@ AcSymbolicDecodeTest >> lbz [
 { #category : #'tests - concrete instructions' }
 AcSymbolicDecodeTest >> test88221234AlwaysFitsConcreteLBZ [
 	| aConcreteLBZ |
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	aConcreteLBZ := self lbz inEnvironment:
 		(Dictionary newFromPairs: 
 			#('d'   16r1234
@@ -29,6 +34,11 @@ AcSymbolicDecodeTest >> test88221234AlwaysFitsConcreteLBZ [
 { #category : #'tests - concrete instructions' }
 AcSymbolicDecodeTest >> test88221234CanFitConcreteLBZ [
 	| aConcreteLBZ |
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	aConcreteLBZ := self lbz inEnvironment:
 		(Dictionary newFromPairs: 
 			#('d'  16r1234
@@ -40,11 +50,20 @@ AcSymbolicDecodeTest >> test88221234CanFitConcreteLBZ [
 { #category : #tests }
 AcSymbolicDecodeTest >> testAnyOpcode34FitsLBZ [
 	"Prove that anything starting with opcode=34, fits."
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	self assert: (self lbz alwaysFitsEncoding: 34 /// 6 , ('x' /// (32 - 6)))
 ]
 
 { #category : #tests }
 AcSymbolicDecodeTest >> testFFFFFFFFNeverFits [
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	self deny: (self lbz possiblyFitsEncoding: 16rFFFFFFFF /// 32)
 ]
 
@@ -52,13 +71,23 @@ AcSymbolicDecodeTest >> testFFFFFFFFNeverFits [
 AcSymbolicDecodeTest >> testXAlwaysFits [
 	"Disprove that the judgement
 		'x is the encoding of lbz'
-	is valid.	"
+	is valid.   "
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	self deny: (self lbz alwaysFitsEncoding: 'x' /// 32)
 ]
 
 { #category : #'tests - concrete instructions' }
 AcSymbolicDecodeTest >> testXAlwaysFitsConcreteLBZ [
 	| aConcreteLBZ |
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	aConcreteLBZ := self lbz inEnvironment:
 		(Dictionary newFromPairs: 
 			#('d'  16r1234
@@ -72,13 +101,23 @@ AcSymbolicDecodeTest >> testXCanFit [
 	"Prove that the judgement
 		'x is the encoding of lbz'
 	is not inconsistent
-	(i.e., there are some x which are indeed encodings of lbz.	"
+	(i.e., there are some x which are indeed encodings of lbz.  "
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	self assert: (self lbz possiblyFitsEncoding: 'x' /// 32)
 ]
 
 { #category : #'tests - concrete instructions' }
 AcSymbolicDecodeTest >> testXCanFitConcreteLBZ [
 	| aConcreteLBZ |
+
+	(self class environment includesKey: #'Z3Solver') ifFalse: [
+		self skip: 'Z3Solver not available'.
+	].
+
 	aConcreteLBZ := self lbz inEnvironment:
 		(Dictionary newFromPairs: 
 		   #('d'  16r1234

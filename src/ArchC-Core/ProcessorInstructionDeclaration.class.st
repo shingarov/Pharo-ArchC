@@ -40,19 +40,23 @@ ProcessorInstructionDeclaration >> alwaysFitsEncoding: aBitVector [
 	 Care must be taken that client code does not try to intern names
 	 used by instruction operands."
 	
-	| encodingIsCorrect  myUnknowns  solver  answer |
+	| encodingIsCorrect  myUnknowns  solverClass solver  answer |
 
 	"Short-circuit the check of instruction bit-widths do not
 	 match - then it cannot possibly match."
 	self format bitWidth ~~ aBitVector length ifTrue: [
 		^ false
 	].
+
+	solverClass := self class environment at: #Z3Solver 
+					ifAbsent: [ self error:'Z3Solver not present!' ].
+
 	encodingIsCorrect := self binaryEncoding eq: aBitVector.
 	myUnknowns := self binaryEncoding variables asArray.
 	myUnknowns notEmpty ifTrue: [
 		encodingIsCorrect := encodingIsCorrect exists: myUnknowns
 	].
-	solver := Z3Solver new.
+	solver := solverClass new.
 	[
 		answer := solver isValid: encodingIsCorrect
 	] ensure: [ solver del. ].
@@ -253,9 +257,11 @@ ProcessorInstructionDeclaration >> possiblyFitsEncoding: aBitVector [
 	 Care must be taken that client code does not try to intern names
 	 used by instruction operands."
 	
-	| solver  answer |
+	| solverClass solver answer |
 
-	solver := Z3Solver new.
+	solverClass := self class environment at: #Z3Solver 
+					ifAbsent: [ self error:'Z3Solver not present!' ].     
+	solver := solverClass new.
 	[
 		solver assert: (self binaryEncoding eq: aBitVector).
 		answer := solver check.
