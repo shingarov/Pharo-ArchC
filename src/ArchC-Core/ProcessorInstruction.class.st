@@ -99,15 +99,17 @@ ProcessorInstruction >> emitOn: aStream [
 ]
 
 { #category : #accessing }
-ProcessorInstruction >> externalBindingValues [
-	^Dictionary newFromAssociations: (self externalBindings collect: [ :ass | ass key -> (self fieldValue: ass key) ])
-]
-
-{ #category : #accessing }
 ProcessorInstruction >> externalBindings [
-	"Answer ..."
-	^format bitFields select: [ :ass |
-		(ass key isString and: (internalBindings includesKey: ass key) not)]
+	| externalBindings |
+	externalBindings := Dictionary new.
+	format bitFields do: [:bitfield | 
+		(bitfield isFixedValue not 
+			and: [ (internalBindings includesKey: bitfield name) not ]) 
+				ifTrue: [
+					externalBindings at: bitfield name put: (self fieldValue: bitfield name)
+				].
+	].
+	^ externalBindings
 ]
 
 { #category : #access }
