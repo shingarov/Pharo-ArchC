@@ -48,6 +48,11 @@ AcDSLAssembler >> append: mnemonic operands: operands [
 ]
 
 { #category : #accessing }
+AcDSLAssembler >> cursor: anInteger [
+	memory cursor: anInteger
+]
+
+{ #category : #accessing }
 AcDSLAssembler >> grounder: anInstructionGrounder [
 	self isa grounder: anInstructionGrounder
 ]

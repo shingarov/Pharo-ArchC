@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'address',
-		'instructions'
+		'instructions',
+		'cursor'
 	],
 	#category : #'ArchC-DSL'
 }
@@ -23,12 +24,25 @@ AcDSLCodeBuffer >> address [
 
 { #category : #adding }
 AcDSLCodeBuffer >> append: aProcessorInstruction [
-	^ instructions add: aProcessorInstruction
+	instructions add: aProcessorInstruction afterIndex: cursor.
+	cursor := cursor + 1.
+	^ aProcessorInstruction
 ]
 
 { #category : #accessing }
 AcDSLCodeBuffer >> bytes [
 	^ ByteArray streamContents: [ :s | instructions do: [:i | i emitOn: s ] ]
+]
+
+{ #category : #accessing }
+AcDSLCodeBuffer >> cursor [
+	^ cursor
+]
+
+{ #category : #accessing }
+AcDSLCodeBuffer >> cursor:anInteger [
+	self assert: (anInteger between: 0 and: instructions size).
+	cursor := anInteger.
 ]
 
 { #category : #utilities }
@@ -100,6 +114,7 @@ AcDSLCodeBuffer >> fixupBranchTargetsUsing: locations [
 AcDSLCodeBuffer >> initialize [
 	address := 0.
 	instructions := OrderedCollection new.
+	cursor := 0.
 ]
 
 { #category : #accessing }
