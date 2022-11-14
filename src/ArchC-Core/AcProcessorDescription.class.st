@@ -205,9 +205,12 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 	wordsize := (aCollectionOfAssociations detect: [ :ass | ass key = 'ac_wordsize' ]) value.
 	endian := (aCollectionOfAssociations detect: [ :ass | ass key = 'endian' ]) value.
 
-	self
-		fillISAFrom: ((aCollectionOfAssociations detect: [ :ass | ass key = 'ac_isa' ]) value).
-		
+	aCollectionOfAssociations do: [:each | 
+		each key = 'ac_isa' ifTrue: [ self fillISAFrom: each value ]
+	].
+
+	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics.
+
 	^self
 ]
 
@@ -228,7 +231,6 @@ AcProcessorDescription >> fillISAFrom: aCollectionOfAssociations [
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillInstructionFormatsFrom: aCollectionOfAssociations [
-	instructionFormats := Dictionary new.
 	aCollectionOfAssociations do: [:assoc | 
 		assoc key = 'ac_format' ifTrue: [ 
 			| format |
@@ -240,12 +242,10 @@ AcProcessorDescription >> fillInstructionFormatsFrom: aCollectionOfAssociations 
 			instructionFormats at: format name asSymbol put: format.
 		].        
 	].
-
 ]
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
-	instructions := Dictionary new.
 	aCollectionOfAssociations do: [:assoc |  
 		assoc key = 'ac_instr' ifTrue: [ 
 			| instruction |
@@ -258,16 +258,15 @@ AcProcessorDescription >> fillInstructionsFrom: aCollectionOfAssociations [
 			instructions at: instruction name put: instruction.
 		].
 	].
-
 ]
 
 { #category : #'collaboration with parser' }
 AcProcessorDescription >> fillMapsFrom: aCollectionOfAssociations [
-	| mapAssociations m |
-	mapAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'ac_map'].
-	m := mapAssociations collect: [ :ass | ass value name2self ].
-	maps := Dictionary newFromAssociations: m
+	aCollectionOfAssociations do: [ :ass |
+		ass key = 'ac_map' ifTrue: [ 
+			maps at: ass value name put: ass value
+		].
+	].
 ]
 
 { #category : #'collaboration with parser' }
@@ -285,7 +284,6 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	(which can be more than one per instruction)"
 	AcSetAsmParser processAssociations: associations in: self.
 	instructions do: [:instruction | instruction syntax sort: [ :a :b | a isMoreOrEquallySpecificThan: b  ] ].
-	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics
 ]
 
 { #category : #'collaboration with parser' }
@@ -356,11 +354,11 @@ AcProcessorDescription >> initialize [
 	"  memories := nil."
 	"  regbanks := nil."
 	"  regs := nil."
-	"  maps := nil."
+	maps := Dictionary new.
 	"  wordsize := nil."
 	"  endian := nil."
-	"  instructionFormats := nil."
-	"  instructions := nil."
+	instructionFormats := Dictionary new.
+	instructions := Dictionary new.
 	"  regsInGPacket := nil."
 	"  tgtimm := nil."
 	"  architectureName := nil."
