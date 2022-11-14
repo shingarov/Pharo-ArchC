@@ -50,11 +50,6 @@ AcAsmMap >> name [
 	^ name
 ]
 
-{ #category : #helpers }
-AcAsmMap >> name2self [
-	^self name -> self
-]
-
 { #category : #accessing }
 AcAsmMap >> name: anObject [
 	name := anObject
