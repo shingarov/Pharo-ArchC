@@ -25,11 +25,9 @@ TextDisassemblyTest >> testArmLdrPCREL [
 { #category : #'tests - powerpc' }
 TextDisassemblyTest >> testEndianPalindrome [
 	| pdl |
-	pdl := AcProcessorDescriptions powerpc.
+	pdl := AcProcessorDescriptions powerpc64.
 	self assert: (pdl disassemble: 16r08000048) equals: 'tdi 0x0, 0, 0x48'.
 	self assert: (pdl disassemble: 16r48000008) equals: 'b .+0x8'.
-
-	
 ]
 
 { #category : #'tests - powerpc' }
