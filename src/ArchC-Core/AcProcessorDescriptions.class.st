@@ -140,6 +140,12 @@ AcProcessorDescriptions class >> powerpc [
 	^self processor: 'powerpc' in: 'powerpc'
 ]
 
+{ #category : #'known processors' }
+AcProcessorDescriptions class >> powerpc64 [
+	<gtExample>
+	^self processor: 'powerpc64' in: 'powerpc'
+]
+
 { #category : #cache }
 AcProcessorDescriptions class >> processor: isaName in: dir [
 	^self cachedProcessors at: isaName ifAbsentPut: [
