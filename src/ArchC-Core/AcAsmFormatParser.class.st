@@ -26,7 +26,8 @@ Class {
 		'operand',
 		'mnemonic',
 		'operands',
-		'format'
+		'format',
+		'memref'
 	],
 	#classInstVars : [
 		'maps'
@@ -91,6 +92,12 @@ AcAsmFormatParser >> map [
 ]
 
 { #category : #grammar }
+AcAsmFormatParser >> memref [
+	^ builtin , $( asParser trim , (map / builtin) , $) asParser trim
+	==> [ :nodes | AcAsmMemRefChunk base: nodes third offset: nodes first ]
+]
+
+{ #category : #grammar }
 AcAsmFormatParser >> mnemonic [
 	| first rest |
 
@@ -114,9 +121,8 @@ AcAsmFormatParser >> modifier [
 
 { #category : #grammar }
 AcAsmFormatParser >> operand [
-	^ (builtin / map / token / special / space) star
+	^ (memref / builtin / map / token / special / space) star
 	==> [ :nodes | AcAsmFormatChunk sequence: nodes ]
-
 ]
 
 { #category : #grammar }

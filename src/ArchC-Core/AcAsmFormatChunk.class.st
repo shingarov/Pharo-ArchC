@@ -130,6 +130,11 @@ AcAsmFormatChunk >> isMapChunk [
 ]
 
 { #category : #testing }
+AcAsmFormatChunk >> isMemRefChunk [
+	^ false
+]
+
+{ #category : #testing }
 AcAsmFormatChunk >> isTextChunk [
 	^ false
 ]
