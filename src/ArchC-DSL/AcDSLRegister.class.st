@@ -12,6 +12,21 @@ AcDSLRegister class >> value: anAcAsmMapEntry [
 	^ self new value: anAcAsmMapEntry
 ]
 
+{ #category : #arithmetic }
+AcDSLRegister >> + offset [
+	^ AcDSLMemRef base: self offset: offset asAcDSLOperand
+]
+
+{ #category : #arithmetic }
+AcDSLRegister >> - offset [
+	^ AcDSLMemRef base: self offset: offset negated asAcDSLOperand
+]
+
+{ #category : #testing }
+AcDSLRegister >> isAcDSLRegister [
+	^ true
+]
+
 { #category : #accessing }
 AcDSLRegister >> name [
 	^ value name

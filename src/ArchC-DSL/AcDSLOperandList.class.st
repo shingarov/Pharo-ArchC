@@ -9,3 +9,8 @@ Class {
 AcDSLOperandList >> , anotherOperand [
 	^ self copyWith: anotherOperand asAcDSLOperand
 ]
+
+{ #category : #converting }
+AcDSLOperandList >> asAcDSLOperandList [
+	^ self
+]
