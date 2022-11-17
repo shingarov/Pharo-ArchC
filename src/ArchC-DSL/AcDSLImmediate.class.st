@@ -12,6 +12,16 @@ AcDSLImmediate class >> value: anInteger [
 	^ self new value: anInteger
 ]
 
+{ #category : #testing }
+AcDSLImmediate >> isAcDSLImmediate [
+	^ true
+]
+
+{ #category : #arithmetic }
+AcDSLImmediate >> negated [
+	^ self class value: value negated
+]
+
 { #category : #'printing & storing' }
 AcDSLImmediate >> printOn: aStream [
 	value printOn: aStream

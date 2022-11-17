@@ -20,6 +20,21 @@ AcDSLOperand >> asAcDSLOperandList [
 ]
 
 { #category : #testing }
+AcDSLOperand >> isAcDSLImmediate [
+	^ false
+]
+
+{ #category : #testing }
+AcDSLOperand >> isAcDSLMemRef [
+	^ false
+]
+
+{ #category : #testing }
+AcDSLOperand >> isAcDSLRegister [
+	^ false
+]
+
+{ #category : #testing }
 AcDSLOperand >> isAcDSLSymbol [
 	^ false
 ]
