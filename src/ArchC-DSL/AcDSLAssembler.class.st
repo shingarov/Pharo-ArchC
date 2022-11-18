@@ -42,7 +42,7 @@ AcDSLAssembler class >> new [
 AcDSLAssembler >> append: mnemonic operands: operands [
 	| insn |
 
-	insn := self class isa assembleDSL: mnemonic operands: operands.
+	insn := self class isa assembleDSL: mnemonic operands: operands asAcDSLOperandList.
 	memory append: insn.
 	^ insn.
 ]
