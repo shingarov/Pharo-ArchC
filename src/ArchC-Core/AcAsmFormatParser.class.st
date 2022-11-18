@@ -121,14 +121,13 @@ AcAsmFormatParser >> operand [
 
 { #category : #grammar }
 AcAsmFormatParser >> operands [
-	^ operand , ($, asParser , operand) star
+	^ operand , ($, asParser trim, operand) star
 	==> [ :nodes |
 		| operandNodes |
 
 		operandNodes := { nodes first } , (nodes second collect: #second).
 		AcAsmFormatChunk operands: operandNodes.
 	].
-
 ]
 
 { #category : #grammar }

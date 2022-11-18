@@ -29,12 +29,12 @@ AcAsmFormatOperandsChunk >> assembler [
 AcAsmFormatOperandsChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	subchunks 
 		do: [:each | (each disassembleTo: aWriteStream operands: ops inEnvironment: e) ifFalse:[ ^ false ] ]
-		separatedBy: [aWriteStream nextPut: $,].
+		separatedBy: [aWriteStream nextPut: $,; space].
 	^ true
 ]
 
 { #category : #'printing & storing' }
 AcAsmFormatOperandsChunk >> unparseOn: aStream [            
 	subchunks do: [:each | each unparseOn: aStream ]
-	 separatedBy: [ aStream nextPut: $, ]
+	 separatedBy: [ aStream nextPut: $,; space]
 ]
