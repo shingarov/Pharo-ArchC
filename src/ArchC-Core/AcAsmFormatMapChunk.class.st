@@ -39,10 +39,9 @@ AcAsmFormatMapChunk >> assembler [
 	alternativeParsers := alternativeParsers asOrderedCollection.
 	alternativeParsers remove: nil ifAbsent: [ #NoEmpty ].
 	alternativeParsers := PPChoiceParser withAll: alternativeParsers.
-	defaultInt isNil ifFalse: [ alternativeParsers :=
+	defaultInt notNil ifTrue: [ alternativeParsers :=
 		alternativeParsers optional ==> [ :x | x ifNil: [defaultInt] ] ] .
 	^alternativeParsers / self immExpression  ==> [ :x | { NoOperandModifier new x: x; yourself } ]
-
 ]
 
 { #category : #'API - disassembly' }
