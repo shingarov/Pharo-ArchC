@@ -113,22 +113,22 @@ AcRISCVTests >> testRiscvFADD_S [
 AcRISCVTests >> testRiscvFLD [
    | insn |
 
-	insn := pdl assemble: 'fld fa0, sp, 8'.
+	insn := pdl assemble: 'fld fa0, 8(sp)'.
 	self assert: insn asByteArray = #[16r07 16r35 16r81 16r00].
 
 	insn := pdl disassemble: insn asByteArray.
-	self assert: insn = 'fld fa0, sp, 8'.
+	self assert: insn = 'fld fa0, 8(sp)'.
 ]
 
 { #category : #'tests - RISC-V' }
 AcRISCVTests >> testRiscvFSD [
    | insn |
 
-	insn := pdl assemble: 'fsd fa0, s1, 10'.
-	self assert: insn asByteArray = #[16r27 16r35 16r95 16r00].
+	insn := pdl assemble: 'fsd fa0, 15(s1)'.
+	self assert: insn asByteArray  = #[16rA7 16rB7 16rA4 16r00].
 
 	insn := pdl disassemble: insn asByteArray.
-	self assert: insn = 'fsd fa0, s1, 10'.
+	self assert: insn = 'fsd fa0, 15(s1)'.
 ]
 
 { #category : #'tests - RISC-V' }
