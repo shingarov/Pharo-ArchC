@@ -339,19 +339,29 @@ AcRISCVOpcodeParser >> type_I [
 	^ ((self mnemonic , self rd , self rs1, self imm12, self funct3 , self opcode)
 	==> [ :nodes |
 
-		| internalBindings instr |
+		| opcode internalBindings instr |
+
+		opcode := nodes at: 6.
 
 		internalBindings := Dictionary new.
 		internalBindings at: 'funct3' put: (nodes at: 5).
-		internalBindings at: 'opcode' put: (nodes at: 6).
+		internalBindings at: 'opcode' put: opcode.
 
 		instr := ProcessorInstructionDeclaration new.
 		instr name: nodes first.
 		instr format: 'Type_I'.
-		instr internalBindings: internalBindings.  
-		instr addSyntax: '("' , nodes first , ' %fpr, %gpr, %exp", rd, rs1, imm, opcode=7)'.
-		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
+		instr internalBindings: internalBindings.
 
+		opcode == 3 ifTrue: [ 
+			"This instruction is a load into GPR"
+			instr addSyntax: '("' , nodes first , ' %gpr, %exp(%gpr)", rd, imm, rs1)'.
+		] ifFalse: [ 
+		opcode == 7 ifTrue: [
+			"This instruction is a load into FPR"
+			instr addSyntax: '("' , nodes first , ' %fpr, %exp(%gpr)", rd, imm, rs1)'.
+		] ifFalse: [ 
+			instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rd, rs1, imm)'.
+		]].
 		instr
 		])
 	/ ((self mnemonic , self imm12, self rs1, self funct3 , self rd, self opcode)
@@ -724,18 +734,33 @@ AcRISCVOpcodeParser >> type_S [
 	^ self mnemonic , self imm12hi , self rs1, self rs2 , self imm12lo , self funct3 , self opcode
 	==> [ :nodes |
 
-		| internalBindings instr |
+		| opcode internalBindings instr |
 
-	   internalBindings := Dictionary new.
+		opcode := nodes at: 7. 
+
+		internalBindings := Dictionary new.
 		internalBindings at: 'funct3' put: (nodes at: 6).
-		internalBindings at: 'opcode' put: (nodes at: 7).
+		internalBindings at: 'opcode' put: opcode.
 
 		instr := ProcessorInstructionDeclaration new.
 		instr name: nodes first.
 		instr format: 'Type_S'.
 		instr internalBindings: internalBindings.
-		instr addSyntax: '("' , nodes first , ' %fpr, %gpr, %exp", rs1, rs2, imm1+imm2, opcode=39)'.
-		instr addSyntax: '("' , nodes first , ' %gpr, %gpr, %exp", rs1, rs2, imm1+imm2)'.
+
+		opcode == 35 ifTrue: [ 
+			"This instruction is a store of GPR"
+			instr addSyntax: '("' , nodes first , ' %gpr, %exp(%gpr)", rs2, imm1+imm2, rs1)'.
+		] ifFalse: [ 
+		opcode == 39 ifTrue: [ 
+			"This instruction is a store of FPR"
+			instr addSyntax: '("' , nodes first , ' %fpr, %exp(%gpr)", rs2, imm1+imm2, rs1)'.
+		] ifFalse: [ 
+			self error: 'Unknown store'.
+		]].
+
+
+
+
 
 		instr
 		]
