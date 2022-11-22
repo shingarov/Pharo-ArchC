@@ -4,6 +4,11 @@ Class {
 	#category : #'ArchC-Core-Parsing'
 }
 
+{ #category : #API }
+PCREL class >> decode: bitfields fromFields: operandInstantiation accordingTo: format [
+	^ (operandInstantiation decode: bitfields accordingTo: format) << 2
+]
+
 { #category : #disassembling }
 PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f chunk: anObject [ 
 	| subfieldValues  li |
@@ -24,6 +29,9 @@ PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironmen
 
 { #category : #API }
 PCREL >> encodeInFields: fs accordingTo: format [
-	^ self encode: self x inFields: fs accordingTo: format
+	| width value |
 
+	width := (fs widthAccordingTo: format).
+	value := self x toBitVector: width.
+	^ self encode: (value bitShiftRightArithmetic: 2) inFields: fs accordingTo: format
 ]

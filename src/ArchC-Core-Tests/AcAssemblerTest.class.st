@@ -76,8 +76,7 @@ AcAssemblerTest >> testB [
 		isa: #powerpc
 		assemble: 'b 1234'
 		operandKeys:  #(opcd  aa  lk  li     )
-		shouldBe:     #(18    0   0   1234   ).
-
+		shouldBe:     #(18    0   0   308    ).  "<-- 308 = 1234 >> 2. This is because low 2 bits of jump offset are not encoded."
 ]
 
 { #category : #powerpc }

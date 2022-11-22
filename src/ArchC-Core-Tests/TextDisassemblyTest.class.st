@@ -27,7 +27,7 @@ TextDisassemblyTest >> testEndianPalindrome [
 	| pdl |
 	pdl := AcProcessorDescriptions powerpc.
 	self assert: (pdl disassemble: 16r08000048) equals: 'tdi 0x0, 0, 0x48'.
-	self assert: (pdl disassemble: 16r48000008) equals: 'b .+0x2'. "actually wrong, but that's how we count instruction offsets for now"
+	self assert: (pdl disassemble: 16r48000008) equals: 'b .+0x8'.
 
 	
 ]
