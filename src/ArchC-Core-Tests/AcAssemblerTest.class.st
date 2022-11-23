@@ -80,6 +80,108 @@ AcAssemblerTest >> testB [
 ]
 
 { #category : #powerpc }
+AcAssemblerTest >> testBC [
+	self
+		isa: #powerpc
+		assemble: 'bc 4, 2, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   0   4   0     2      308    ).  "<-- 308 = 1234 >> 2. This is because low 2 bits of jump offset are not encoded."
+
+	self
+		isa: #powerpc
+		assemble: 'bne 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   0   4   0     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bne cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   0   4   3     2      308    ).
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testBCA [
+	self
+		isa: #powerpc
+		assemble: 'bca 4, 2, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   0   4   0     2      308    ).  "<-- 308 = 1234 >> 2. This is because low 2 bits of jump offset are not encoded."
+
+	self
+		isa: #powerpc
+		assemble: 'bnea 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   0   4   0     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnea cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   0   4   3     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnea cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   0   4   3     2      308    ).
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testBCL [
+	self
+		isa: #powerpc
+		assemble: 'bcl 4, 2, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   1   4   0     2      308    ).  "<-- 308 = 1234 >> 2. This is because low 2 bits of jump offset are not encoded."
+
+	self
+		isa: #powerpc
+		assemble: 'bnel 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   1   4   0     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnel cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   1   4   3     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnel cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    0   1   4   3     2      308    ).
+]
+
+{ #category : #powerpc }
+AcAssemblerTest >> testBCLA [
+	self
+		isa: #powerpc
+		assemble: 'bcla 4, 2, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   1   4   0     2      308    ).  "<-- 308 = 1234 >> 2. This is because low 2 bits of jump offset are not encoded."
+
+	self
+		isa: #powerpc
+		assemble: 'bnela 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   1   4   0     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnela cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   1   4   3     2      308    ).  
+
+	self
+		isa: #powerpc
+		assemble: 'bnela cr3, 1234'
+		operandKeys:  #(opcd  aa  lk  bo  bi_cf bi_cb  bd     )
+		shouldBe:     #(16    1   1   4   3     2      308    ).
+]
+
+{ #category : #powerpc }
 AcAssemblerTest >> testExpressionImm [
 	| pdl instr binary concretePart offset |
 	pdl := AcProcessorDescriptions powerpc.
