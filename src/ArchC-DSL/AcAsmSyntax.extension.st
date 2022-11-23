@@ -8,6 +8,19 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 
 	environment := Dictionary new.
 	operandIdx := 1.
+	format mnemonic isTextChunk ifFalse: [ 
+		"Mnemonic is composed from text and mapped values, for example in POWER
+		 'bc%[lk]%[aa]' or in ARM 'ldm%cond%lstype'. Handle this case here."
+
+		(format mnemonic assembler parse: mnemonic) do: [:operandValue |
+			| operandDef  |
+
+			operandDef := self operands at: operandIdx.
+			environment addAll: (operandDef asOperandInstantiation encodeValue: operandValue accoringTo: instruction format).
+			operandIdx := operandIdx + 1.  
+		].
+	].
+
 	operandList with: format operands  do: [:operandValue :operandFormat |
 		self assert: operandValue isAcDSLMemRef == operandFormat isMemRefChunk.
 
