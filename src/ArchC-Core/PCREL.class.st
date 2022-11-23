@@ -10,21 +10,40 @@ PCREL class >> decode: bitfields fromFields: operandInstantiation accordingTo: f
 ]
 
 { #category : #disassembling }
-PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f chunk: anObject [ 
-	| subfieldValues  li |
+PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironment: e format: f chunk: anObject [
+	| value |
 
-	subfieldValues := anOperandInstantiation inEnvironment: e format: f.
-	subfieldValues size = 1 ifFalse: [
-		self error
+	value := (self decode: e fromFields: anOperandInstantiation accordingTo: f) simplify.
+
+	value isSymbolic ifTrue: [
+		| variables |
+
+		aWriteStream nextPut: ${.
+		"Original code was:
+
+			aWriteStream nextPutAll: value astToString.
+		"
+		variables := value variableNames.
+		variables size == 1 ifTrue: [ 
+			"Simple function of one variable"
+			aWriteStream nextPutAll: variables anyOne.
+		] ifFalse: [ 
+			"Function of multiple variables, print the whole AST"
+			aWriteStream nextPutAll: value astToString.
+		].
+		aWriteStream nextPut: $} 
+	] ifFalse: [
+		value := value value.    
+		value positive ifTrue: [ 
+			aWriteStream nextPutAll: '.+0x'.
+		] ifFalse: [ 
+			aWriteStream nextPutAll: '.-0x'.
+		].
+		value abs
+			printOn: aWriteStream
+			base: 16
+			showRadix: false
 	].
-	li := subfieldValues first value.
-	aWriteStream nextPutAll: (li positive ifTrue: [
-				'.+0x'
-			] ifFalse: [ '.-0x' ]).
-	li abs 
-		printOn: aWriteStream
-		base: 16
-		showRadix: false
 ]
 
 { #category : #API }
