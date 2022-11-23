@@ -12,11 +12,12 @@ AcAssemblerTest class >> resources [
 
 { #category : #common }
 AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: values [
-	| pdl result expected |
+	| pdl result actual expected |
 	pdl := AcProcessorDescriptions perform: aSymbol.
 	result := pdl assembler parse: source.
+	actual := result allBindingValues.
 	expected := Dictionary newFromKeys: keys andValues: values.
-	self assert: result allBindingValues equals: expected 
+	self assert: actual equals: expected
 ]
 
 { #category : #powerpc }

@@ -135,9 +135,10 @@ ProcessorInstruction >> inspectorExtraAttributes [
 	| attrs |
 
 	attrs := super inspectorExtraAttributes.
-	attrs at: '-encoding' put: (String streamContents: [:s | self printEncodingOn: s]).
+	attrs at: '-encoding' put: [ String streamContents: [:s | self printEncodingOn: s]].
+	attrs at: '-externalBindings' put: [self externalBindings].
+	attrs at: '-allBindings' put: [self allBindingValues].
 	^attrs
-
 ]
 
 { #category : #testing }
