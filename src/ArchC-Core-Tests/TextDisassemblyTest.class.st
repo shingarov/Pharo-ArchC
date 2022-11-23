@@ -40,6 +40,29 @@ TextDisassemblyTest >> testPowerAdd [
 ]
 
 { #category : #'tests - powerpc' }
+TextDisassemblyTest >> testPowerBranchMnemonicsIncorporatingConditions [
+	"
+	See Power ISA, Version 3.1B, 
+		Section C.2.3 Branch Mnemonics Incorporating Conditions,
+		Paragraph Examples
+	"
+
+	| instr text |
+
+	instr := AcProcessorDescriptions powerpc assembler parse: 'bc 4,2,0x1234'.
+	text := instr disassemble.
+	self assert: text equals: 'bne .+0x1234'.
+
+	instr := AcProcessorDescriptions powerpc assembler parse: 'bc 4,14,0x1234'.
+	text := instr disassemble.
+	self assert: text equals: 'bne cr3, .+0x1234'.
+
+	instr := AcProcessorDescriptions powerpc assembler parse: 'bcla 12,17,0x1234'.
+	text := instr disassemble.
+	self assert: text equals: 'bgtla cr4, .+0x1234'.
+]
+
+{ #category : #'tests - powerpc' }
 TextDisassemblyTest >> testPowerOriSymbolic [
 	| instr text binary |
 	binary := (16r6283 toBitVector: 16), ('x' toBitVector: 16).
