@@ -4,9 +4,11 @@ Extension { #name : #AcProcessorDescription }
 AcProcessorDescription >> assembleDSL: mnemonic operands: operands [
 	self instructions do: [:instruction | 
 		instruction syntax do: [:syntax | 
-			syntax mnemonics do: [:each | 
-				mnemonic = each ifTrue: [ 
-					^ syntax assembleDSL: mnemonic operands: operands
+			syntax format operands size = operands size ifTrue: [
+				syntax mnemonics do: [:each | 
+					mnemonic = each ifTrue: [ 
+						^ syntax assembleDSL: mnemonic operands: operands
+					].
 				].
 			].
 		].
