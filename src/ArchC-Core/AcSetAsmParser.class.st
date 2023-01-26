@@ -42,7 +42,7 @@ AcSetAsmParser >> parse: s [
 	formatString := s copyFrom: quote1 + 1 to: quote2 - 1.
 	format := (AcAsmFormatParser maps: self pdl maps) parse: formatString.
 	format isPetitFailure ifTrue: [
-		self error
+		self error: format printString
 	].
 	opString := s copyFrom: quote2 + 1 to: s size.
 	op := (AcAsmOperandsParser pdl: self pdl) parse: opString.
