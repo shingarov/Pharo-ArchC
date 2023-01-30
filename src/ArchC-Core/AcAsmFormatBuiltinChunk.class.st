@@ -16,8 +16,14 @@ Class {
 
 { #category : #'API - assembly' }
 AcAsmFormatBuiltinChunk >> assembler [
-	^self immLiteral / self immExpression ==> [ :x | { modifier new x: x; yourself } ]
+	| assembler |
+	(modifier notNil and: [ modifier isPCREL ]) ifTrue: [
+		assembler := self pcrelLiteral / self pcrelExpression
+	] ifFalse: [ 
+		assembler := self immLiteral / self immExpression
+	].
 
+	^ assembler ==> [ :x | { modifier new x: x; yourself } ]
 ]
 
 { #category : #'parsing - private' }
@@ -38,6 +44,23 @@ AcAsmFormatBuiltinChunk >> disassembleTo: aWriteStream operands: ops inEnvironme
 		format: instruction format
 		chunk: self.
 	^ true
+]
+
+{ #category : #'parsing - private' }
+AcAsmFormatBuiltinChunk >> gasLabel [
+	"Parse GNU assembler style label. 
+
+	 See https://sourceware.org/binutils/docs/as/Labels.html
+	"
+	| first rest |
+
+	first := ($_ asParser / $. asParser / $$ asParser / #letter asParser).
+	rest  := ($_ asParser / $. asParser / $$ asParser / #letter asParser / #digit asParser) star.
+	^ (first, rest) token ==> [ :token | token inputValue ]
+
+	"
+	(AcAsmFormatBuiltinChunk new gasLabel parse: '.l_99')
+	"
 ]
 
 { #category : #'parsing - private' }
@@ -81,6 +104,27 @@ AcAsmFormatBuiltinChunk >> modifier [
 { #category : #accessing }
 AcAsmFormatBuiltinChunk >> modifier: anObject [
 	modifier := anObject
+]
+
+{ #category : #'parsing - private' }
+AcAsmFormatBuiltinChunk >> pcrelExpression [
+	"As a convenience allow PC-relative symbolic values be written also
+	 as (GNU) assembler labels in addition to usual curly-braces syntax."
+
+	^ self gasLabel / self immExpression
+
+	"
+	(AcAsmFormatBuiltinChunk new pcrelExpression parse: '.l_99')
+	(AcAsmFormatBuiltinChunk new pcrelExpression parse: 'some_label')
+	(AcAsmFormatBuiltinChunk new pcrelExpression parse: '{some_label}')
+	(AcAsmFormatBuiltinChunk new pcrelExpression parse: '{a+b}')
+	(AcAsmFormatBuiltinChunk new pcrelExpression parse: 'a+b')
+	"
+]
+
+{ #category : #'parsing - private' }
+AcAsmFormatBuiltinChunk >> pcrelLiteral [
+	^ self immLiteral
 ]
 
 { #category : #accessing }

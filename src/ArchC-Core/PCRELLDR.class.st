@@ -26,6 +26,11 @@ PCRELLDR class >> imm12Of: x [
 	^x abs
 ]
 
+{ #category : #queries }
+PCRELLDR class >> isPCREL [
+	^ true
+]
+
 { #category : #encoding }
 PCRELLDR class >> uOf: x [
 	"ARM u+imm12 encoding"
