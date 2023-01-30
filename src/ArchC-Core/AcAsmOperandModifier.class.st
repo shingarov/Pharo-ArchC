@@ -56,6 +56,11 @@ AcAsmOperandModifier class >> disassemble: anOperandInstantiation to: aWriteStre
 	].
 ]
 
+{ #category : #queries }
+AcAsmOperandModifier class >> isPCREL [
+	^ false
+]
+
 { #category : #'printing & storing' }
 AcAsmOperandModifier class >> unparseOn: aStream [
 	"See AcAsmFormatChunk >> #unparseOn:"
@@ -75,6 +80,11 @@ AcAsmOperandModifier >> encode: value inFields: fs accordingTo: format [
 { #category : #API }
 AcAsmOperandModifier >> encodeInFields: fs accordingTo: format [
 	self subclassResponsibility 
+]
+
+{ #category : #queries }
+AcAsmOperandModifier >> isPRREL [
+	^ self class isPCREL
 ]
 
 { #category : #accessing }

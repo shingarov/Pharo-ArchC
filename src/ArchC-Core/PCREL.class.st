@@ -18,22 +18,32 @@ PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironmen
 	value isSymbolic ifTrue: [
 		| variables |
 
-		aWriteStream nextPut: ${.
-		"Original code was:
-
-			aWriteStream nextPutAll: value astToString.
-		"
 		variables := value variableNames.
 		variables size == 1 ifTrue: [ 
-			"Simple function of one variable"
-			aWriteStream nextPutAll: variables anyOne.
+			"If the variable name is valid (GNU) assembler label name,
+			 output it without braces. See AcAsmFormatBuiltinChunk >> #assembler."
+			| name |
+
+			name := variables anyOne.
+			((name allSatisfy:[:c | c isAlphaNumeric or:['_.$' includes:c]]) and: [ name first isDigit not ]) ifTrue: [ 
+				"Valid (GNU) assembler label"
+				aWriteStream nextPutAll: name.
+			] ifFalse: [ 
+				"Anything else"
+				aWriteStream 
+					nextPut: ${;
+					nextPutAll: name;
+					nextPut: $}.
+			].
 		] ifFalse: [ 
 			"Function of multiple variables, print the whole AST"
-			aWriteStream nextPutAll: value astToString.
+			aWriteStream 
+					nextPut: ${;
+					nextPutAll: value astToString;
+					nextPut: $}.
 		].
-		aWriteStream nextPut: $} 
 	] ifFalse: [
-		value := value value.    
+		value := value signedValue.    
 		value positive ifTrue: [ 
 			aWriteStream nextPutAll: '.+0x'.
 		] ifFalse: [ 
@@ -44,6 +54,11 @@ PCREL class >> disassemble: anOperandInstantiation to: aWriteStream inEnvironmen
 			base: 16
 			showRadix: false
 	].
+]
+
+{ #category : #queries }
+PCREL class >> isPCREL [
+	^ true
 ]
 
 { #category : #API }

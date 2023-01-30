@@ -106,7 +106,7 @@ AcAsmFormatChunk >> disassembleTo: aWriteStream operands: ops inEnvironment: e [
 	^ self subclassResponsibility
 ]
 
-{ #category : #'API - disassembly' }
+{ #category : #'parsing - private' }
 AcAsmFormatChunk >> immExpression [
 	^${ asParser, (PPPredicateObjectParser anyExceptAnyOf: #($})) star flatten, $} asParser
 	==> [ :expr | expr second "the string inside {...} will become the variable name" ]

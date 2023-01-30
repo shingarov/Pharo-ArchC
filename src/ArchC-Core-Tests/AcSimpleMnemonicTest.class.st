@@ -96,6 +96,27 @@ AcSimpleMnemonicTest >> testSymbolicExp [
 ]
 
 { #category : #tests }
+AcSimpleMnemonicTest >> testSymbolicExp2 [
+	| mnem parser spec result |
+	mnem := '"fbl %imm(pcrel)", d'.
+	parser := self forPowerPC.
+	spec := parser parse: mnem.
+	spec instruction: (MockFormatPoznavach format: 'D3' pdl: parser pdl).
+
+	result := spec assembler parse: 'fbl {some_label}'.
+	self assert: (result at: 'd') variables size equals: 1.
+	self assert: (result at: 'd') variables anyOne equals: 'some_label'.
+
+	result := spec assembler parse: 'fbl some_label'.
+	self assert: (result at: 'd') variables size equals: 1.
+	self assert: (result at: 'd') variables anyOne equals: 'some_label'.
+
+	result := spec assembler parse: 'fbl {some funny label}'.
+	self assert: (result at: 'd') variables size equals: 1.
+	self assert: (result at: 'd') variables anyOne equals: 'some funny label'.
+]
+
+{ #category : #tests }
 AcSimpleMnemonicTest >> testTrivialDisassembly [
 	| mnem spec result |
 	mnem := '"Literal string"'.
