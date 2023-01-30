@@ -1,6 +1,6 @@
 Class {
 	#name : #BIMM16,
-	#superclass : #AcAsmOperandModifier,
+	#superclass : #PCREL,
 	#category : #'ArchC-RISCV-Parsing'
 }
 
