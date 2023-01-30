@@ -77,11 +77,17 @@ AcRISCVTests >> testRiscvBNE [
 
 	insn := pdl assembler parse: 'bne  a5,  a3    , -12'.
 	self assert: insn asByteArray equals: #[ 16re3 16r9a 16rd7 16rfe ].
-	self assert: insn disassemble equals: 'bne a5, a3, -12'.
+	self assert: insn disassemble equals: 'bne a5, a3, .-0xC'.
 
 	"Test jump to label"
+	insn := pdl assembler parse: 'bne  a5, a3, {lab el}'.
+	self assert: insn disassemble equals: 'bne a5, a3, {lab el}'.
+
 	insn := pdl assembler parse: 'bne  a5, a3, {label}'.
-	self assert: insn disassemble equals: 'bne a5, a3, {label}'.
+	self assert: insn disassemble equals: 'bne a5, a3, label'.
+
+	insn := pdl assembler parse: 'bne  a5, a3, label'.
+	self assert: insn disassemble equals: 'bne a5, a3, label'.
 ]
 
 { #category : #'tests - RISC-V' }
