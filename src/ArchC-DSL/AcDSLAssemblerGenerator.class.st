@@ -15,11 +15,22 @@ AcDSLAssemblerGenerator class >> generate: aClass [
 
 { #category : #utilities }
 AcDSLAssemblerGenerator >> generate [
-	| isa |
+	| isa generate |
 
 	isa := assemblerClass isa.
-	isa instructions do: [:each | self generateForInstruction: each ].
-	assemblerClass generated: true.
+	generate := [ 
+		isa instructions do: [:each | self generateForInstruction: each ].
+		assemblerClass generated: true.
+	].
+		
+	Smalltalk isSmalltalkX ifTrue: [
+		Class withoutUpdatingChangesDo: generate.
+	] ifFalse: [
+	Smalltalk isPharo ifTrue:[
+		#EpMonitor asClass disableDuring: generate.
+	] ifFalse:[
+		generate value.
+	]].
 ]
 
 { #category : #utilities }
