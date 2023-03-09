@@ -19,12 +19,14 @@ include ../pharo.gmk
 
 $(PROJECT).image: $(PHARO_VM) $(PHARO_IMAGE) ../src/*/*.st $(ARCHC_PDL_DIR)
 	$(PHARO_VM_HEADLESS) $(PHARO_IMAGE) save $(shell pwd)/$(PROJECT)
+	$(PHARO_VM_HEADLESS) $@ eval --save "EpMonitor current disable." || rm $@
 ifdef MACHINEARITHMETIC_DIR
 	$(PHARO_VM_HEADLESS) $@ eval --save "(IceRepositoryCreator new location: '$(MACHINEARITHMETIC_DIR)/' asFileReference; createRepository) register" || rm $@
 	$(PHARO_VM_HEADLESS) $@ metacello install tonel://$(MACHINEARITHMETIC_DIR)/ BaselineOfMachineArithmetic || rm $@
 endif
 	$(PHARO_VM_HEADLESS) $@ eval --save "(IceRepositoryCreator new location: '..' asFileReference; createRepository) register" || rm $@
 	$(PHARO_VM_HEADLESS) $@ eval --save "Metacello new baseline: '$(PROJECT)'; repository: 'tonel://../src'; onConflictUseLoaded; load." || rm $@
+	$(PHARO_VM_HEADLESS) $@ eval --save "EpMonitor current enable." || rm $@
 	@echo ""
 	@echo "To open Pharo $(PROJECT) image run:"
 	@echo ""
