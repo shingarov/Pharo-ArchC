@@ -85,6 +85,17 @@ ProcessorInstructionDeclaration >> as: instructionClass [
 		| v |
 
 		v := self instVarAt: i.
+		(v == annotations and: [ self class == ProcessorInstructionDeclaration ]) ifTrue: [
+			"Do not copy annotations when 'grounding' instruction declaration,
+			 but we *have to* copy them when grounding partially grounded instruction.
+
+			 This is arguably ugly, but necessary until we split instruction declaration
+			 and instruction itself into two different classes (that refer to each other rather
+			 than inherit). Left as future work since for now we do not know excatly how
+			 to do it...
+			"
+			v := nil.
+		].
 		(v isCollection and: [ v isString not ]) ifTrue: [ 
 			v := v copy.
 		].

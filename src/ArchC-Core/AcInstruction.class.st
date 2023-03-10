@@ -2,15 +2,24 @@
 AcInstruction is an abstract base class for real processor
 instructions and for pseudo-instructions like label.
 
-It define the base API of an ""instruction"" - by ""instruction""
+It defines the base API of an ""instruction"" - by ""instruction""
 we mean anything that may appear in instruction stream generated
 by ArchC based compiler (see package ArchC-DSL and class 
 AcDSLCodeBuffer).
+
+Every instruction - being it real processor instruction, instruction
+declaration or pseudo-instruction can be annotated by any number of
+annotations. An annotation can be any arbitrary object but at most
+once. That means a given instruction cannot have two annotations of
+the same class. See protocol 'annotations'.
 
 "
 Class {
 	#name : #AcInstruction,
 	#superclass : #Object,
+	#instVars : [
+		'annotations'
+	],
 	#category : #'ArchC-Core-Core'
 }
 
@@ -21,6 +30,80 @@ AcInstruction class >> isAbstract [
 	 Abstract subclasses must redefine this again."
 
 	^ self == AcInstruction.
+]
+
+{ #category : #annotations }
+AcInstruction >> annotationAdd: anObject [ 
+	annotations isNil ifTrue: [
+		annotations := Set with: anObject
+	] ifFalse: [
+		| annotation |
+
+		annotation := self annotationAt: anObject class.
+		annotation notNil ifTrue: [ 
+			self error: 'Instruction already annotated with ', anObject class name.
+			"You may want to #annotationAddOrReplace:"
+		].
+		annotations add: anObject
+	].
+]
+
+{ #category : #annotations }
+AcInstruction >> annotationAddOrReplace: anObject [ 
+	annotations isNil ifTrue: [
+		annotations := Set with: anObject
+	] ifFalse: [
+		| annotation |
+
+		annotation := self annotationAt: anObject class.
+		annotation notNil ifTrue: [ 
+			annotations remove: annotation.
+		].
+		annotations add: anObject
+	].
+]
+
+{ #category : #annotations }
+AcInstruction >> annotationAt: aClass [ 
+	annotations isNil ifTrue: [
+		^ nil
+	].
+	^ annotations detect: [:e | e class == aClass ] ifNone: nil
+]
+
+{ #category : #annotations }
+AcInstruction >> annotationRemove: anObject [ 
+	annotations notNil ifTrue: [
+		annotations remove: anObject ifAbsent: nil
+	].
+]
+
+{ #category : #annotations }
+AcInstruction >> annotationRemoveByKey: aClass [ 
+	| annotation |
+
+	annotation := self annotationAt: aClass.
+	annotation notNil ifTrue: [
+		self annotationRemove: annotation.
+	].
+]
+
+{ #category : #annotations }
+AcInstruction >> annotations [
+	annotations isNil ifTrue: [ ^ #() ].
+	^ annotations
+]
+
+{ #category : #annotations }
+AcInstruction >> annotations: aCollection [
+	"Set annotations. Old annotations (if any) are discarded."
+
+	aCollection notNil ifTrue: [
+		annotations := nil.
+	].
+	aCollection notNil ifTrue: [
+		aCollection do: [:each | self annotationAdd: each ]
+	]
 ]
 
 { #category : #converting }

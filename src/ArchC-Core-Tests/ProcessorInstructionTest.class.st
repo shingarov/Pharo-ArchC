@@ -38,6 +38,55 @@ ProcessorInstructionTest >> testAllInstructionsAre32bits [
 	self allInstructionsAre32bits: AcProcessorDescriptions sparcv8.
 ]
 
+{ #category : #'tests- annotations' }
+ProcessorInstructionTest >> testAnnotations [
+	| insn |
+
+	insn := AcLabel symbol: '.L_0001'.
+
+	self assert: insn annotations isCollection.
+	self assert: insn annotations isEmpty.
+
+	insn annotationAdd: self.
+	self assert: insn annotations isCollection.
+	self assert: insn annotations size == 1.
+	self assert: (insn annotationAt: self class) == self.
+	self assert: (insn annotationAt: Integer) isNil.
+
+	self should: [ insn annotationAdd: self ] raise: Error.
+
+	insn annotationRemoveByKey: self class.
+	self assert: insn annotations isCollection.
+	self assert: insn annotations isEmpty.
+
+	self shouldnt: [insn annotationRemoveByKey: self class ] raise: Error
+]
+
+{ #category : #'tests- annotations' }
+ProcessorInstructionTest >> testAnnotationsPropagation [
+	| definition env grounded1 grounded2 |
+
+	definition := AcProcessorDescriptions powerpc instructionAt: #addi.
+	definition annotationAdd: 'Some annotation'.
+	self assert: definition annotations size == 1.
+
+	env := Dictionary new
+		at: 'rt' put: 3;
+		at: 'ra' put: 3;
+		yourself.
+
+	grounded1 := definition inEnvironment: env.
+	self assert: grounded1 annotations isEmpty.
+
+	grounded1 annotationAdd: self.
+	env := Dictionary new
+		at: 'd' put: 30;
+		yourself.
+	grounded2 := grounded1 inEnvironment: env.
+	self assert: grounded1 annotations size == 1.
+	self assert:(grounded1 annotations includes: self).
+]
+
 { #category : #'tests - powerpc' }
 ProcessorInstructionTest >> testCmpPartial [
 	"Compare X-form (PPCArch, p.99):
