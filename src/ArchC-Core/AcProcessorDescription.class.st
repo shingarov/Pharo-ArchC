@@ -19,7 +19,6 @@ Class {
 		'abi',
 		'instructionMnemonics',
 		'opcodeDecoder',
-		'grounder',
 		'opcodeFieldName',
 		'opcodeFieldInterval'
 	],
@@ -306,17 +305,6 @@ AcProcessorDescription >> fillSemanticsFrom: aCollectionOfAssociations [
 ]
 
 { #category : #accessing }
-AcProcessorDescription >> grounder [
-	grounder isNil ifTrue: [ grounder := InstructionGrounder new ].
-	^ grounder
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> grounder: anInstructionGrounder [
-	grounder := anInstructionGrounder.
-]
-
-{ #category : #accessing }
 AcProcessorDescription >> gtViewInstructionsOn: aView [
 	<gtView>
 	^ aView list
@@ -365,7 +353,6 @@ AcProcessorDescription >> initialize [
 	"  abi := nil."
 	instructionMnemonics := OrderedCollection new.
 	"  opcodeDecoder := nil."
-	grounder := InstructionGrounder new
 ]
 
 { #category : #accessing }

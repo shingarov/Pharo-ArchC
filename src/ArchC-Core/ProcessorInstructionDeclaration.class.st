@@ -134,7 +134,9 @@ ProcessorInstructionDeclaration >> bitWidth [
 { #category : #'encoding / decoding' }
 ProcessorInstructionDeclaration >> decodeBits: aBitVector [
 	(self alwaysFitsEncoding: aBitVector) ifFalse: [ ^nil ].
-	^self isa grounder ground: self using: aBitVector
+	^ (self as: ProcessorInstruction)
+		setBinaryEncoding: aBitVector;
+		yourself.
 ]
 
 { #category : #disassembly }
@@ -163,7 +165,9 @@ ProcessorInstructionDeclaration >> format: anObject [
 
 { #category : #converting }
 ProcessorInstructionDeclaration >> inEnvironment: env [
-	^self isa grounder ground: self using: (self binaryEncoding inEnvironment: env)
+	^(self as: ProcessorInstruction)
+		setBinaryEncoding: (self binaryEncoding inEnvironment: env);
+		yourself.
 ]
 
 { #category : #initialization }
