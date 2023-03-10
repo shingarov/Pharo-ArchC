@@ -2,7 +2,8 @@ Class {
 	#name : #AcDSLAssembler,
 	#superclass : #Object,
 	#instVars : [
-		'memory'
+		'memory',
+		'annotations'
 	],
 	#classInstVars : [
 		'generated'
@@ -38,12 +39,35 @@ AcDSLAssembler class >> new [
 	^ self basicNew initialize.
 ]
 
-{ #category : #emitting }
+{ #category : #accessing }
+AcDSLAssembler >> annotations [
+	^ annotations
+]
+
+{ #category : #accessing }
+AcDSLAssembler >> annotations: aCollection [
+	"Set a list of annotations to be attached to
+	 *every* instruction from now on (until a new
+	 list of annotations is set via this method).
+
+	 Given collection may be `nil`.
+	"
+	annotations := aCollection.
+]
+
+{ #category : #'emitting-private' }
+AcDSLAssembler >> append: insn [
+	insn annotations: annotations.
+	memory append: insn.
+	^ insn
+]
+
+{ #category : #'emitting-private' }
 AcDSLAssembler >> append: mnemonic operands: operands [
 	| insn |
 
 	insn := self class isa assembleDSL: mnemonic operands: operands asAcDSLOperandList.
-	memory append: insn.
+	self append: insn.
 	^ insn.
 ]
 
