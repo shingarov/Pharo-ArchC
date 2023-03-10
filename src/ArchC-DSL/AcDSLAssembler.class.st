@@ -52,11 +52,6 @@ AcDSLAssembler >> cursor: anInteger [
 	memory cursor: anInteger
 ]
 
-{ #category : #accessing }
-AcDSLAssembler >> grounder: anInstructionGrounder [
-	self isa grounder: anInstructionGrounder
-]
-
 { #category : #initialization }
 AcDSLAssembler >> initialize [
 	super initialize.
