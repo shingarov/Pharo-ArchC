@@ -36,6 +36,7 @@ BaselineOfArchC >> baseline: spec [
 				package: #'ArchC-RISCV';
 				package: #'ArchC-RISCV-Tests';
 				package: #'ArchC-Extras-Pharo-Tests';
-				package: #'ArchC-DSL' with: [spec requires: 'ArchC-RISCV'].
+				package: #'ArchC-DSL' with: [spec requires: 'ArchC-RISCV'];
+				package: #'ArchC-DSL-Tests' with: [spec requires: 'ArchC-DSL'].
 		]
 ]

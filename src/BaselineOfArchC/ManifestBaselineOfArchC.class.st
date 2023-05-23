@@ -18,6 +18,7 @@ ManifestBaselineOfArchC class >> includedInPreRequisites [
 		#'ArchC-DSL'
 		#'ArchC-Core-Tests'
 		#'ArchC-RISCV-Tests'
+		#'ArchC-DSL-Tests'
 	)
 ]
 
