@@ -1,7 +1,7 @@
 Class {
 	#name : #AcDSLAssemblerExamples,
 	#superclass : #TestCase,
-	#category : #'ArchC-DSL-Examples'
+	#category : #'ArchC-DSL-Tests'
 }
 
 { #category : #accessing }
