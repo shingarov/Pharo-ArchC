@@ -135,6 +135,24 @@ ProcessorInstructionDeclaration >> binaryEncoding [
 	^format binaryEncoding inEnvironment: internalBindings
 ]
 
+{ #category : #'as yet unclassified' }
+ProcessorInstructionDeclaration >> bindSequence: orderedOperands [ 
+	| allFields operandFields env |
+	allFields := format bitFields.
+	operandFields := allFields reject: [ :ass | internalBindings includesKey: ass key ].
+	operandFields := operandFields reject: [ :ass | ass key isInteger ].
+	orderedOperands size == operandFields size ifFalse: [
+		self error: 'Instruction ', name, ' takes ', operandFields size printString, ' operands but we are given ', orderedOperands size printString  ].
+	env := Dictionary new.
+	operandFields doWithIndex: [ :field :i |
+		| operandValue |
+		operandValue := orderedOperands at: i.
+		"operandValue < (1<<field value abs) ifFalse: [ self halt; error: 'Operand value ', operandValue printString, ' does not fit in ', field value printString, ' bits' ]."
+		env at: field key put: operandValue.
+		 ].
+	^self inEnvironment: env	
+]
+
 { #category : #accessing }
 ProcessorInstructionDeclaration >> bitWidth [
 	"Answer the width of instructions in bits."
