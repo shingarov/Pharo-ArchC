@@ -47,19 +47,19 @@ AcDSLCodeBuffer >> cursor:anInteger [
 
 { #category : #utilities }
 AcDSLCodeBuffer >> disassembleOn: aStream [
-	| cursor |
+	| pc |
 
-	cursor := address.
+	pc := address.
 	instructions do: [:insn |
 		| addr |
 
-		addr := cursor printStringRadix: 16.
+		addr := pc printStringRadix: 16.
 		addr size to: 4 do: [:i | aStream nextPut:$0 ].
 		aStream nextPutAll: addr.
 		aStream nextPutAll:'    '.
 		aStream nextPutAll: insn disassemble.
 		aStream cr.
-		cursor := cursor + (insn width // 8)
+		pc := pc + (insn bitWidth // 8)
 	]
 ]
 
