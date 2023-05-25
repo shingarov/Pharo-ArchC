@@ -45,7 +45,8 @@ test: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
 		--load BaselineOf$(PROJECT) \
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
 			-p ArchC-Core-Tests \
-			-p ArchC-RISCV-Tests
+			-p ArchC-RISCV-Tests \
+			-p ArchC-DSL-Tests
 
 clean:
 	rm -rf *Test.xml
