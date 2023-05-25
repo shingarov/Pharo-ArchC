@@ -5,7 +5,7 @@ ProcessorInstruction >> gtInspectorOperandsIn: composite [
 	<gtInspectorPresentationOrder: 15>
 	composite fastTable
 		title: 'Operands';
-		display: [ self externalBindingValues associations ];
+		display: [ self externalBindings associations ];
 		column: 'Op' evaluated: [ :each | each key ];
 		column: 'Value' evaluated: [ :each | each value ]
 ]
