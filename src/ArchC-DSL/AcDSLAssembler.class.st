@@ -76,6 +76,13 @@ AcDSLAssembler >> cursor: anInteger [
 	memory cursor: anInteger
 ]
 
+{ #category : #inspecting }
+AcDSLAssembler >> gtInspectorInstructionsIn: composite [
+	<gtInspectorPresentationOrder: 60>
+	^memory gtInspectorInstructionsIn: composite
+
+]
+
 { #category : #initialization }
 AcDSLAssembler >> initialize [
 	super initialize.
