@@ -46,15 +46,14 @@ AcCommonParser class >> newline [
 
 { #category : #API }
 AcCommonParser class >> parseFile: fileName in: path [
-	| f s |
-	[ 
-		f := FileStream fileNamed: path, '/', fileName.
-		s := f contentsOfEntireFile.
-	] ensure: [ 
-		f close.
-	].
+	| contents |
+
+	"Do not remove #asString at the end: it is there for Smalltalk/X
+	 compatibilty as #contents in Smalltalk/X returns a StringCollection
+	 of lines!"
+	contents := (path asFileReference / fileName) contents asString.
 	^(self inWorkingDirectory: path)
-		parse: s
+		parse: contents
 ]
 
 { #category : #grammar }
