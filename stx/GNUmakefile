@@ -1,70 +1,54 @@
 PROJECT=ArchC
 
-include GNUmakefile.local
-
-ifndef ARCHC_PDL_DIR
-ARCHC_PDL_DIR=../pdl
-
-../pdl:
-	(cd .. && ./get-pdls.sh)
-endif
-
-ifndef MACHINEARITHMETIC_DIR
-
-MACHINEARITHMETIC_DIR=../MachineArithmetic
-
-../MachineArithmetic:
-	git clone https://github.com/shingarov/MachineArithmetic $@
-endif
-
 all: build
 
-include ../stx.gmk
+../makefiles/%.gmk:
+	git submodule update --init --recursive $(dir $@)
 
-build: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
+-include GNUmakefile.local
+include ../makefiles/stx.gmk
+include ../makefiles/git.gmk
+
+ifndef MACHINEARITHMETIC_DIR
+MACHINEARITHMETIC_DIR    := ../3rdparty/MachineArithmetic
+MACHINEARITHMETIC_URL    ?= https://github.com/shingarov/MachineArithmetic
+MACHINEARITHMETIC_BRANCH ?= pure-z3
+$(eval $(call git-clone-local,MACHINEARITHMETIC_DIR,$(MACHINEARITHMETIC_URL),$(MACHINEARITHMETIC_BRANCH)))
+endif
+
+ifndef ARCHC_PDL_DIR
+ARCHC_PDL_DIR    := ../pdl
+ARCHC_PDL_URL    ?= https://github.com/janvrany/Pharo-ArchC-PDL.git
+ARCHC_PDL_BRANCH ?= master
+$(eval $(call git-clone-local,ARCHC_PDL_DIR,$(ARCHC_PDL_URL),$(ARCHC_PDL_BRANCH)))
+endif
+
+build: prereq
 	@echo "To run Smalltalk/X with $(PROJECT) loaded, run:"
-	@echo ""
-	@echo "    ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) --package-path .. --package-path $(MACHINEARITHMETIC_DIR) --load BaselineOf$(PROJECT)"
-	@echo ""
-	@echo "or use shortcut:"
 	@echo ""
 	@echo "    make run"
 	@echo ""
 
 
-run: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
+run: build
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
-		--package-path .. \
+		--quick \
 		--package-path $(MACHINEARITHMETIC_DIR) \
-		--load BaselineOf$(PROJECT)
+		--package-path ../src \
+		--load BaselineOf$(PROJECT) \
 
-test: $(STX) $(ARCHC_PDL_DIR) $(MACHINEARITHMETIC_DIR)
+test: build
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
-		--package-path .. \
 		--package-path $(MACHINEARITHMETIC_DIR) \
+		--package-path ../src \
 		--load BaselineOf$(PROJECT) \
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
-			-p ArchC-Core-Tests \
-			-p ArchC-RISCV-Tests \
-			-p ArchC-DSL-Tests
+			-p "ArchC-Core-Tests" \
+			-p "ArchC-RISCV-Tests" \
+			-p "ArchC-DSL-Tests"
 
-clean:
-	rm -rf *Test.xml
+clean::
 
 mrproper:: clean
 
-GNUmakefile.local::
-	@echo "# Local tunables. There's no need to change anything," >> $@
-	@echo "# suitable defaults are provided." >> $@
-	@echo "" >> $@
-	@echo "# To load MachineArithmetic from local directory, set MACHINEARITHMETIC_DIR" >> $@
-	@echo "# variable to directory where MachineArithmetic is cloned. If unset (default)" >> $@
-	@echo "# it will be fetched by Metacello as defined in ../src/BaselineOfArchC/BaselineOfArchC.class.st" >> $@
-	@echo "# MACHINEARITHMETIC_DIR=../../MachineArithmetic" >> $@
-	@echo "" >> $@
-	@echo "# To specify custom directory with PDLs, set ARCHC_PDL_DIR" >> $@
-	@echo "# variable to directory with PDLs. If unset (default)" >> $@
-	@echo "# it will be fetched by 'get-pdls.sh' script." >> $@
-	@echo "# ARCHC_PDL_DIR=../pdl" >> $@
-	@echo "" >> $@
-
+.PHONY: all build run test clean mrproper
