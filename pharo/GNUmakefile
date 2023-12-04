@@ -32,7 +32,7 @@ build: prereq $(PROJECT).image
 
 $(PROJECT).image: ../src/*/*.st
 	$(call pharo-copy-image, $(PHARO_IMAGE), $@)
-	$(call pharo-load-local, $@, MachineArithmetic,$(MACHINEARITHMETIC_DIR))
+	$(call pharo-load-local, $@, MachineArithmetic,$(MACHINEARITHMETIC_DIR)/src)
 	$(call pharo-load-local, $@, ArchC,            ../src)
 
 run: build
