@@ -97,7 +97,7 @@ AcProcessorDescription >> assemble: aStringOrArray"of Strings" on: aStream [
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #assembly }
 AcProcessorDescription >> assembleLines: source [
 	^(source lines reject: [ :aLine |
 		aLine isEmpty or: [
