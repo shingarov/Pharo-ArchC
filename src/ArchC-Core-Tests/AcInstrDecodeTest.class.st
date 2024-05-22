@@ -60,7 +60,7 @@ AcInstrDecodeTest >> testPowerAddi [
 { #category : #powerpc }
 AcInstrDecodeTest >> testPowerAddiSymbolic [
 	| binary instr |
-	binary := (16r3800 toBitVector: 16), ('x' toBitVector: 16).   "addi r0, r0, 0, aka li r0, 0"
+	binary := (16r3800 toBitVector: 16), ('x' toBitVector: 16).   "li r0, x"
 	instr := AcProcessorDescriptions powerpc decode: binary.
 	self assert: instr name equals: 'addi'.
 	self assert: (instr fieldValue: 'rt') equals: 0.
