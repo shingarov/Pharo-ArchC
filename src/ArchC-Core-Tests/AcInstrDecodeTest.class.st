@@ -65,7 +65,7 @@ AcInstrDecodeTest >> testPowerAddiSymbolic [
 	self assert: instr name equals: 'addi'.
 	self assert: (instr fieldValue: 'rt') equals: 0.
 	self assert: (instr fieldValue: 'ra') equals: 0.
-	self assert: (instr fieldValue: 'd') equals: 'x'.
+	self assert: (instr fieldValue: 'd') equals: ('x'///16) toSignedInt .
 	
 ]
 
