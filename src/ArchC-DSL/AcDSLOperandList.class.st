@@ -14,3 +14,17 @@ AcDSLOperandList >> , anotherOperand [
 AcDSLOperandList >> asAcDSLOperandList [
 	^ self
 ]
+
+{ #category : #accessing }
+AcDSLOperandList >> relocation [
+	| reloc |
+
+	reloc := nil.
+	self do: [:each |
+		each relocation notNil ifTrue: [
+			self assert: reloc isNil description: 'Multiple relocation entries'.
+			reloc := each relocation.
+		].
+	].
+	^ reloc
+]

@@ -58,7 +58,7 @@ AcDSLAssembler >> annotations: aCollection [
 
 { #category : #'emitting-private' }
 AcDSLAssembler >> append: insn [
-	insn annotations: annotations.
+	insn annotationAddAll: annotations.
 	object instructions add: insn afterIndex: cursor.
 	cursor := cursor + 1.
 	^ insn

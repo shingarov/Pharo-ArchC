@@ -2,7 +2,7 @@ Extension { #name : #AcAsmSyntax }
 
 { #category : #'*ArchC-DSL' }
 AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
-	| operandIdx environment |
+	| operandIdx environment insn reloc |
 
 	self assert: format operands size == format operands size.
 
@@ -60,5 +60,10 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 		environment addAll: (operandDef asOperandInstantiation encodeValue: operand
 								  accordingTo: instruction format)
 	]. 
-	^self instruction inEnvironment: environment
+	insn := self instruction inEnvironment: environment.
+	reloc := operandList relocation.
+	reloc notNil ifTrue: [
+		insn relocation: operandList relocation
+	].
+	^ insn
 ]

@@ -33,3 +33,13 @@ AcDSLOperand >> isAcDSLRegister [
 AcDSLOperand >> isAcDSLSymbol [
 	^ false
 ]
+
+{ #category : #accessing }
+AcDSLOperand >> relocation [
+	^ nil
+]
+
+{ #category : #accessing }
+AcDSLOperand >> relocation: anAcRelocation [
+	self error: 'Operand value not relocatable'
+]
