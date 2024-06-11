@@ -194,22 +194,34 @@ AcDSLCodeObject >> labels [
 { #category : #relocation }
 AcDSLCodeObject >> relocateTo: address with: ignored [
 	base := address.
+
+	"Call `#relocations` to update relocation addresses."
+	self relocations.
 ]
 
 { #category : #accessing }
 AcDSLCodeObject >> relocations [
-	| addr relocs |
+	"Return a map (Dictionary) mapping all relocations to their
+	 addresses, respecing current base address.
 
+	 Here 'relocation address' means the address of instruction
+	 being relocated.
+	"
+
+	| relocMap addr |
+
+	relocMap := Dictionary new.
 	addr := base.
-	relocs := OrderedCollection new.
 	instructions do: [:insn |
-		insn relocation notNil ifTrue: [
-			insn relocation address: addr.
-			relocs add: insn relocation.
+		| reloc |
+
+		reloc := insn relocation.
+		reloc notNil ifTrue: [
+			relocMap at: reloc put: addr.
 		].
-		addr := addr + (insn bitWidth // 8).
+		addr := addr + (insn bitWidth // 8)
 	].
-	^ relocs
+	^ relocMap
 ]
 
 { #category : #accessing }

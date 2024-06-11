@@ -49,3 +49,8 @@ AcDSLMemRef >> printOn: aStream [
 	aStream nextPutAll: ' + '.
 	offset printOn: aStream.
 ]
+
+{ #category : #accessing }
+AcDSLMemRef >> relocation [
+	^ offset relocation
+]
