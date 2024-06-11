@@ -1,6 +1,36 @@
 Extension { #name : #ByteArray }
 
 { #category : #'*ArchC-Core' }
+ByteArray >> bitAnd: aByteArray [
+	| answer |
+
+	answer := self copy.
+	1 to: (self size min: aByteArray size) do: [ :i |
+		answer at: i put: ((self at: i) bitAnd: (aByteArray at: i))
+	].
+	^ answer
+
+	"
+	#[0 255 0 255] bitAnd: #[255 0 255 0]
+	"
+]
+
+{ #category : #'*ArchC-Core' }
+ByteArray >> bitOr: aByteArray [
+	| answer |
+
+	answer := self copy.
+	1 to: (self size min: aByteArray size) do: [ :i |
+		answer at: i put: ((self at: i) bitOr: (aByteArray at: i))
+	].
+	^ answer
+
+	"
+	#[0 255 0 255] bitOr: #[255 0 255 0]
+	"
+]
+
+{ #category : #'*ArchC-Core' }
 ByteArray >> toBitVector: xlen endian: endian startingAt: startIndex [
 	self assert: (xlen \\ 8) == 0.
 	self assert: (xlen // 8) isPowerOfTwo.
