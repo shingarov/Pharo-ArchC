@@ -35,9 +35,9 @@ AcAsmSyntax >> assembler [
 		allOperands := actualOperands copy addAll: constraints; yourself.
 		fieldValues := Dictionary new.
 		allOperands keysAndValuesDo: [ :opDef :v |
-				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v accoringTo: instruction format) ].
+				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v
+										  accordingTo: instruction format) ].
 		self instruction inEnvironment: fieldValues ]
-
 ]
 
 { #category : #accessing }

@@ -16,7 +16,8 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 			| operandDef  |
 
 			operandDef := self operands at: operandIdx.
-			environment addAll: (operandDef asOperandInstantiation encodeValue: operandValue accoringTo: instruction format).
+			environment addAll: (operandDef asOperandInstantiation encodeValue: operandValue
+									  accordingTo: instruction format).
 			operandIdx := operandIdx + 1.  
 		].
 	].
@@ -36,9 +37,9 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 			baseMod := operandFormat base modifier.
 
 			environment addAll: (offsetDef asOperandInstantiation encodeValue: (offsetMod new x: operandValue offset)
-									  accoringTo: instruction format).
+									  accordingTo: instruction format).
 			environment addAll: (baseDef asOperandInstantiation encodeValue: (baseMod new x: operandValue base)
-									  accoringTo: instruction format).
+									  accordingTo: instruction format).
 
 			operandIdx := operandIdx + 2.
 		] ifFalse: [
@@ -48,7 +49,7 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 			operandModifier := operandFormat modifier.
 
 			environment addAll: (operandDef asOperandInstantiation encodeValue: (operandModifier new x: operandValue)
-									  accoringTo: instruction format).
+									  accordingTo: instruction format).
 
 			operandIdx := operandIdx + 1.
 		].    
@@ -57,7 +58,7 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 
 	self constraints keysAndValuesDo: [:operandDef :operand |  
 		environment addAll: (operandDef asOperandInstantiation encodeValue: operand
-								  accoringTo: instruction format)
+								  accordingTo: instruction format)
 	]. 
 	^self instruction inEnvironment: environment
 ]
