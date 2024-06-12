@@ -87,9 +87,11 @@ AsmOperandInstantiation >> encodeSimpleValue: value [
 
 { #category : #private }
 AsmOperandInstantiation >> encodeValue: value accoringTo: format [
-	(value isKindOf: AcAsmOperandModifier) ifTrue: [ ^value encodeInFields: self accordingTo: format ].
-	^self encodeSimpleValue: value
-
+	value isAcAsmOperandModifier ifTrue: [
+		^ value encodeInFields: self accordingTo: format
+	] ifFalse: [
+		^ self encodeSimpleValue: value
+	]
 ]
 
 { #category : #rewriting }

@@ -82,6 +82,11 @@ AcAsmOperandModifier >> encodeInFields: fs accordingTo: format [
 	self subclassResponsibility 
 ]
 
+{ #category : #testing }
+AcAsmOperandModifier >> isAcAsmOperandModifier [
+	^ true
+]
+
 { #category : #queries }
 AcAsmOperandModifier >> isPRREL [
 	^ self class isPCREL
