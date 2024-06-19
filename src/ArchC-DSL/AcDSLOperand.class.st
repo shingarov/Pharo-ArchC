@@ -14,11 +14,6 @@ AcDSLOperand >> asAcDSLOperand [
 	^ self
 ]
 
-{ #category : #conversion }
-AcDSLOperand >> asAcDSLOperandList [
-	^ AcDSLOperandList with: self
-]
-
 { #category : #testing }
 AcDSLOperand >> isAcDSLImmediate [
 	^ false
