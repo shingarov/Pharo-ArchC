@@ -153,10 +153,16 @@ AcProcessorDescription >> decodeBits: aBitVector [
 AcProcessorDescription >> decodeableFormFor: code [
 	self hasConstantInstructionWidth ifTrue: [
 		(code isKindOf: ByteArray)"Sigh, Pharo has no #isByteArray"
-			ifTrue: [ 
-				code size == (self constantInstructionWidth // 8) 
-					ifFalse: [ self error: 'Invalid bytes (too few or too much)' ].
-				^code toBitVectorEndian: self endian ].
+			ifTrue: [
+				| bitsPerInsn bytesPerInsn bvs |
+
+				bitsPerInsn := self constantInstructionWidth.
+				bytesPerInsn := bitsPerInsn // 8.
+				code size == bytesPerInsn
+					ifTrue: [ ^ code toBitVectorEndian: self endian ].
+				(code size \\ bytesPerInsn) ~~ 0
+					ifTrue: [ self error: 'Invalid bytes (too few or too much)' ].
+				^ (1 to: code size // bytesPerInsn) collect: [ :i | code toBitVector: bitsPerInsn endian: self endian startingAt: (i - 1) * bytesPerInsn + 1 ]].
 		(code isCollection and:[code isSequenceable])
 			ifTrue:[ ^code ].
 		^code toBitVector: self constantInstructionWidth
