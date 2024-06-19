@@ -70,7 +70,7 @@ ProcessorInstructionDeclaration >> alwaysFitsEncoding: aBitVector [
 	solver := Z3Solver new.
 	[
 		answer := solver isValid: encodingIsCorrect
-	] ensure: [ solver del. ].
+	] ensure: [ solver release. ].
 	^ answer
 ]
 
@@ -294,7 +294,7 @@ ProcessorInstructionDeclaration >> possiblyFitsEncoding: aBitVector [
 	[
 		solver assert: (self binaryEncoding eq: aBitVector).
 		answer := solver check.
-	] ensure: [ solver del. ].
+	] ensure: [ solver release. ].
 	^ answer
 ]
 
