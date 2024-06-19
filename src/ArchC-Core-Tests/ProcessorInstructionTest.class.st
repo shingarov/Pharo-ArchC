@@ -295,7 +295,7 @@ ProcessorInstructionTest >> testSymbolicEncoding [
 
 { #category : #'tests - powerpc' }
 ProcessorInstructionTest >> testTrapiSubstitution [
-	| instr groundedInstr encoding constituents |
+	| instr groundedInstr encoding holes |
 	instr := AcProcessorDescriptions powerpc instructionAt: 'twi'.
 	groundedInstr := instr inEnvironment: (Dictionary new
 		at: 'ra' put: 12;
@@ -303,11 +303,8 @@ ProcessorInstructionTest >> testTrapiSubstitution [
 		yourself).
 	encoding := groundedInstr binaryEncoding .
 	self assert: encoding functorName  equals: 'concat'.
-	constituents := encoding args.
-	self assert: constituents size equals: 3.
-	self assert: constituents first length equals: 6.
-	self assert: constituents first value equals: 3.
-	self assert: constituents second sym equals: 'to'.
-	self assert: constituents third value == 16rC3039.
-
+	holes := encoding variables.
+	self assert: holes size equals: 1.
+	self assert: holes anyOne isBitVector.
+	self assert: holes anyOne length == 5.
 ]
