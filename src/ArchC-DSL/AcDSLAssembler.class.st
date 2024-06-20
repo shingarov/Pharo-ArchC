@@ -2,7 +2,7 @@ Class {
 	#name : #AcDSLAssembler,
 	#superclass : #Object,
 	#instVars : [
-		'memory',
+		'object',
 		'cursor',
 		'annotations'
 	],
@@ -59,7 +59,7 @@ AcDSLAssembler >> annotations: aCollection [
 { #category : #'emitting-private' }
 AcDSLAssembler >> append: insn [
 	insn annotations: annotations.
-	memory instructions add: insn afterIndex: cursor.
+	object instructions add: insn afterIndex: cursor.
 	cursor := cursor + 1.
 	^ insn
 ]
@@ -95,7 +95,7 @@ AcDSLAssembler >> byte: bytes [
 { #category : #accessing }
 AcDSLAssembler >> cursor: anInteger [
 	self assert: anInteger isInteger.
-	self assert:(anInteger between: 0 and: memory instructions size).
+	self assert:(anInteger between: 0 and: object instructions size).
 
 	cursor := anInteger
 ]
@@ -103,26 +103,24 @@ AcDSLAssembler >> cursor: anInteger [
 { #category : #inspecting }
 AcDSLAssembler >> gtInspectorInstructionsIn: composite [
 	<gtInspectorPresentationOrder: 60>
-	^memory gtInspectorInstructionsIn: composite
-
+	^object gtInspectorInstructionsIn: composite
 ]
 
 { #category : #initialization }
 AcDSLAssembler >> initialize [
 	super initialize.
-
-	"Lazy-generate DSL methods here upon first instantiation.
-	 This solves three problems: 
-	   (i) spares users to think of it and doing it manually
-	   (ii) avoids generating assemblers which will never be used.
-	   (iii) makes it debuggable if there's an error since this will
-		 be called once all the code is loaded (as opposed to 'at some
-		 undefined time during package loading').
+	 "Lazy-generate DSL methods here upon first instantiation.
+	 This solves three problems:
+	 (i) spares users to think of it and doing it manually
+	 (ii) avoids generating assemblers which will never be used.
+	 (iii) makes it debuggable if there's an error since this will
+	 be called once all the code is loaded (as opposed to 'at some
+	 undefined time during package loading').
 	"
-	self class generated ifFalse: [ 
+	self class generated ifFalse: [
 		AcDSLAssemblerGenerator generate: self class.
 	].
-	memory := AcDSLCodeBuffer new.
+	object := AcDSLCodeObject new.
 	cursor := 0.
 ]
 
@@ -157,5 +155,15 @@ AcDSLAssembler >> label: anObject [
 
 { #category : #accessing }
 AcDSLAssembler >> memory [
-	^ memory
+	<resource: #obsolete>
+
+	^self object
+]
+
+{ #category : #accessing }
+AcDSLAssembler >> object [
+	"Return the code object containing the code generated
+	 by this assembler."
+
+	^ object
 ]

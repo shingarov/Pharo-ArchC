@@ -1,5 +1,5 @@
 Class {
-	#name : #AcDSLCodeBuffer,
+	#name : #AcDSLCodeObject,
 	#superclass : #Object,
 	#instVars : [
 		'address',
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-AcDSLCodeBuffer class >> new [
+AcDSLCodeObject class >> new [
 	"return an initialized instance"
 
 	^ self basicNew initialize.
@@ -17,17 +17,17 @@ AcDSLCodeBuffer class >> new [
 ]
 
 { #category : #accessing }
-AcDSLCodeBuffer >> address [
+AcDSLCodeObject >> address [
 	^ address
 ]
 
 { #category : #accessing }
-AcDSLCodeBuffer >> bytes [
+AcDSLCodeObject >> bytes [
 	^ ByteArray streamContents: [ :s | instructions do: [:i | i emitOn: s ] ]
 ]
 
 { #category : #utilities }
-AcDSLCodeBuffer >> disassembleOn: aStream [
+AcDSLCodeObject >> disassembleOn: aStream [
 	| pc |
 
 	pc := address.
@@ -45,12 +45,12 @@ AcDSLCodeBuffer >> disassembleOn: aStream [
 ]
 
 { #category : #utilities }
-AcDSLCodeBuffer >> disassembled [
+AcDSLCodeObject >> disassembled [
 	^ String streamContents: [ :s | self disassembleOn: s. ].
 ]
 
 { #category : #relocation }
-AcDSLCodeBuffer >> fixupBranchTargets [
+AcDSLCodeObject >> fixupBranchTargets [
 	| locations insnAddr |
 
 	"Pass 1 - collect all labels and their (relative) addresses:"
@@ -69,7 +69,7 @@ AcDSLCodeBuffer >> fixupBranchTargets [
 ]
 
 { #category : #relocation }
-AcDSLCodeBuffer >> fixupBranchTargetsUsing: locations [
+AcDSLCodeObject >> fixupBranchTargetsUsing: locations [
 	| insnAddr |
 
 	insnAddr := address.
@@ -92,7 +92,7 @@ AcDSLCodeBuffer >> fixupBranchTargetsUsing: locations [
 ]
 
 { #category : #inspecting }
-AcDSLCodeBuffer >> gtInspectorInstructionsIn: composite [
+AcDSLCodeObject >> gtInspectorInstructionsIn: composite [
 	<gtInspectorPresentationOrder: 60>
 
 	^ composite fastTable
@@ -128,23 +128,23 @@ AcDSLCodeBuffer >> gtInspectorInstructionsIn: composite [
 ]
 
 { #category : #initialization }
-AcDSLCodeBuffer >> initialize [
+AcDSLCodeObject >> initialize [
 	address := 0.
 	instructions := OrderedCollection new.
 ]
 
 { #category : #accessing }
-AcDSLCodeBuffer >> instructions [
+AcDSLCodeObject >> instructions [
 	^ instructions
 ]
 
 { #category : #relocation }
-AcDSLCodeBuffer >> relocateTo: newAddress with: ignored [
+AcDSLCodeObject >> relocateTo: newAddress with: ignored [
 	address := newAddress.
 ]
 
 { #category : #accessing }
-AcDSLCodeBuffer >> relocations [
+AcDSLCodeObject >> relocations [
 	| addr relocs |
 
 	addr := address.
@@ -157,4 +157,11 @@ AcDSLCodeBuffer >> relocations [
 		addr := addr + (insn bitWidth // 8).
 	].
 	^ relocs
+]
+
+{ #category : #accessing }
+AcDSLCodeObject >> size [
+	"Return the size of code in bytes"
+
+	^ instructions inject: 0 into: [:size :insn | size + (insn bitWidth // 8) ]
 ]
