@@ -2,7 +2,7 @@ Class {
 	#name : #AcDSLCodeObject,
 	#superclass : #Object,
 	#instVars : [
-		'address',
+		'base',
 		'instructions'
 	],
 	#category : #'ArchC-DSL'
@@ -18,11 +18,27 @@ AcDSLCodeObject class >> new [
 
 { #category : #accessing }
 AcDSLCodeObject >> address [
-	^ address
+	"Obsolete, use #base"
+	<resource: #obsolete>
+
+	^ self base
+]
+
+{ #category : #accessing }
+AcDSLCodeObject >> base [
+	"Return the base address of this object file.
+
+	 Defaults to 0 (zero), unless it is relocated to a different address.
+	 see #relocateTo:with:
+	"
+	^ base
 ]
 
 { #category : #accessing }
 AcDSLCodeObject >> bytes [
+	"Return a bytearray with binary code. All instructions mys be fully
+	 grounded."
+
 	^ ByteArray streamContents: [ :s | instructions do: [:i | i emitOn: s ] ]
 ]
 
@@ -30,7 +46,7 @@ AcDSLCodeObject >> bytes [
 AcDSLCodeObject >> disassembleOn: aStream [
 	| pc |
 
-	pc := address.
+	pc := base.
 	instructions do: [:insn |
 		| addr |
 
@@ -56,7 +72,7 @@ AcDSLCodeObject >> fixupBranchTargets [
 	"Pass 1 - collect all labels and their (relative) addresses:"
 	locations := Dictionary new.
 
-	insnAddr := address.
+	insnAddr := base.
 	instructions do: [:insn | 
 		insn isLabelInstruction ifTrue: [ 
 			locations at: insn symbol put: insnAddr.
@@ -72,7 +88,7 @@ AcDSLCodeObject >> fixupBranchTargets [
 AcDSLCodeObject >> fixupBranchTargetsUsing: locations [
 	| insnAddr |
 
-	insnAddr := address.
+	insnAddr := base.
 	1 to: instructions size do: [:i |
 		| insn |
 
@@ -100,7 +116,7 @@ AcDSLCodeObject >> gtInspectorInstructionsIn: composite [
 		display: [ 
 			| pc insnsWithAddrs |
 			
-			pc := address.
+			pc := base.
 			insnsWithAddrs := OrderedCollection new: instructions size.
 			instructions collect:[:insn |
 				insnsWithAddrs add: { insn . pc }.
@@ -129,25 +145,29 @@ AcDSLCodeObject >> gtInspectorInstructionsIn: composite [
 
 { #category : #initialization }
 AcDSLCodeObject >> initialize [
-	address := 0.
+	base := 0.
 	instructions := OrderedCollection new.
 ]
 
 { #category : #accessing }
 AcDSLCodeObject >> instructions [
+	"Return code as a sequence of AcInstructions. Users are
+	 allowed to modify this sequence in place to add/remove/replace
+	 instructions."
+
 	^ instructions
 ]
 
 { #category : #relocation }
-AcDSLCodeObject >> relocateTo: newAddress with: ignored [
-	address := newAddress.
+AcDSLCodeObject >> relocateTo: address with: ignored [
+	base := address.
 ]
 
 { #category : #accessing }
 AcDSLCodeObject >> relocations [
 	| addr relocs |
 
-	addr := address.
+	addr := base.
 	relocs := OrderedCollection new.
 	instructions do: [:insn |
 		insn relocation notNil ifTrue: [
