@@ -3,8 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'address',
-		'instructions',
-		'cursor'
+		'instructions'
 	],
 	#category : #'ArchC-DSL'
 }
@@ -22,27 +21,9 @@ AcDSLCodeBuffer >> address [
 	^ address
 ]
 
-{ #category : #adding }
-AcDSLCodeBuffer >> append: aProcessorInstruction [
-	instructions add: aProcessorInstruction afterIndex: cursor.
-	cursor := cursor + 1.
-	^ aProcessorInstruction
-]
-
 { #category : #accessing }
 AcDSLCodeBuffer >> bytes [
 	^ ByteArray streamContents: [ :s | instructions do: [:i | i emitOn: s ] ]
-]
-
-{ #category : #accessing }
-AcDSLCodeBuffer >> cursor [
-	^ cursor
-]
-
-{ #category : #accessing }
-AcDSLCodeBuffer >> cursor:anInteger [
-	self assert: (anInteger between: 0 and: instructions size).
-	cursor := anInteger.
 ]
 
 { #category : #utilities }
@@ -150,7 +131,6 @@ AcDSLCodeBuffer >> gtInspectorInstructionsIn: composite [
 AcDSLCodeBuffer >> initialize [
 	address := 0.
 	instructions := OrderedCollection new.
-	cursor := 0.
 ]
 
 { #category : #accessing }
@@ -161,4 +141,20 @@ AcDSLCodeBuffer >> instructions [
 { #category : #relocation }
 AcDSLCodeBuffer >> relocateTo: newAddress with: ignored [
 	address := newAddress.
+]
+
+{ #category : #accessing }
+AcDSLCodeBuffer >> relocations [
+	| addr relocs |
+
+	addr := address.
+	relocs := OrderedCollection new.
+	instructions do: [:insn |
+		insn relocation notNil ifTrue: [
+			insn relocation address: addr.
+			relocs add: insn relocation.
+		].
+		addr := addr + (insn bitWidth // 8).
+	].
+	^ relocs
 ]

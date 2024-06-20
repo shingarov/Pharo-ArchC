@@ -3,6 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'memory',
+		'cursor',
 		'annotations'
 	],
 	#classInstVars : [
@@ -58,7 +59,8 @@ AcDSLAssembler >> annotations: aCollection [
 { #category : #'emitting-private' }
 AcDSLAssembler >> append: insn [
 	insn annotations: annotations.
-	memory append: insn.
+	memory instructions add: insn afterIndex: cursor.
+	cursor := cursor + 1.
 	^ insn
 ]
 
@@ -92,7 +94,10 @@ AcDSLAssembler >> byte: bytes [
 
 { #category : #accessing }
 AcDSLAssembler >> cursor: anInteger [
-	memory cursor: anInteger
+	self assert: anInteger isInteger.
+	self assert:(anInteger between: 0 and: memory instructions size).
+
+	cursor := anInteger
 ]
 
 { #category : #inspecting }
@@ -117,7 +122,8 @@ AcDSLAssembler >> initialize [
 	self class generated ifFalse: [ 
 		AcDSLAssemblerGenerator generate: self class.
 	].
-	memory := AcDSLCodeBuffer new
+	memory := AcDSLCodeBuffer new.
+	cursor := 0.
 ]
 
 { #category : #'emitting - data' }
@@ -145,7 +151,7 @@ AcDSLAssembler >> label: anObject [
 	| insn |
 
 	insn := AcLabel symbol: anObject.
-	memory append: insn.
+	self append: insn.
 	^ insn
 ]
 
