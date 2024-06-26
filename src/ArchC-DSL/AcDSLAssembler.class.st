@@ -100,6 +100,23 @@ AcDSLAssembler >> cursor: anInteger [
 	cursor := anInteger
 ]
 
+{ #category : #emitting }
+AcDSLAssembler >> global: symbol [
+	"Makes symbol visible for linking (in other words, 'exports' the symbol.
+	 Like .global GNU Assembler directive [1]
+
+	 [1]|: https://sourceware.org/binutils/docs/as/Global.html"
+
+	object export: symbol
+]
+
+{ #category : #emitting }
+AcDSLAssembler >> globl: symbol [
+	"An alias for #global:"
+
+	self global: symbol
+]
+
 { #category : #inspecting }
 AcDSLAssembler >> gtInspectorInstructionsIn: composite [
 	<gtInspectorPresentationOrder: 60>
