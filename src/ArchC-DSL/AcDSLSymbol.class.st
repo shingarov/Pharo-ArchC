@@ -12,6 +12,11 @@ AcDSLSymbol class >> value: anObject [
 	^ self new value: anObject
 ]
 
+{ #category : #conversion }
+AcDSLSymbol >> asString [
+	^ value asString
+]
+
 { #category : #testing }
 AcDSLSymbol >> isAcDSLSymbol [
 	^ true

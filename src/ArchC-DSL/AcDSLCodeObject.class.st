@@ -3,6 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'base',
+		'exports',
 		'instructions'
 	],
 	#category : #'ArchC-DSL'
@@ -65,23 +66,33 @@ AcDSLCodeObject >> disassembled [
 	^ String streamContents: [ :s | self disassembleOn: s. ].
 ]
 
+{ #category : #utilities }
+AcDSLCodeObject >> export: symbol [
+	exports add: symbol
+]
+
+{ #category : #accessing }
+AcDSLCodeObject >> exports [
+	"Return a map (Dictionary) mapping all exports (exported labels) 
+	 to their corresponding addresses, respecing current base address.
+	"
+
+	| exportMap addr |
+
+	exportMap := Dictionary new: exportMap size.
+	addr := base.
+	instructions do: [:insn |
+		(insn isLabelInstruction and:[exports includes: insn symbol]) ifTrue: [
+			exportMap at: insn symbol put: addr.
+		].
+		addr := addr + (insn bitWidth // 8)
+	].
+	^ exportMap
+]
+
 { #category : #relocation }
 AcDSLCodeObject >> fixupBranchTargets [
-	| locations insnAddr |
-
-	"Pass 1 - collect all labels and their (relative) addresses:"
-	locations := Dictionary new.
-
-	insnAddr := base.
-	instructions do: [:insn | 
-		insn isLabelInstruction ifTrue: [ 
-			locations at: insn symbol put: insnAddr.
-		].
-		insnAddr := insnAddr + (insn bitWidth // 8)
-	].
-
-	"Pass 2 - fix branch instructions"
-	self fixupBranchTargetsUsing: locations
+	self fixupBranchTargetsUsing: self labels
 ]
 
 { #category : #relocation }
@@ -98,7 +109,7 @@ AcDSLCodeObject >> fixupBranchTargetsUsing: locations [
 
 			env := Dictionary new: locations size.
 			locations keysAndValuesDo: [ :label :labelAddr |
-				env at: label put: labelAddr - insnAddr
+				env at: label asString put: labelAddr - insnAddr
 			].
 			insn := insn inEnvironment: env.
 			instructions at: i put: insn.
@@ -146,6 +157,7 @@ AcDSLCodeObject >> gtInspectorInstructionsIn: composite [
 { #category : #initialization }
 AcDSLCodeObject >> initialize [
 	base := 0.
+	exports := Set new.
 	instructions := OrderedCollection new.
 ]
 
@@ -156,6 +168,27 @@ AcDSLCodeObject >> instructions [
 	 instructions."
 
 	^ instructions
+]
+
+{ #category : #accessing }
+AcDSLCodeObject >> labels [
+	"Return a map (Dictionary) mapping all labels to their corresponding
+	 addresses, respecing current base address.
+
+	 This map includes both, exported and internal labels.
+	"
+
+	| labelMap addr |
+
+	labelMap := Dictionary new.
+	addr := base.
+	instructions do: [:insn |
+		insn isLabelInstruction ifTrue: [
+			labelMap at: insn symbol put: addr.
+		].
+		addr := addr + (insn bitWidth // 8)
+	].
+	^ labelMap
 ]
 
 { #category : #relocation }
