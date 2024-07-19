@@ -371,7 +371,7 @@ AcRISCVOpcodeParser >> type_I [
 
 		internalBindings := Dictionary new.
 		internalBindings at: 'funct3' put: (nodes at: 4).
-		internalBindings at: 'opcode' put: (nodes at: 5).
+		internalBindings at: 'opcode' put: (nodes at: 6).
 
 		instr := ProcessorInstructionDeclaration new.
 		instr name: nodes first.
