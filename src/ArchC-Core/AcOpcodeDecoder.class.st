@@ -40,6 +40,5 @@ AcOpcodeDecoder >> preDecodeBits: aBitVector [
 	| opcd |
 
 	opcd := aBitVector subrange: opcodeRange.
-	^ instrGroups at: opcd value
-		ifAbsent: [ IllegalInstruction signalWith: aBitVector ]
+	^ instrGroups at: opcd value ifAbsent: [ #() ]
 ]

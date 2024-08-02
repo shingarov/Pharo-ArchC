@@ -143,7 +143,7 @@ AcProcessorDescription >> decodeBits: aBitVector [
 	candidates := opcodeDecoder preDecodeBits: aBitVector.
 	candidates := candidates collect: [:instr | instr decodeBits: aBitVector ].
 	candidates := candidates reject: [:instr | instr isNil ].
-	candidates isEmpty ifTrue: [ IllegalInstruction signalWith: aBitVector ].
+	candidates isEmpty ifTrue: [ ^ IllegalInstruction signalWith: aBitVector ].
 	^ (candidates 
 		asSortedCollection: [:a :b | a externalBindingBits < b externalBindingBits ]) 
 			first
