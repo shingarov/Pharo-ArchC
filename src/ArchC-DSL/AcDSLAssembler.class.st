@@ -71,6 +71,25 @@ AcDSLAssembler >> append: mnemonic operands: operands [
 	^ insn.
 ]
 
+{ #category : #'emitting-private' }
+AcDSLAssembler >> appendDC: dataClass operands: operands [
+	operands asAcDSLOperandList do: [:operand |
+		| data |
+
+		data := dataClass new
+					isa: self isa;
+					value: operand;
+					relocation: operand relocation;
+					yourself.
+		self append: data
+	].
+]
+
+{ #category : #'emitting - data' }
+AcDSLAssembler >> byte: bytes [
+	^ self appendDC: AcByte operands: bytes
+]
+
 { #category : #accessing }
 AcDSLAssembler >> cursor: anInteger [
 	memory cursor: anInteger
@@ -99,6 +118,21 @@ AcDSLAssembler >> initialize [
 		AcDSLAssemblerGenerator generate: self class.
 	].
 	memory := AcDSLCodeBuffer new
+]
+
+{ #category : #'emitting - data' }
+AcDSLAssembler >> int16: int16s [
+	^ self appendDC: AcInt16 operands: int16s
+]
+
+{ #category : #'emitting - data' }
+AcDSLAssembler >> int32: int32s [
+	^ self appendDC: AcInt32 operands: int32s
+]
+
+{ #category : #'emitting - data' }
+AcDSLAssembler >> int64: int64s [
+	^ self appendDC: AcInt64 operands: int64s
 ]
 
 { #category : #accessing }
