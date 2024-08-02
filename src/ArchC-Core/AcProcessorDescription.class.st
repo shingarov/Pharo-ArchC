@@ -351,7 +351,10 @@ AcProcessorDescription >> initialize [
 	"  tgtimm := nil."
 	"  architectureName := nil."
 	"  abi := nil."
-	instructionMnemonics := OrderedCollection new.
+	instructionMnemonics := OrderedCollection with:(AcByte basicNew assembler
+												   /AcInt16 basicNew assembler
+												   /AcInt32 basicNew assembler
+												   /AcInt64 basicNew assembler)
 	"  opcodeDecoder := nil."
 ]
 

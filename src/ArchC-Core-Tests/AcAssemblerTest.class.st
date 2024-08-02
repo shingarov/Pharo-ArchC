@@ -313,3 +313,39 @@ AcAssemblerTest >> testTRAP [
 	self assert: result binaryEncoding equals: 16r0c000048.
 	self assert: result disassemble equals: 'twi 0x0, 0, 0x48'
 ]
+
+{ #category : #data }
+AcAssemblerTest >> test_byte [
+	| result |
+
+	result := AcProcessorDescriptions powerpc assembler parse: '.byte 0x7F'.
+	self assert: result binaryEncoding equals: 16r7F.
+	self assert: result disassemble equals: '.byte 0x' , (16r7F printStringRadix: 16).
+]
+
+{ #category : #data }
+AcAssemblerTest >> test_u16 [
+	| result |
+
+	result := AcProcessorDescriptions powerpc assembler parse: '.2byte 0x7FE0'.
+	self assert: result binaryEncoding equals: 16r7FE0.
+	self assert: result disassemble equals: '.2byte 0x' , (16r7FE0 printStringRadix:16).
+]
+
+{ #category : #data }
+AcAssemblerTest >> test_u32 [
+	| result |
+
+	result := AcProcessorDescriptions powerpc assembler parse: '.4byte 0x7FE00008'.
+	self assert: result binaryEncoding equals: 16r7FE00008.
+	self assert: result disassemble equals: '.4byte 0x' , (16r7FE00008 printStringRadix:16).
+]
+
+{ #category : #data }
+AcAssemblerTest >> test_u64 [
+	| result |
+
+	result := AcProcessorDescriptions powerpc assembler parse: '.8byte 0x7FE00008CAFEAFFE'.
+	self assert: result binaryEncoding equals: 16r7FE00008CAFEAFFE.
+	self assert: result disassemble equals: '.8byte 0x' , (16r7FE00008CAFEAFFE printStringRadix:16).
+]
