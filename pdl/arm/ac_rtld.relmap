@@ -1,0 +1,18 @@
+# This file contains a one-to-one mapping between ARM ABI relocation
+# codes and ArchC's generated linker relocation codes. Its intended
+# use is to perform a conversion using the acrelconvert tool.
+
+# R_ARM_RELATIVE
+23 = 1
+# R_ARM_COPY
+20 = 2
+# R_ARM_JUMPSLOT
+22 = 3
+# R_ARM_GLOBDAT
+21 = 4
+# R_ARM_ABS32
+2 = 7
+# R_ARM_REL32
+3 = 10
+
+# End of file

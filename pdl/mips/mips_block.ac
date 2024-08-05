@@ -1,0 +1,63 @@
+/**
+ * @file      mips.ac
+ * @author    Sandro Rigo
+ *            Marcus Bartholomeu
+ *            Alexandro Baldassin (acasm information)
+ *
+ *            The ArchC Team
+ *            http://www.archc.org/
+ *
+ *            Computer Systems Laboratory (LSC)
+ *            IC-UNICAMP
+ *            http://www.lsc.ic.unicamp.br/
+ *
+ * @version   1.0
+ * @date      Thu, 29 Jun 2006 14:49:08 -0300
+ * 
+ * @brief     The ArchC MIPS-I functional model.
+ * 
+ * @attention Copyright (C) 2002-2006 --- The ArchC Team
+ * 
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU General Public License for more details. 
+ * 
+ * You should have received a copy of the GNU General Public License 
+ * along with this program; if not, write to the Free Software 
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+AC_ARCH(mips){
+
+  ac_tlm2_port   MEM:512M;
+    
+  //ac_icache   IC("2w", 128, 32, "wb", "fifo");
+  //ac_dcache   DC("2w", 512, 32, "wt", "fifo");
+  
+  ac_icache   IC("2w", 64, 8, "wt", "random");
+  ac_dcache   DC("2w", 64, 8, "wt", "random");
+
+  ac_tlm2_intr_port intr_port;
+ 
+  ac_reg id;
+  ac_regbank RB:32;
+  ac_reg npc;
+  ac_reg hi, lo;
+
+  ac_wordsize 32;
+  ac_fetchsize 32;
+
+  ARCH_CTOR(mips) {
+    ac_isa("mips_isa.ac");
+    set_endian("big");
+    IC.bindTo(MEM);
+    DC.bindTo(MEM);
+  };
+};

@@ -1,0 +1,120 @@
+/* ex: set tabstop=2 expandtab:
+   -*- Mode: C; tab-width: 2; indent-tabs-mode nil -*-
+*/
+/**
+ * @file      powerpc64_isa.ac
+ * @author    Jan Vrany
+ *
+ *            LabWare
+ *
+ * @version   1.0
+ * @date      Mon, 14 Nov 2022
+ *
+ * @brief     The ArchC POWERPC64 functional model.
+ *
+ * @attention Copyright (C) 2022-2022 --- LabWare
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+/* Note: This file contains only instruction not present in 32bit PowerPC */
+
+AC_ISA(powerpc64) {
+
+  /*
+   * See Power ISA (Version 3.1.B), Section 1.6.1.5
+   */
+  ac_format DS1 = "%opcd:6 %frsp:5 %ra:5 %ds:14:s %xo:2";
+  ac_format DS2 = "%opcd:6 %frtp:5 %ra:5 %ds:14:s %xo:2";
+  ac_format DS3 = "%opcd:6 %rs:5   %ra:5 %ds:14:s %xo:2";
+  ac_format DS4 = "%opcd:6 %rsp:5  %ra:5 %ds:14:s %xo:2";
+  ac_format DS5 = "%opcd:6 %rt:5   %ra:5 %ds:14:s %xo:2";
+  ac_format DS6 = "%opcd:6 %vrs:5  %ra:5 %ds:14:s %xo:2";
+  ac_format DS7 = "%opcd:6 %vrt:5  %ra:5 %ds:14:s %xo:2";
+
+  ac_instr<D7> tdi;
+
+  ac_instr<X21> td;
+
+  /*
+   * See Section 3.3.2.1 64-bit Fixed-Point Load Instructions
+   */
+  ac_instr<DS5> ld, ldu;
+  ac_instr<X2> ldx, ldux;
+
+  /*
+   * See Section 3.3.3.1 64-bit Fixed-Point Store Instructions
+   */
+  ac_instr<DS3> std, stdu;
+  ac_instr<X8> stdx, stdux;
+
+  /*
+   * See Section 3.3.13.1 64-bit Fixed-Point Logical Instructions
+   */
+  ac_instr<X13> extsw;
+
+  ISA_CTOR(powerpc64) {
+
+    td.set_asm("td %imm, %reg, %reg", to, ra, rb);
+    td.set_asm("td%[trapcond] %reg, %reg", to, ra, rb);
+    td.set_decoder(opcd=31, xog=68);
+    td.set_cycles(1);
+
+    tdi.set_asm("tdi %imm, %reg, %imm", to, ra, si);
+    tdi.set_asm("td%[trapcond]i %reg, %imm", to, ra, si);
+    tdi.set_decoder(opcd=2);
+    tdi.set_cycles(1);
+
+    /*
+     * See Section 3.3.2.1 64-bit Fixed-Point Load Instructions
+     */
+    ld.set_decoder(opcd=58, xo=0);
+    ld.set_asm("ld %reg, %exp(bimm) (%reg)", rt, ds, ra);
+
+    ldu.set_decoder(opcd=58, xo=1);
+    ldu.set_asm("ldu %reg, %exp(bimm) (%reg)", rt, ds, ra);
+
+    ldx.set_decoder(opcd=31, xog=21);
+    ldx.set_asm("ldx %reg, %reg, %reg", rt, ra, rb);
+
+    ldux.set_decoder(opcd=31, xog=53);
+    ldux.set_asm("ldux %reg, %reg, %reg", rt, ra, rb);
+
+    /*
+     * See Section 3.3.3.1 64-bit Fixed-Point Store Instructions
+     */
+    std.set_decoder(opcd=62, xo=0);
+    std.set_asm("std %reg, %exp(bimm) (%reg)", rs, ds, ra);
+
+    stdu.set_decoder(opcd=62, xo=1);
+    stdu.set_asm("stdu %reg, %exp(bimm) (%reg)", rs, ds, ra);
+
+    stdx.set_decoder(opcd=31, xog=149);
+    stdx.set_asm("stdx %reg, %reg, %reg", rs, ra, rb);
+
+    stdux.set_decoder(opcd=31, xog=181);
+    stdux.set_asm("stdux %reg, %reg, %reg", rs, ra, rb);
+
+    /*
+     * See Section 3.3.13.1 64-bit Fixed-Point Logical Instructions
+     */
+    extsw.set_decoder(opcd=31, xog=986);
+    extsw.set_asm("extsw %reg, %reg", ra, rs, rc=0);
+    extsw.set_asm("extsw. %reg, %reg", ra, rs, rc=1);
+
+  }; // ISA_CTOR(powerpc64)
+
+}; // AC_ISA(powerpc64)

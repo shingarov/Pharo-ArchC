@@ -1,0 +1,48 @@
+/**
+ * @file      arm.ac
+ * @author    Danilo Marcolin Caravana
+ *            Rafael Auler
+ *
+ *            The ArchC Team
+ *            http://www.archc.org/
+ *
+ *            Computer Systems Laboratory (LSC)
+ *            IC-UNICAMP
+ *            http://www.lsc.ic.unicamp.br/
+ *
+ * @version   1.0
+ * @date      Apr 2012
+ * 
+ * @brief     The ArchC ARMv5e functional model.
+ * 
+ * @attention Copyright (C) 2002-2012 --- The ArchC Team
+ *
+ */
+
+AC_ARCH(arm){
+  ac_tlm2_nb_port     MEM:512M;
+
+  //ac_icache   IC("2w", 128, 32, "wb", "fifo");
+  //ac_dcache   DC("2w", 512, 32, "wt", "fifo");
+    
+  ac_icache   IC("2w", 128, 8, "wt", "fifo");
+  ac_dcache   DC("2w", 128, 8, "wt", "fifo");
+  
+  ac_tlm2_intr_port intr_port;
+    
+  ac_regbank RB:16;
+  // ac_tlm_intr_port inta;  // system level interrupt port
+  ac_reg R14_irq, R14_fiq, R14_svc, R14_abt, R14_und, R13_irq, R13_svc;
+  ac_reg R13_abt, R13_und, R13_fiq;
+  ac_reg SPSR_irq, SPSR_fiq, SPSR_svc, SPSR_abt, SPSR_und;
+  // FIQ private regs
+  ac_reg R12_fiq, R11_fiq, R10_fiq, R9_fiq, R8_fiq;
+  ac_wordsize 32;
+  ac_reg id;  
+  ARCH_CTOR(arm) {
+    ac_isa("arm_isa.ac");
+    set_endian("little");
+    IC.bindTo(MEM);
+    DC.bindTo(MEM);
+  };
+};

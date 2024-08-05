@@ -1,0 +1,35 @@
+/* *** Dynamic linking information *** */
+
+/* The name of the dynamic interpreter.  This is put in the .interp
+   section.  */
+#define ELF_DYNAMIC_INTERPRETER     "/usr/lib/ld.so.1"
+
+#define PLT_HEADER_SIZE 16
+
+/* The size in bytes of an entry in the procedure linkage table.  */
+#define PLT_ENTRY_SIZE 16
+
+/* The first entry in a procedure linkage table looks like
+   this.  It is set up so that any shared library function that is
+   called before the relocation has been set up calls the dynamic
+   linker first.  */
+ac_plt0_entry (PLT_HEADER_SIZE / 4) =
+  {
+    0xe52de004,		/* str   lr, [sp, #-4]! */
+    0xe59fe010,		/* ldr   lr, [pc, #16]  */
+    0xe08fe00e,		/* add   lr, pc, lr     */
+    0xe5bef008,		/* ldr   pc, [lr, #8]!  */
+  };
+
+/* Subsequent entries in a procedure linkage table look like
+   this.  */
+ac_plt_entry (PLT_ENTRY_SIZE / 4) =
+  {
+    0xe28fc600,		/* add   ip, pc, #NN	*/
+    0xe28cca00,		/* add	 ip, ip, #NN	*/
+    0xe5bcf000,		/* ldr	 pc, [ip, #NN]! */
+    0x00000000,		/* unused		*/
+  };
+
+#define ac_model_can_patch_plt
+

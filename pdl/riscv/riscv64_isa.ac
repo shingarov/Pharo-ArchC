@@ -1,0 +1,149 @@
+/*
+* @file         riscv_isa.cpp
+* @version      1.0
+* @author   Pavani Tripathi, Jan Vrany
+*
+* @date     May 2016
+* @brief        The ArchC RISC-V functional model
+*
+* @source   http://people.eecs.berkeley.edu/~krste/papers/riscv-spec-2.0.pdf
+*
+* This file is has been refactored to use Pharo-ArchC [1] extensions to
+* allow reading instructions from riscv-opcodes [2].
+*
+* [1]: https://github.com/shingarov/Pharo-ArchC
+* [2]: https://github.com/riscv/riscv-opcodes
+*/
+
+AC_ISA(riscv){
+
+  ac_helper {
+    #include "riscv_isa_helper.H"
+  };
+
+  ac_format Type_R =
+    "%funct7:7 %rs2:5 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  ac_format Type_R4 =
+    "%rs3:5 %funct2:2 %rs2:5 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  // For F and D extensions
+  ac_format Type_Rfd =
+    "%funct5:5 %fmt:2 %rs2:5 %rs1:5 %rm:3 %rd:5 %opcode:7";
+
+  // For A extension
+  ac_format Type_Ra =
+    "%funct5_h3:3 %funct5_l2:2 %aqrl:2 %rs2:5 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  // For F and D extensions
+  ac_format Type_R4fd =
+    "%rs3:5 %fmt:2 %rs2:5 %rs1:5 %rm:3 %rd:5 %opcode:7";
+
+  ac_format Type_I =
+    "%imm:12 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  ac_format Type_Ish =
+    "%shfun:6 %shamt:6 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  ac_format Type_Ishw =
+    "%shfunw:6 %zerobit:1 %shamtw:5 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  ac_format Type_Ifence =
+    "%fm:4 %pred:4 %succ:4 %rs1:5 %funct3:3 %rd:5 %opcode:7";
+
+  ac_format Type_S =
+    "%imm2:7 %rs2:5 %rs1:5 %funct3:3 %imm1:5 %opcode:7";
+
+  ac_format Type_B =
+    "%imm4:1 %imm2:6 %rs2:5 %rs1:5 %funct3:3 %imm1:4 %imm3:1 %opcode:7";
+
+  ac_format Type_U =
+    "%imm:20 %rd:5 %opcode:7";
+
+  ac_format Type_J =
+    "%imm4:1 %imm1:10 %imm2:1 %imm3:8 %rd:5 %opcode:7";
+
+
+  ac_asm_map gpr {
+    /*
+     * RISC-V GPR architectural register names
+     */
+    "x"[0..31] = [0..31];
+
+    /*
+     * RISC-V GPR "ABI" register names, see [1]
+     *
+     * [1]: https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-cc.adoc
+     */
+    "zero"     = 0;
+    "ra"       = 1;
+    "sp"       = 2;
+    "gp"       = 3;
+    "tp"       = 4;
+    "t"[0..2]  = [5..7];
+    "s"[0..1]  = [8..9];
+    "a"[0..7]  = [10..17];
+    "s"[2..11] = [18..27];
+    "t"[3..6]  = [28..31];
+  }
+
+  // Floating-point register names
+  ac_asm_map fpr {
+    /*
+     * RISC-V FPR architectural register names
+     */
+    "f"[0..31] = [0..31];
+    /*
+     * RISC-V FPR "ABI" register names, see [1]
+     */
+    "ft"[0..7]  = [0..7];
+    "fs"[0..1]  = [8..9];
+    "fa"[0..7]  = [10..17];
+    "fs"[2..11] = [18..27];
+    "ft"[8..11] = [28..31];
+  }
+
+  // Floating point rounding mode
+  // See RISC-V Unprivileged ISA,
+  //     Section 11.2 Floating-Point Control and Status Register
+  ac_asm_map rm {
+    "rne"    = 0; // Round to Nearest, ties to Even
+    "rtz"    = 1; // Round towards Zero
+    "rdn"    = 2; // Round Down (towards −Inf)
+    "rup"    = 3; // Round Up (towards +Inf)
+    "rmm"    = 4; // Round to Nearest, ties to Max Magnitude
+    "inv101" = 5; // Invalid, reserved.
+    "inv110" = 6; // Invalid, reserved.
+    "dyn"    = 7; // In instruction’s rm field: selects dynamic rounding mode,
+                 // In Rounding Mode register: invalid.
+  }
+
+  // Ordering of atomic instructions
+  // See RISC-V Unprivileged ISA,
+  //     Section 8.1 Specifying Ordering of Atomic Instructions
+  ac_asm_map aqrl {
+     ""      = 0; // No additional ordering constraints imposed
+     ".rl"   = 1; // Atomic memory operation is treated as a release access
+     ".aq"   = 2; // Atomic memory operation is treated as an acquire access
+     ".aqrl" = 3; // The atomic memory operation is sequentially consistent
+  }
+
+  /*
+   * RV64G is shorthand for the IMAFDZicsr Zifencei
+   */
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-system");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv32i");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv64i");
+
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv32m");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv64m");
+
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv32f");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv64f");
+
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv32d");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv64d");
+
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv32a");
+  _ac_riscv_opcodes("riscv-opcodes/opcodes-rv64a");
+};

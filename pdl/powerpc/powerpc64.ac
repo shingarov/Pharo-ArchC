@@ -1,0 +1,53 @@
+/**
+ * @file      powerpc64.ac
+ * @author    Jan Vrany
+ *
+ *            LabWare
+ *
+ * @version   1.0
+ * @date      Mon, 14 Nov 2022
+ * 
+ * @brief     The ArchC POWERPC64 functional model.
+ * 
+ * @attention Copyright (C) 2022-2022 --- LabWare
+ *
+ */
+
+AC_ARCH(powerpc64) {
+
+	ac_wordsize 64;
+
+	ac_mem MEM:512M;
+
+	ac_regbank GPR:32;
+
+	ac_reg SPRG4;
+	ac_reg SPRG5;
+	ac_reg SPRG6;
+	ac_reg SPRG7;
+	ac_reg USPRG0;
+
+	ac_reg XER;
+
+	ac_reg MSR;
+
+// sc instruction not tested/used
+	ac_reg EVPR;
+	ac_reg SRR0;
+	ac_reg SRR1;
+
+	ac_reg CR;
+	ac_reg LR;
+	ac_reg CTR;
+    ac_reg id;
+
+	ARCH_CTOR(powerpc64) {
+		ac_isa("powerpc_isa.ac");
+		ac_isa("powerpc64_isa.ac");
+        ac_gdb("powerpc.xml");
+
+        // PPC64le seems to be more common at least in
+        // Linux world.
+		set_endian("little");
+	};
+};

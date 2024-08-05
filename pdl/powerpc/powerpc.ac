@@ -1,0 +1,54 @@
+/**
+ * @file      powerpc.ac
+ * @author    Bruno Corsi dos Santos
+ *
+ *            The ArchC Team
+ *            http://www.archc.org/
+ *
+ *            Computer Systems Laboratory (LSC)
+ *            IC-UNICAMP
+ *            http://www.lsc.ic.unicamp.br
+ *
+ * @version   1.0
+ * @date      Thu, 29 Jun 2006 14:49:05 -0300
+ * 
+ * @brief     The ArchC POWERPC functional model.
+ * 
+ * @attention Copyright (C) 2002-2006 --- The ArchC Team
+ *
+ */
+
+AC_ARCH(powerpc) {
+
+	ac_wordsize 32;
+
+	ac_mem MEM:512M;
+	
+	ac_regbank GPR:32;
+
+	ac_reg SPRG4;
+	ac_reg SPRG5;
+	ac_reg SPRG6;
+	ac_reg SPRG7;
+	ac_reg USPRG0;
+
+	ac_reg XER;
+
+	ac_reg MSR;
+
+// sc instruction not tested/used
+	ac_reg EVPR;
+	ac_reg SRR0;
+	ac_reg SRR1;
+
+	ac_reg CR;
+	ac_reg LR;
+	ac_reg CTR;
+        ac_reg id;
+	ARCH_CTOR(powerpc) {	
+		ac_isa("powerpc_isa.ac");
+        ac_gdb("powerpc.xml");
+		set_endian("big");
+	};
+
+};

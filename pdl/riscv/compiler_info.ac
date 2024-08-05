@@ -1,0 +1,46 @@
+// RISC-V Instruction Semantic S-operator for Petrich PIG.
+// Author: Boris G. Shingarov.
+// Based on the AccGen grammar.
+
+//====================-- Machine specific rules --============================//
+
+//=====================-- Registers definitions --============================//
+
+define registers GPR:regs as (
+  x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21
+  x22 x23 x24 x25 x26 x27 x28 x29 x30 x31
+);
+
+define operand spec as size 32 like int;
+
+//===========================-- ABI stuff --==================================//
+
+redefine operand tgtimm size to 12;
+
+define abi as (
+/*
+  define callee save registers as ($16 $17 $18 $19 $20 $21 $22 $23);
+  define reserved registers as    ($0 $14 $15 $26 $27 $28 $29 $30 $31);
+  define auxiliar registers as    ($14 $15);
+  //define calling convention for int as stack size 4 alignment 4;
+  define calling convention for int as ($4 $5 $6 $7);
+  define calling convention for int as stack size 4 alignment 4;
+  define return convention for int as ($2 $3);
+  //define programcounter register as PC;
+  define stackpointer register as $29;
+  define framepointer register as $30;
+  define return register as $31;
+  define stack grows down alignment 8;
+  define pcoffset -8;
+*/
+);
+
+//==================-- Instruction semantic fragments --======================//
+
+
+
+//=======================-- Instructions definitions --=======================//
+
+
+
+

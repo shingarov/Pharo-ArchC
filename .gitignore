@@ -2,7 +2,6 @@
 GNUmakefile.local
 
 # Build by-products 
-pdl
 MachineArithmetic
 
 # Smalltalk/X

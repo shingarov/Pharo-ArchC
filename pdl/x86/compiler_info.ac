@@ -1,0 +1,27 @@
+//=====================-- Registers definitions --============================//
+
+define registers GPR:regs as (
+  x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 
+  x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 x30 x31
+);
+
+define operand spec as size 32 like int;
+
+redefine operand tgtimm size to 16;
+
+define abi as (
+  define callee save registers as (x14);
+  define reserved registers as    (x1 x2);
+  define auxiliar registers as    (x11);
+  //define calling convention for int as stack size 4 alignment 4;
+  define calling convention for int as (x3);
+  define calling convention for int as stack size 4 alignment 4;
+  define return convention for int as (x3 x4);
+  //define programcounter register as PC;
+  define stackpointer register as x13;
+  define framepointer register as x14;
+  define return register as LR;
+  define stack grows down alignment 8;
+  define pcoffset -8;
+);
+

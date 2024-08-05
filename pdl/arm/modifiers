@@ -1,0 +1,159 @@
+#define rotate_right(v, n) (v >> n | v << (32 - n))
+
+/* ARM immediate encoding routine 
+ * Based on Binutils' ARM port
+ */
+ac_modifier_encode(aimm)
+{
+  unsigned int a;
+  unsigned int i;
+
+#define rotate_left(v, n) (v << n | v >> (32 - n))
+
+  for (i = 0; i < 32; i += 2)
+    if ((a = rotate_left (reloc->input, i)) <= 0xff) {
+      reloc->Type_DPI3.rotate = i >> 1;
+      reloc->Type_DPI3.imm8 = a; 
+      return;
+    }
+
+  reloc->error = 1;
+}
+
+ac_modifier_decode(aimm)
+{
+  reloc->output = rotate_right(reloc->input, (reloc->Type_DPI3.rotate << 1));
+}
+
+/*
+ * "Branch" and "Branch and Link" instructions immediate modifier
+ * Coded as 24bit, 2 times right shifted (ARM ISA is 32bits word aligned)
+ * pc-relative + 8 offset.
+ */
+ac_modifier_encode(bimm)
+{
+  reloc->output = (reloc->input - reloc->address - 8) >>2;
+}
+
+ac_modifier_decode(bimm)
+{
+  int val = (int) reloc->input;
+  if (val & 0x00800000)
+    val |= 0xFF000000;
+  reloc->output = (val << 2) + reloc->address + 8;
+}
+
+
+/*
+ * "Branch and Exchange to thumb mode" instruction immediate modifier
+ * Coded as 24bit, 2 times right shifted (Thumb instructions is
+ * 16bits word aligned, so bit 1 is coded in field "H")
+ * pc-relative + 8 offset.
+ */
+ac_modifier_encode(bximm)
+{
+  unsigned int modifiedImm = reloc->input;
+  modifiedImm = modifiedImm - reloc->address - 8;
+
+  reloc->Type_BBLT.h = (modifiedImm >> 1) & 0x01;
+  reloc->Type_BBLT.offset = modifiedImm >> 2;
+}
+
+ac_modifier_decode(bximm)
+{
+  reloc->output = (reloc->input << 2) + reloc->address + 8;
+}
+
+/* Converts pc-relative immediates, rotated - used only
+ * in ADR pseudo instruction
+ */
+ac_modifier_encode(pcrelrot)
+{
+  unsigned int pcrelat = reloc->input - reloc->address - 8;
+  unsigned int a;
+  unsigned int i;
+
+  // Determines if ADR will be ADD or SUB
+  if ((pcrelat & 0x80000000) == 0)
+    reloc->Type_DPI3.func1 = 0x04; // ADD
+  else
+    {
+      reloc->Type_DPI3.func1 = 0x02; // SUB
+      pcrelat = 0 - pcrelat;
+    }
+
+  for (i = 0; i < 32; i += 2)
+    if ((a = rotate_left (pcrelat, i)) <= 0xff) {
+      reloc->Type_DPI3.rotate = ((i >> 1)&0xF);
+      reloc->Type_DPI3.imm8 = (a & 0xFF);
+      return;
+    }
+
+  reloc->error = 1;
+}
+
+ac_modifier_decode(pcrelrot)
+{
+  reloc->error = 0;
+}
+
+/* converts pc-relative immediate (used only in pseudo LDR)
+ */
+ac_modifier_encode(pcrelldr)
+{
+  unsigned int pcrelat = reloc->input - reloc->address - 8;
+  // Determines if LDR will have negative or positive offset
+  if ((pcrelat & 0x80000000) == 0)
+    reloc->Type_LSI.u = 0x01; // ADD
+  else
+    {
+      reloc->Type_LSI.u = 0x00; // SUB
+      pcrelat = 0 - pcrelat;
+    }
+  reloc->Type_LSI.imm12 = 0xFFF & pcrelat;
+}
+ac_modifier_decode(pcrelldr)
+{
+  reloc->output = reloc->input + reloc->address + 8;
+}
+
+/* Multiple data transfer register list element - codifies
+ * a register number into a bit in the register list.
+ * Uses the list operator to obtain list of registers parsed.
+ */
+ac_modifier_encode(dorlist)
+{
+  int init_range = -1;
+  unsigned i = 0;
+  
+  while (list_results_has_data(reloc->list_results))
+  {
+    char separator = list_results_get_separator(reloc->list_results);
+    unsigned int result = list_results_next(&(reloc->list_results));
+    if (init_range != -1)
+    {
+      for (i = init_range; i <= result; i++)
+	reloc->output = reloc->output | (1 << i);
+    }
+    else
+      reloc->output = reloc->output | (1 << result);
+    init_range = -1;
+    if (separator == '-')
+      init_range = result;    
+  }	
+}
+
+ac_modifier_decode(dorlist)
+{
+  unsigned i = 0;
+  unsigned val = reloc->input;
+  
+  for (i = 0; i < 16; i++)
+  {
+    unsigned aux = val >> i;
+    if (aux & 1) {
+      list_results_store(&(reloc->list_results), i);
+    }
+  }
+}
+

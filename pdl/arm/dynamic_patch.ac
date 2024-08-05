@@ -1,0 +1,41 @@
+
+/* ARM Model - Dynamic linking helper functions */
+
+/* Input: got_displacement, plt_address */
+ac_patch_plt0_entry()
+{
+
+  /* Calculate the displacement between the PLT slot and &GOT[0].  */
+  got_displacement -= 16;
+
+   /* The displacement value goes in the otherwise-unused last word of
+     the second entry.  */
+  ac_patch_bits (32, plt_address + 28, got_displacement); /* 32 bits, location to write, value to write */
+}
+
+/* Input: got_displacement, plt_offset, plt_address */
+ac_patch_plt_entry()
+{
+  unsigned int entry_copy[PLT_ENTRY_SIZE / 4];
+
+  /* got_displacement has the displacement between this PLT entry and its related GOT entry */
+  got_displacement -= 8; /* We'll use it PC relative, and ARM pc-relative is PC + 8 */
+
+  /* Get a copy of the plt entry instructions already stored there */
+  entry_copy[0] = (unsigned int) ac_get_bits(32, plt_address + plt_offset + 0);
+  entry_copy[1] = (unsigned int) ac_get_bits(32, plt_address + plt_offset + 4);
+  entry_copy[2] = (unsigned int) ac_get_bits(32, plt_address + plt_offset + 8);
+
+  /* Relocate these plt entry instructions using ARM rotation mechanism to store large
+     immediates */
+  
+  entry_copy[0] |=  ((got_displacement & 0x0ff00000) >> 20);
+  entry_copy[1] |=  ((got_displacement & 0x000ff000) >> 12);
+  entry_copy[2] |=  (got_displacement & 0x00000fff);
+
+  /* Write back the result */
+
+  ac_patch_bits(32, plt_address + plt_offset + 0, entry_copy[0]);
+  ac_patch_bits(32, plt_address + plt_offset + 4, entry_copy[1]);
+  ac_patch_bits(32, plt_address + plt_offset + 8, entry_copy[2]);
+}

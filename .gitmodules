@@ -1,3 +1,6 @@
 [submodule "makefiles"]
 	path = makefiles
 	url = https://github.com/janvrany/smalltalk-makefiles.git
+[submodule "pdl/riscv/riscv-opcodes"]
+	path = pdl/riscv/riscv-opcodes
+	url = https://github.com/riscv/riscv-opcodes.git

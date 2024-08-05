@@ -1,0 +1,43 @@
+
+ac_modifier_encode(carry)
+{
+  reloc->Type_I.imm = (reloc->input + 0x00008000) >> 16;
+
+// Same as above (simpler)
+//  reloc->output = (reloc->input + 0x00008000) >> 16;
+}
+
+
+ac_modifier_decode(carry)
+{
+}
+
+
+ac_modifier_encode(align)
+{
+  reloc->Type_J.addr = reloc->input >> 2;
+
+// Simpler and same as above
+//  reloc->output = reloc->input >> 2;
+}
+
+
+ac_modifier_decode(align)
+{
+  reloc->output = reloc->input << 2;
+}
+
+
+ac_modifier_encode(pcrel)
+{
+  reloc->Type_I.imm = (reloc->input - (reloc->address + 4)) >> 2;
+
+// Simpler version of the above
+//  reloc->output = (reloc->input - (reloc->address + 4)) >> 2;
+}
+
+
+ac_modifier_decode(pcrel)
+{
+  reloc->output = (reloc->input << 2) + reloc->address + 4;
+}

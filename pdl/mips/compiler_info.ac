@@ -1,0 +1,240 @@
+// MIPS C Compiler Backend Information File
+// Part of MIPS ArchC Model
+
+//====================-- Machine specific rules --============================//
+
+//=====================-- Registers definitions --============================//
+
+define registers GPR:regs as (
+  $0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 $20 $21
+  $22 $23 $24 $25 $26 $27 $28 $29 $30 $31
+);
+
+define operand spec as size 32 like int;
+
+define registers SPECIAL:spec as (
+  Hi Lo
+);
+
+//===========================-- ABI stuff --==================================//
+
+redefine operand tgtimm size to 15;
+
+define abi as (
+  define callee save registers as ($16 $17 $18 $19 $20 $21 $22 $23);
+  define reserved registers as    ($0 $14 $15 $26 $27 $28 $29 $30 $31);
+  define auxiliar registers as    ($14 $15);
+  //define calling convention for int as stack size 4 alignment 4;
+  define calling convention for int as ($4 $5 $6 $7);
+  define calling convention for int as stack size 4 alignment 4;
+  define return convention for int as ($2 $3);
+  //define programcounter register as PC;
+  define stackpointer register as $29;
+  define framepointer register as $30;
+  define return register as $31;
+  define stack grows down alignment 8;
+  define pcoffset -8;
+);
+
+//==================-- Instruction semantic fragments --======================//
+
+
+
+//=======================-- Instructions definitions --=======================//
+// * LOAD INSTRUCTIONS *
+//LB
+define instruction lb semantic as () cost 1;
+define instruction lb semantic as (
+  (transfer Op1:GPR (sext (memref Op2:GPR) const:num:8));
+) cost 1, has_delay_slot;
+
+//LBU
+define instruction lbu semantic as () cost 1;
+define instruction lbu semantic as (
+  (transfer Op1:GPR (zext (memref Op2:GPR) const:num:8));
+) cost 1, has_delay_slot;
+
+//LH
+define instruction lh semantic as () cost 1;
+define instruction lh semantic as (
+  (transfer Op1:GPR (sext (memref Op2:GPR) const:num:16));
+) cost 1, has_delay_slot;
+
+//LHU
+define instruction lhu semantic as () cost 1;
+define instruction lhu semantic as (
+  (transfer Op1:GPR (zext (memref Op2:GPR) const:num:16));
+) cost 1, has_delay_slot;
+
+//LW
+define instruction lw semantic as () cost 1;
+define instruction lw semantic as (
+  (transfer Op1:GPR (memref Op2:GPR));
+) cost 1, has_delay_slot;
+
+// * STORE INSTRUCTIONS *
+//SB
+define instruction sb semantic as () cost 1;
+define instruction sb semantic as (
+  (transfer (memref Op2:GPR) (trunc Op1:GPR const:num:8));
+) cost 1;
+
+//SH
+define instruction sh semantic as () cost 1;
+define instruction sh semantic as (
+  (transfer (memref Op2:GPR) (trunc Op1:GPR const:num:16));
+) cost 1;
+
+//SW
+define instruction sw semantic as () cost 1;
+define instruction sw semantic as (
+  (transfer (memref Op2:GPR) Op1:GPR);
+) cost 1;
+
+// * DATA PROCESSING *
+//ADD
+define instruction addi semantic as (
+  (transfer Op1:GPR (+ Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction addi semantic as () cost 1;
+define instruction addi semantic as (
+  (transfer Op1:GPR imm:Op2:tgtimm);
+) cost 1;
+
+define instruction addu semantic as (
+  (transfer Op1:GPR (+ Op2:GPR Op3:GPR));
+) cost 1;
+//ADDIU
+define instruction addiu semantic as (
+  (transfer Op1:GPR (+ Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+//LUI
+define instruction lui semantic as (
+  (transfer Op1:GPR (shl imm:Op2:tgtimm const:num:16));
+) cost 1;
+//MOVE
+define instruction addu semantic as (
+  (transfer Op1:GPR Op2:GPR);
+) cost 1;
+define instruction sub semantic as (
+  (transfer Op1:GPR (- Op2:GPR Op3:GPR));
+) cost 1;
+
+//AND
+define instruction andi semantic as (
+  (transfer Op1:GPR (and Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction instr_and semantic as (
+  (transfer Op1:GPR (and Op2:GPR Op3:GPR));
+) cost 1;
+//OR
+define instruction ori semantic as (
+  (transfer Op1:GPR (or Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction instr_or semantic as (
+  (transfer Op1:GPR (or Op2:GPR Op3:GPR));
+) cost 1;
+//XOR
+define instruction xori semantic as (
+  (transfer Op1:GPR (xor Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction instr_xor semantic as (
+  (transfer Op1:GPR (xor Op2:GPR Op3:GPR));
+) cost 1;
+//MULT
+define instruction mult semantic as (
+  (transfer Lo:SPECIAL (* Op1:GPR Op2:GPR));
+  (transfer Hi:SPECIAL (mulhs Op1:GPR Op2:GPR));
+) cost 1;
+define instruction multu semantic as (
+  //(transfer Lo:SPECIAL (* Op1:GPR Op2:GPR));
+  (transfer Hi:SPECIAL (mulhu Op1:GPR Op2:GPR));
+) cost 10;
+define instruction mfhi semantic as (
+  (transfer Op1:GPR Hi:SPECIAL);
+) cost 10;
+define instruction mflo semantic as (
+  (transfer Op1:GPR Lo:SPECIAL);
+) cost 10;
+define instruction mthi semantic as (
+//  (transfer Hi:SPECIAL Op1:GPR);
+) cost 1;
+define instruction mtlo semantic as (
+//  (transfer Lo:SPECIAL Op1:GPR);
+) cost 1;
+//SHIFT
+define instruction sll semantic as (
+  (transfer Op1:GPR (shl Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction sllv semantic as (
+  (transfer Op1:GPR (shl Op2:GPR Op3:GPR));
+) cost 1;
+define instruction srl semantic as (
+  (transfer Op1:GPR (shr Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction srlv semantic as (
+  (transfer Op1:GPR (shr Op2:GPR Op3:GPR));
+) cost 1;
+define instruction sra semantic as (
+  (transfer Op1:GPR (asr Op2:GPR imm:Op3:tgtimm));
+) cost 1;
+define instruction srav semantic as (
+  (transfer Op1:GPR (asr Op2:GPR Op3:GPR));
+) cost 1;
+
+// * BRANCHING *
+define instruction j semantic as (
+  (jump imm:Op1:int);
+) cost 1, has_delay_slot;
+
+define instruction jal semantic as (
+  (call imm:Op1:int);
+) cost 1, has_delay_slot;
+define instruction jal semantic as (
+  let Op1 = "$nextinstruction$" in
+    (transfer $31:GPR (getpc));
+) cost 1, has_delay_slot;
+
+define instruction jr semantic as (
+  (jump Op1:GPR);
+  //(transfer PC:SPECIAL Op1:GPR);
+) cost 1, has_delay_slot;
+define instruction jr semantic as () cost 1;
+define instruction jr semantic as (
+  (ret);
+) cost 1, has_delay_slot;
+
+define instruction jalr semantic as () cost 1;
+define instruction jalr semantic as (
+  (call Op1:GPR);
+) cost 1, has_delay_slot;
+define instruction beq semantic as (
+  (cjump const:cond:eq (comp Op1:GPR Op2:GPR) imm:Op3:int);
+) cost 1, has_delay_slot;
+define instruction bne semantic as () cost 1;
+define instruction bne semantic as (
+  (cjump const:cond:ne (comp Op1:GPR Op2:GPR) imm:Op3:int);
+) cost 1, has_delay_slot;
+
+// * CONDITIONAL BRANCHING *
+define instruction bgtz semantic as (
+  let Op1 = "$14" in
+    (jumpnz $14:GPR imm:Op2:int);
+) cost 1, has_delay_slot;
+define instruction slt semantic as (
+  let Op1 = "$14" in
+    (transfer $14:GPR (setif const:cond:lt Op2:GPR Op3:GPR));
+) cost 1;
+define instruction sltu semantic as (
+  let Op1 = "$14" in
+    (transfer $14:GPR (setif const:cond:ult Op2:GPR Op3:GPR));
+) cost 1;
+//define instruction slt semantic as (
+//  (transfer $1:GPR (comp Op2:GPR Op3:GPR));
+//) cost 1;
+
+// * NOP *
+define instruction nop semantic as (
+  (nop);
+) cost 1;
+

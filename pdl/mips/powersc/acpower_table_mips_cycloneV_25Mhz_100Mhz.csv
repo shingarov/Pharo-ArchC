@@ -1,0 +1,66 @@
+# Number of profiles 
+2
+# ProfileID, Characterization Frequency,Frequency Scale,EPI Scale,Characterization Name,Characterization Description
+25,1e6,1e-9,Tiwari in Cyclone V,Tiwari Method for Altera Cyclone V
+100,1e6,1e-9,Tiwari in Cyclone V,Tiwari Method for Altera Cyclone V
+# Stall consumption 
+1.64,0
+1,lb,3.12,2.19
+2,lbu,2.3,1.34
+3,lh,3.13,2.13
+4,lhu,2.38,1.39
+5,lw,2.75,1.79
+6,lwl,2.75,1.79
+7,lwr,2.75,1.79
+8,sb,3.27,2.34
+9,sh,3.31,2.4
+10,sw,3.43,2.5
+11,swl,3.43,2.5
+12,swr,3.43,2.5
+13,addi,2.65,1.57
+14,addiu,2.65,1.57
+15,slti,2.62,1.49
+16,sltiu,2.64,1.49
+17,andi,2.78,1.75
+18,ori,2.83,1.83
+19,xori,2.76,1.77
+20,lui,2.94,1.89
+21,add,2.12,1.14
+22,addu,2.12,1.13
+23,sub,2.08,1.11
+24,subu,2.1,1.12
+25,slt,1.8,0.88
+26,sltu,1.82,0.89
+27,instr_and,2.15,1.16
+28,instr_or,2.36,1.36
+29,instr_xor,2.17,1.18
+30,instr_nor,2.16,1.17
+31,nop,1.76,0.82
+32,sll,2.42,1.33
+33,srl,2.48,1.35
+34,sra,2.45,1.32
+35,sllv,2.13,1.11
+36,srlv,2.15,1.12
+37,srav,2.29,1.26
+38,mult,1.87,1.03
+39,multu,1.88,1.04
+40,div,3.12,2.15
+41,divu,3.2,2.2
+42,mfhi,2.56,1.56
+43,mthi,1.89,0.99
+44,mflo,2.54,1.53
+45,mtlo,1.85,0.99
+46,j,3.42,2.41
+47,jal,2.29,1.34
+48,jr,2.49,1.58
+49,jalr,2.94,1.95
+50,beq,3.03,2.03
+51,bne,3.03,2.03
+52,blez,3.03,2.03
+53,bgtz,3.03,2.03
+54,bltz,3.03,2.03
+55,bgez,3.03,2.03
+56,bltzal,3.03,2.03
+57,bgezal,3.03,2.03
+58,sys_call,0,0
+59,instr_break,0,0
