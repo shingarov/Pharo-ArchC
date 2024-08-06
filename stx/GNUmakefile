@@ -31,14 +31,14 @@ build: prereq
 
 
 run: build
-	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
+	$(STX) \
 		--quick \
 		--package-path $(MACHINEARITHMETIC_DIR) \
 		--package-path ../src \
 		--load BaselineOf$(PROJECT) \
 
 test: build
-	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
+	$(STX) \
 		--package-path $(MACHINEARITHMETIC_DIR) \
 		--package-path ../src \
 		--load BaselineOf$(PROJECT) \

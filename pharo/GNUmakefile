@@ -36,10 +36,10 @@ $(PROJECT).image: ../src/*/*.st
 	$(call pharo-load-local, $@, ArchC,            ../src)
 
 run: build
-	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM) $(PROJECT).image
+	$(PHARO_VM) $(PROJECT).image
 
 test: build
-	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM_HEADLESS) $(PROJECT).image test --fail-on-failure \
+	$(PHARO_VM_HEADLESS) $(PROJECT).image test --fail-on-failure \
 		"ArchC-Core-Tests" \
 		"ArchC-RISCV-Tests" \
 		"ArchC-DSL-Tests"

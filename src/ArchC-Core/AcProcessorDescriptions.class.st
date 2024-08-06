@@ -24,23 +24,13 @@ AcProcessorDescriptions class >> armv5 [
 
 { #category : #'working directory' }
 AcProcessorDescriptions class >> baseDirectory [
-	"Return a directory where PDLs are looked up.
-
-	The directory is determined as follows:
-
-	1. environment variable named ARCHC_PDL_DIR,
-	   if not set then
-	1. `pdl` directory in local git working copy
-	   (as created by `get-pdls.sh` script)
-	"
+	"Return a directory where PDLs are looked up."
 
 	| base slash |
-	base := 'ARCHC_PDL_DIR' getOSEnvironment.
+
+	base := self baseDirectoryGuess.
 	base isNil ifTrue:[
-		base := self baseDirectoryGuess.
-		base isNil ifTrue:[
-			self error: 'Failed to guess the base directory for PDLs, please run `get-pdls.sh` or set ''ARCHC_PDL_DIR'' environment.'
-		].
+		self error: 'Failed to determine the base directory for PDLs.'
 	].
 
 	"Make sure it has a slash at the end!"
@@ -57,30 +47,11 @@ AcProcessorDescriptions class >> baseDirectory [
 	"
 	AcProcessorDescriptions baseDirectory
 	"
-
-]
-
-{ #category : #'working directory' }
-AcProcessorDescriptions class >> baseDirectory: aString [
-	"Set directory where to look for PDLs"
-
-	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [
-		#OperatingSystem asClass setEnvironment: 'ARCHC_PDL_DIR' to: aString
-	] ifFalse: [
-		#OSEnvironment asClass current at: 'ARCHC_PDL_DIR' put: aString
-	].
-
-	"
-	AcProcessorDescriptions baseDirectory: '/home/jv/Projects/Phoenix/ArchC/pdl/'
-	AcProcessorDescriptions baseDirectory
-	AcProcessorDescriptions powerpc
-	"
-
 ]
 
 { #category : #'working directory' }
 AcProcessorDescriptions class >> baseDirectoryGuess [
-	"Try to guess where the PDLs might be."
+	"Determine PDL directory"
 
 
 	((Smalltalk respondsTo: #isSmalltalkX) and: [ Smalltalk isSmalltalkX ]) ifTrue: [ 
@@ -115,7 +86,6 @@ AcProcessorDescriptions class >> baseDirectoryGuess [
 	"
 	AcProcessorDescriptions baseDirectoryGuess
 	"
-
 ]
 
 { #category : #cache }
