@@ -27,19 +27,10 @@ Either use shortcut:
   1. Clone the repository
 
      ```
-     git clone https://github.com/shingarov/Pharo-ArchC ArchC
+     git clone --recurse-submodules https://github.com/shingarov/Pharo-ArchC ArchC
      ```
 
-  2. Get PDLs:
-
-     ```
-     cd ArchC
-     ./get-pdls.sh
-     ```
-
-     Alternatively, you may symlink `pdl` directory wherever you keep your PDLs
-
-  3. Download Pharo
+  2. Download Pharo
 
      ```
      mkdir ArchC/pharo
@@ -49,7 +40,7 @@ Either use shortcut:
      curl https://get.pharo.org/64/80+vm | bash
      ```
 
-  4. Load code into Pharo image:
+  3. Load code into Pharo image:
 
      ```
      ./pharo Pharo.image save archc
@@ -67,7 +58,7 @@ Either use shortcut:
  2. Clone the repository:
 
     ````
-    git clone https://github.com/shingarov/Pharo-ArchC.git.git
+    git clone --recurse-submodules https://github.com/shingarov/Pharo-ArchC.git.git
     ````
 
  3. In Smalltalk/X, execute:

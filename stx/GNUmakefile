@@ -16,12 +16,10 @@ MACHINEARITHMETIC_BRANCH ?= pure-z3
 $(eval $(call git-clone-local,MACHINEARITHMETIC_DIR,$(MACHINEARITHMETIC_URL),$(MACHINEARITHMETIC_BRANCH)))
 endif
 
-ifndef ARCHC_PDL_DIR
-ARCHC_PDL_DIR    := ../pdl
-ARCHC_PDL_URL    ?= https://github.com/janvrany/Pharo-ArchC-PDL.git
-ARCHC_PDL_BRANCH ?= master
-$(eval $(call git-clone-local,ARCHC_PDL_DIR,$(ARCHC_PDL_URL),$(ARCHC_PDL_BRANCH)))
-endif
+prereq:: ../pdl/riscv/riscv-opcodes/opcodes-rv32i
+
+../pdl/riscv/riscv-opcodes/opcodes-rv32i:
+	git submodule update --init --recursive $(dir $@)
 
 build: prereq
 	@echo "To run Smalltalk/X with $(PROJECT) loaded, run:"
