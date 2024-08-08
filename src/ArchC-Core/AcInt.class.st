@@ -35,7 +35,20 @@ AcInt >> assembler [
 
 { #category : #'encoding / decoding' }
 AcInt >> disassemble [
-	^ self name , ' 0x' , (self value printStringRadix: 16)
+	binaryEncoding isSymbolic ifTrue: [
+		| variables |
+
+		variables := binaryEncoding variableNames.
+		variables size == 1 ifTrue: [
+			"Simple function of one variable"
+			^ self name , ' {' , variables anyOne , '}'
+		] ifFalse: [
+			"Function of multiple variables, print the whole AST"
+			^ self name , ' {' , binaryEncoding astToString , '}'
+		].
+	] ifFalse: [
+		^ self name , ' 0x', (self value printPaddedWith:$0 to: self bitWidth // 8 base:16)
+	].
 ]
 
 { #category : #'encoding / decoding' }
