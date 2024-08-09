@@ -44,7 +44,7 @@ R_RISCV_PCREL_LO12 >> fixup: memory symbols: symbols relocations: relocations [
 	position of corresponding R_RISCV_*_HI20 relocation, hence we cannot
 	use simplified processing and have to override this method.
 	"
-	| hi20reloc s a p v lo12 |
+	| hi20reloc s g a p v lo12 |
 
 	(symbols includesKey: symbol) ifFalse: [
 		"This is a failure because the real symbol is the one associated with
@@ -68,7 +68,7 @@ R_RISCV_PCREL_LO12 >> fixup: memory symbols: symbols relocations: relocations [
 			signal: 'Invalid ', self class name , ' relocation, no corresponding R_RISCV_*_HI20 Relocation!'. "This should not happen!"
 		^ self
 	].
-	hi20reloc class ~~ R_RISCV_PCREL_HI20 ifTrue: [
+	({ R_RISCV_PCREL_HI20 .  R_RISCV_GOT_HI20 } includes: hi20reloc class) ifFalse: [
 		AcRelocationFailed new
 			relocation: self;
 			signal: 'Invalid ', self class name , ' relocation, must be paired with R_RISCV_*_HI20 Relocation!'. "This should not happen!"
@@ -81,11 +81,20 @@ R_RISCV_PCREL_LO12 >> fixup: memory symbols: symbols relocations: relocations [
 		^ self
 	].
 
-	s := symbols at: hi20reloc symbol.     "Value of the symbol in the symbol table"
-	a := hi20reloc addend.                 "Addend field in the relocation entry associated with the symbol"
-	p := relocations at: hi20reloc.        "Position of the relocation"
+	hi20reloc class == R_RISCV_GOT_HI20 ifTrue: [
+		g := (AcRelocationRequestGOTEntry query:hi20reloc) value. "Position of GOT entry (G + GOT in spec)"
+		a := hi20reloc addend.                 "Addend field in the relocation entry associated with the symbol"
+		p := relocations at: hi20reloc.        "Position of the relocation"
 
-	v := s + a - p.
+		v := g + a - p.
+	] ifFalse: [
+		s := symbols at: hi20reloc symbol.     "Value of the symbol in the symbol table"
+		a := hi20reloc addend.                 "Addend field in the relocation entry associated with the symbol"
+		p := relocations at: hi20reloc.        "Position of the relocation"
+
+		v := s + a - p.
+	].
+
 
 	(v between: INT32_MIN and: INT32_MAX) ifFalse:[
 		AcRelocationOverflow new
