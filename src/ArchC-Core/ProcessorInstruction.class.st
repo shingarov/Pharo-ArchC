@@ -6,9 +6,6 @@ When the PDL spec is initially parsed, the ""instrictions"" Dictionary is filled
 Class {
 	#name : #ProcessorInstruction,
 	#superclass : #ProcessorInstructionDeclaration,
-	#instVars : [
-		'binaryEncoding'
-	],
 	#category : #'ArchC-Core-Core'
 }
 
