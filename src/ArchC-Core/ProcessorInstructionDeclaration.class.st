@@ -12,7 +12,8 @@ Class {
 		'format',
 		'internalBindings',
 		'syntax',
-		'isa'
+		'isa',
+		'binaryEncoding'
 	],
 	#classVars : [
 		'EmptyBindings'
@@ -132,7 +133,10 @@ ProcessorInstructionDeclaration >> assertInvariants [
 
 { #category : #accessing }
 ProcessorInstructionDeclaration >> binaryEncoding [
-	^format binaryEncoding inEnvironment: internalBindings
+	binaryEncoding isNil ifTrue: [
+		binaryEncoding := format binaryEncoding inEnvironment: internalBindings.
+	].
+	^ binaryEncoding
 ]
 
 { #category : #accessing }
