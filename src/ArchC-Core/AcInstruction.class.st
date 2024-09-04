@@ -49,6 +49,13 @@ AcInstruction >> annotationAdd: anObject [
 ]
 
 { #category : #annotations }
+AcInstruction >> annotationAddAll: aCollection [
+	aCollection notNil ifTrue: [
+		aCollection do: [:each | self annotationAdd: each ]
+	].
+]
+
+{ #category : #annotations }
 AcInstruction >> annotationAddOrReplace: anObject [ 
 	annotations isNil ifTrue: [
 		annotations := Set with: anObject
@@ -196,4 +203,18 @@ AcInstruction >> isPseudoInstruction [
 { #category : #accessing }
 AcInstruction >> name [
 	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+AcInstruction >> relocation [
+	"Return relocation entry associated with this instruction."
+
+	"Implementation note:
+
+	  Only processor instructions can have relocation entries associated,
+	 this method is defined in here to simplify coding (no need to
+	 test for processor instruction first, merely for non-nil relocation).
+	"
+
+	^ nil
 ]
