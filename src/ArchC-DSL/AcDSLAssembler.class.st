@@ -167,3 +167,18 @@ AcDSLAssembler >> object [
 
 	^ object
 ]
+
+{ #category : #'emitting - data' }
+AcDSLAssembler >> ptr: ptrs [
+	| sizeOfPointer |
+
+	sizeOfPointer := self isa wordsize.
+	sizeOfPointer == 64 ifTrue:[
+		^ self int64: ptrs
+	].
+	sizeOfPointer == 32 ifTrue:[
+		^ self int32: ptrs
+	].
+	self error: 'Unsupported pointer size'.
+	^ nil
+]
