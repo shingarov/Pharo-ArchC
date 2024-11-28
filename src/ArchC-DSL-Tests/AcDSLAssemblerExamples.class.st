@@ -88,3 +88,54 @@ AcDSLAssemblerExamples >> example01_ppc32_spinlock [
 	 hardware."
 	assembler memory
 ]
+
+{ #category : #examples }
+AcDSLAssemblerExamples >> example02_riscv64_pic_code [
+	"
+	This example shows how generate PIC call on RISC-V. It demonstrates
+	how to use (RISC-V) relocations.
+	"
+
+	| gprs ra func assembler |
+
+	"
+	Get registers we will need, just like in example01.
+	"
+	gprs := AcProcessorDescriptions riscv64 maps at: 'gpr'.
+	ra := AcDSLRegister value: (gprs lookup: 'ra').
+
+	"
+	We'll also need a 'symbol' representing the called
+	function, let's call it func:
+	"
+	func := 'func' asAcDSLOperand.
+
+	"Create assembler..."
+	assembler := AcDSLRV64GAssembler new.
+
+	"...and generate PIC call. Here we generate just the call,
+	 moving argument values to argument registers and so on
+	 is ommited.
+
+	 We want to generate PIC code so we add relocation
+	 for the symbol (`R_RISCV_CALL_PLT % func`).
+
+	 Also note that relocations, their types and use is
+	 architecture-specific. Other architectures have
+	 different relocation types and not all of them may
+	 be implemented in ArchC.
+	"
+	assembler
+		auipc: ra, (R_RISCV_CALL_PLT % func);
+		jalr:  ra, ra, 0.
+
+	"Relocations are attached to instructions, not addresses, so
+	 one can usually insert and/or reorder instructions without need
+	 to care much (but not always, reading the documentation for
+	 individual relocations is helpful)."
+
+	"Again, you may access generated instructions by asking for
+	 assemblers #memory (an instance of `AcDSLCodeBuffer`).
+	 Note that some instruction have relocations attached."
+	assembler memory.
+]
