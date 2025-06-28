@@ -15,8 +15,8 @@ ManifestArchCCore class >> mandatoryPreRequisites [
 	 Please take a look at the #referencedPreRequisites method as well."
 
 	^ #(
-		#MachineArithmetic    "BitVector - extended"
-		#'MachineArithmetic-FFI-SmalltalkX'    "Z3Object - extended"
+		#'PreSmalltalks' "associationsDo: and co."
+		#'Z3'    "BitVector - extended"
 		#'stx:goodies/petitparser'    "PPCompositeParser - superclass of AcAbiParser"
 		#'stx:libbasic'    "ArrayedCollection - extended"
 		#'stx:libcompat'    "PackageManifest - superclass of ManifestArchCCore"
