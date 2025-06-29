@@ -33,13 +33,13 @@ build: prereq
 run: build
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
 		--quick \
-		--package-path $(MACHINEARITHMETIC_DIR) \
+		--package-path $(MACHINEARITHMETIC_DIR)/src \
 		--package-path ../src \
 		--load BaselineOf$(PROJECT) \
 
 test: build
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(STX) \
-		--package-path $(MACHINEARITHMETIC_DIR) \
+		--package-path $(MACHINEARITHMETIC_DIR)/src \
 		--package-path ../src \
 		--load BaselineOf$(PROJECT) \
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
