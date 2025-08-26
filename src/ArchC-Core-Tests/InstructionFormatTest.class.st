@@ -111,7 +111,7 @@ InstructionFormatTest >> testMostVariedOperands [
 { #category : #'total widths' }
 InstructionFormatTest >> testMostVariedOperandsARM [
 	| instructions max fatInstructions fatInstructionNames |
-	instructions := AcProcessorDescriptions armv5 instructions values.
+	instructions := AcProcessorDescriptions armv5 instructions values asArray.
 	max := instructions inject: 0 into: [ :soFar :instr |
 		| thisWidth |
 		thisWidth := instr externalBindingBits.
@@ -143,7 +143,7 @@ InstructionFormatTest >> testMostVariedOperandsPPC [
 { #category : #'total widths' }
 InstructionFormatTest >> testMostVariedOperandsSPARC [
 	| instructions max fatInstructions fatInstructionNames |
-	instructions := AcProcessorDescriptions sparcv8 instructions values.
+	instructions := AcProcessorDescriptions sparcv8 instructions values asArray.
 	max := instructions inject: 0 into: [ :soFar :instr |
 		| thisWidth |
 		thisWidth := instr externalBindingBits.
